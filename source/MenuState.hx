@@ -7,6 +7,8 @@ import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 
+import Assert;
+
 /**
  * A FlxState which can be used for the game's menu.
  */
@@ -17,6 +19,9 @@ class MenuState extends FlxState
 	 */
 	override public function create():Void
 	{
+		var a = Std.random(2);
+		var b = 1 - a;
+		Assert.info(a == 0 && b == 0, "This should happen");
 		super.create();
 	}
 	

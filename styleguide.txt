@@ -1,0 +1,19 @@
+Style guide:
+	Constants in all caps
+	CamelCase or hackerCase, no underscores
+	Always use braces on function definitions
+	Opening and closing curly braces go on the next line
+	Types should be specified ONLY when:
+		Using new
+		Using cast
+		Declaring return types
+		Declaring argument types
+		Declaring member types
+	Avoid anonymous structures
+	If there are optional arguments to a function, you must specify all arguments up to the last one provided
+	Don't use Dynamic
+	Don't use Abstract
+	Only use typedef to rename types
+	Don't use @:generic
+	Only use safe cast
+	Don't use inline
