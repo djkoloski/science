@@ -18,6 +18,14 @@ class MenuState extends FlxState
 	override public function create():Void
 	{
 		super.create();
+		var a = function ()
+		{
+			return "abc";
+		};
+		trace(a());
+		var b = 10;
+		var c = [1, 2, 3];
+		c.
 	}
 	
 	/**
