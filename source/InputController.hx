@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxG;
+import flixel.util.FlxVector;
 
 /**
  * A basic input controller for the character.
@@ -8,11 +9,11 @@ import flixel.FlxG;
  */
 class InputController
 {
-	public FlxVector movement;
-	public Bool primary;
-	public Bool secondary;
+	public var movement:FlxVector;
+	public var primary:Bool;
+	public var secondary:Bool;
 
-	public void update()
+	public function update():Void
 	{
 		movement.set(0, 0);
 		primary = false;
