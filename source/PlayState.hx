@@ -44,6 +44,7 @@ class PlayState extends FlxState
 	 */
 	override public function update():Void
 	{
+		var bAngle: Float = 0;
 		bullet_delay--;
 		var primary:Bool = FlxG.keys.justPressed.SPACE;
 		var secondary:Bool = FlxG.keys.justPressed.SHIFT;
@@ -51,6 +52,12 @@ class PlayState extends FlxState
 		if (primary)
 		{
 			weapon = new Weapon(player.x, player.y, player.Angle, 2);
+			add(weapon);
+			weapons.add(weapon);
+		}
+		if (secondary)
+		{
+			weapon = new Weapon(player.x, player.y, player.Angle, 1);
 			add(weapon);
 			weapons.add(weapon);
 		}
