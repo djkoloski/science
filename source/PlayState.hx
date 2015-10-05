@@ -50,12 +50,10 @@ class PlayState extends FlxState
 		add(level.backgroundGroup);
 		add(player);
 		add(level.foregroundGroup);
-<<<<<<< HEAD
+
 		add(level.enemyGroup);
-=======
 		
 		add(hud);
->>>>>>> 697e07f5f50139bf80148dc5fcd5e07f8f0a5067
 	}
 	
 	/**
