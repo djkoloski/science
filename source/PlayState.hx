@@ -3,55 +3,53 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.FlxObject;
 import flixel.text.FlxText;
+import flixel.group.FlxGroup;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
+import flixel.tile.FlxTilemap;
+import flixel.FlxCamera;
+import flixel.util.FlxPoint;
 import flixel.group.FlxGroup;
 import flixel.util.FlxColor;
+import flixel.util.FlxAngle;
 
 /**
  * A FlxState which can be used for the actual gameplay.
  */
 class PlayState extends FlxState
 {
+	public var level:LevelMap;
+	public var player:Player;
+	public var weapon: Weapon;
+	public var weapons =  new FlxGroup(100);
+	private var bulletDelay:Float = 0;
+	
 	private var hud:FlxGroup;
-	private var heart:FlxSprite;
-	private var barFrame:FlxSprite;
-	private var barBackground:FlxSprite;
-	private var barForeground:FlxSprite;
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
 	override public function create():Void
 	{
-		hud = new FlxGroup();
+		super.create();
 		
-		heart = new FlxSprite(10, 5);
-		heart.makeGraphic(1, 10, 0xffff0000);
-		heart.scale.x = 25;
-		heart.scrollFactor.x = heart.scrollFactor.y = 0;
-		hud.add(heart);
+		hud = new HUD();
 		
-		barFrame = new FlxSprite(5, 25);
-		barFrame.makeGraphic(200, 50);
-		barFrame.scrollFactor.x = barFrame.scrollFactor.y = 0;
-		hud.add(barFrame);
+		bgColor = 0xffaaaaaa;
 		
-		barBackground = new FlxSprite(10, 30);
-		barBackground.makeGraphic(190, 40, 0xff000000);
-		barBackground.scrollFactor.x = barBackground.scrollFactor.y = 0;
-		hud.add(barBackground);
+		level = new LevelMap("assets/tiled/leveltest.tmx");
+		player = new Player(level.startX, level.startY);
 		
-		barForeground = new FlxSprite(10, 30);
-		barForeground.makeGraphic(1, 40, 0xffff0000);
-		barForeground.scrollFactor.x = barForeground.scrollFactor.y = 0;
-		barForeground.origin.x = barForeground.origin.y = 0;
-		barForeground.scale.x = 190;
-		hud.add(barForeground);
+		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
+		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
+		
+		add(level.backgroundGroup);
+		add(player);
+		add(level.foregroundGroup);
 		
 		add(hud);
-		
-		super.create();
 	}
 	
 	/**
@@ -68,8 +66,26 @@ class PlayState extends FlxState
 	 */
 	override public function update():Void
 	{
-		barForeground.scale.x = 100;
+		var bAngle: Float = 0;
+		bulletDelay--;
+		var primary:Bool = FlxG.keys.justPressed.SPACE;
+		var secondary:Bool = FlxG.keys.justPressed.SHIFT;
+		
+		if (primary)
+		{
+			weapon = new Weapon(player.x, player.y, player.movementAngle, 2);
+			add(weapon);
+			weapons.add(weapon);
+		}
+		if (secondary)
+		{
+			weapon = new Weapon(player.x, player.y, player.movementAngle, 1);
+			add(weapon);
+			weapons.add(weapon);
+		}
 		
 		super.update();
-	}
+		
+		level.collideWith(player);
+	}	
 }
