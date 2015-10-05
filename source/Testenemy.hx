@@ -9,18 +9,21 @@ import flixel.FlxSprite;
  */
 class Testenemy extends Mob
 {
-	var wanderAction = function() {
+	var wanderAction:Dynamic; 
+	
+	public function new(X:Float=200, Y:Float=200,spritefilename:String=null) 
+	{
+		super(X, Y, spritefilename);
+		
+		wanderAction = function() {
 		if (destination == null) {
 			destination = new Vector2(Math.random() * 70 - 35 + x, Math.random() * 70 - 35 + y);
 		}
-		moveTwoards(destination);
-	}
-	
-	public function new(X:Float=0, Y:Float=0, ?spritefile:Dynamic) 
-	{
-		super(X, Y, ?spritefile);
-		idleAction;
-		
+		if (goTo()) {
+			destination = null;
+		}
+	};
+		action = wanderAction;
 	}
 	
 }

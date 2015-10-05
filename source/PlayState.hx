@@ -32,12 +32,14 @@ class PlayState extends FlxState
 		level = new LevelMap("assets/tiled/leveltest.tmx");
 		player = new Player(this, level.startX, level.startY);
 		
+		
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
 		
 		add(level.backgroundGroup);
 		add(player);
 		add(level.foregroundGroup);
+		add(level.enemyGroup);
 	}
 	
 	/**
