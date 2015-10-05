@@ -11,17 +11,21 @@ import flixel.util.FlxAngle;
 
 class Player extends FlxSprite
 {
-	public var speed:Float;
-	public var movementAngle:Float;
-	public var hitpoints: Float = 100;
+	private var state:PlayState;
 	
-	public function new(startX:Float, startY:Float)
+	public var speed:Float;
+	public var hitpoints:Float;
+	public var weaponManager:WeaponManager;
+	
+	public function new(playState:PlayState, startX:Float, startY:Float)
 	{
 		super(startX, startY);
 		makeGraphic(32, 32, FlxColor.BLUE);
 		
+		state = playState;
 		speed = 200.0;
-		angle = 0.0;
+		hitpoints = 100;
+		weaponManager = new WeaponManager(playState, WeaponType_Bullet1);
 		
 		drag.x = drag.y = 1600.0;
 	}
@@ -31,42 +35,112 @@ class Player extends FlxSprite
 		var dx:Float = 0;
 		var dy:Float = 0;
 		
-		if (FlxG.keys.anyPressed(["RIGHT", "D"]))
+		if (FlxG.keys.pressed.D)
 		{
 			dx += 1.0;
 		}
-		if (FlxG.keys.anyPressed(["LEFT", "A"]))
+		if (FlxG.keys.pressed.A)
 		{
 			dx -= 1.0;
 		}
-		if (FlxG.keys.anyPressed(["DOWN", "S"]))
+		if (FlxG.keys.pressed.S)
 		{
 			dy += 1.0;
 		}
-		if (FlxG.keys.anyPressed(["UP", "W"]))
+		if (FlxG.keys.pressed.W)
 		{
 			dy -= 1.0;
 		}
 		
 		if (dx != 0 || dy != 0)
 		{
-			movementAngle = Math.atan2(dy, dx) * 180 / Math.PI;
-			
 			var len = Math.sqrt(dx * dx + dy * dy);
 			velocity.x = dx * speed / len;
 			velocity.y = dy * speed / len;
 		}
 		else
 		{
-			movementAngle = 0;
 			velocity.x = 0;
 			velocity.y = 0;
 		}
+	}
+	
+	public function updateWeapon():Void
+	{
+		var dx:Float = 0.0;
+		var dy:Float = 0.0;
+		
+		if (FlxG.keys.pressed.RIGHT)
+		{
+			dx += 1.0;
+		}
+		if (FlxG.keys.pressed.LEFT)
+		{
+			dx -= 1.0;
+		}
+		if (FlxG.keys.pressed.DOWN)
+		{
+			dy += 1.0;
+		}
+		if (FlxG.keys.pressed.UP)
+		{
+			dy -= 1.0;
+		}
+		
+		var len:Float = Math.sqrt(dx * dx + dy * dy);
+		dx /= len;
+		dy /= len;
+		var fireAngle:Float = Math.atan2(dy, dx);
+		
+		var weaponSwap: Bool = FlxG.keys.justPressed.Q;
+		var meleeSwap:Bool = FlxG.keys.justPressed.SHIFT;
+		
+		var weaponX:Float = x + width / 2.0 + dx * width / 2.0;
+		var weaponY:Float = y + height / 2.0 + dy * height / 2.0;
+		
+		if (weaponSwap)
+		{
+			switch (weaponManager.type)
+			{
+				case WeaponType_Bullet1:
+					weaponManager.setType(WeaponType_Bullet2);
+				case WeaponType_Bullet2:
+					weaponManager.setType(WeaponType_Bullet3);
+				case WeaponType_Bullet3:
+					weaponManager.setType(WeaponType_Bullet1);
+				default:
+					throw "Unknown weapon type";
+			}
+		}
+		
+		if (meleeSwap)
+		{
+			if (weaponManager.type == WeaponType_Melee)
+			{
+				weaponManager.setType(WeaponType_Bullet1);
+			}
+			else
+			{
+				weaponManager.setType(WeaponType_Melee);
+			}
+		}
+		
+		if (dx != 0 || dy != 0)
+		{
+			weaponManager.fire(
+				weaponX,
+				weaponY,
+				fireAngle
+			);
+		}
+		
+		weaponManager.update();
 	}
 	
 	public override function update():Void
 	{
 		super.update();
 		updateMovement();
+		updateWeapon();
 	}
 }
