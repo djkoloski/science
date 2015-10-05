@@ -3,21 +3,41 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.FlxObject;
 import flixel.text.FlxText;
+import flixel.group.FlxGroup;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
+import flixel.tile.FlxTilemap;
+import flixel.FlxCamera;
+import flixel.util.FlxPoint;
 
 /**
  * A FlxState which can be used for the actual gameplay.
  */
 class PlayState extends FlxState
 {
+	public var level:LevelMap;
+	public var player:Player;
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
 	override public function create():Void
 	{
 		super.create();
+		
+		bgColor = 0xffaaaaaa;
+		
+		level = new LevelMap("assets/tiled/leveltest.tmx");
+		player = new Player(this, level.startX, level.startY);
+		
+		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
+		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
+		
+		add(level.backgroundGroup);
+		add(player);
+		add(level.foregroundGroup);
 	}
 	
 	/**
@@ -35,5 +55,7 @@ class PlayState extends FlxState
 	override public function update():Void
 	{
 		super.update();
+		
+		level.collideWith(player);
 	}	
 }
