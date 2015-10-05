@@ -24,6 +24,7 @@ class PlayState extends FlxState
 	public var player:Player;
 	public var weapon: Weapon;
 	public var weapons =  new FlxGroup(100);
+	public var currentWeapon = 1;
 	private var bulletDelay:Float = 0;
 	
 	private var hud:FlxGroup;
@@ -97,23 +98,34 @@ class PlayState extends FlxState
 		bulletDelay--;
 		var primary:Bool = FlxG.keys.justPressed.SPACE;
 		var secondary:Bool = FlxG.keys.justPressed.SHIFT;
+		var weaponSwap: Bool = FlxG.keys.justPressed.Q;
+		
+		if (weaponSwap)
+		{
+			currentWeapon++;
+			weaponSwap = false;
+			if (currentWeapon == 4)
+			{
+				currentWeapon = 1;
+			}
+		}
 		
 		if (primary)
 		{
-			weapon = new Weapon(player.x, player.y, player.movementAngle, 2);
+			weapon = new Weapon(player.x, player.y, player.movementAngle,currentWeapon);
 			add(weapon);
 			weapons.add(weapon);
 		}
 		if (secondary)
 		{
-			weapon = new Weapon(player.x, player.y, player.movementAngle, 1);
+			weapon = new Weapon(player.x, player.y, player.movementAngle, 0);
 			add(weapon);
 			weapons.add(weapon);
 		}
 		
 		super.update();
 		
-		barForeground.scale.x = 100;
+		barForeground.scale.x = player.hitpoints;
 		level.collideWith(player);
 	}	
 }

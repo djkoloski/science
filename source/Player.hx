@@ -13,6 +13,7 @@ class Player extends FlxSprite
 {
 	public var speed:Float;
 	public var movementAngle:Float;
+	public var hitpoints: Float = 100;
 	
 	public function new(startX:Float, startY:Float)
 	{
@@ -57,6 +58,7 @@ class Player extends FlxSprite
 		}
 		else
 		{
+			movementAngle = 0;
 			velocity.x = 0;
 			velocity.y = 0;
 		}
