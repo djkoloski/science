@@ -2,13 +2,14 @@ package;
 
 import flixel.FlxSprite;
 import lime.math.Vector2;
+import flixel.FlxG;
 
 /**
  * 
  */
 class Mob extends FlxSprite
 {
-	var collider:Collider;
+//	var collider:Collider;
 	
 	var speed:Int;
 	var target:FlxSprite;
@@ -23,7 +24,7 @@ class Mob extends FlxSprite
 		loadGraphic("assets/images/default enemy", true, 16, 16);
 		animation.add("idle", [0]);
 		super(X, Y, sprite);
-		collider = new Collider(x,y);
+	//	collider = new Collider(x,y);
 		this.addChild(collider);
 		action = idleAction;
 		
@@ -33,15 +34,30 @@ class Mob extends FlxSprite
 	}
 	
 	public function reset() {
-			action = idleAction();
+		action = idleAction();
 	}
 	
 	public override function update():Void {
+		super.update();
 		getTarget();
 		if (target) {
-				action();
+			action();
 		}else {
 			reset();
 		}
+	}
+	
+	public function towards(point:Vector2):Vector2 {
+		//returns a normalized vector in the direction of point.
+		var tempx = x - point.x;
+		var tempy = y - point.y;
+		var len = Math.sqrt( tempx * tempx + tempy * tempy)
+		return new Vector2(tempx / len, tempy / len);
+	}
+	
+	public function moveTowards(point:Vector2):Void {
+		var dir = towards(destination);
+		x += dir.x * speed;
+		y += dir.y * speed;
 	}
 }
