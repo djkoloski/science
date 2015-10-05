@@ -13,6 +13,7 @@ import flixel.FlxCamera;
 import flixel.util.FlxPoint;
 import flixel.group.FlxGroup;
 import flixel.util.FlxColor;
+import flixel.util.FlxAngle;
 
 /**
  * A FlxState which can be used for the actual gameplay.
@@ -21,6 +22,9 @@ class PlayState extends FlxState
 {
 	public var level:LevelMap;
 	public var player:Player;
+	public var weapon: Weapon;
+	public var weapons =  new FlxGroup(100);
+	private var bulletDelay:Float = 0;
 	
 	private var hud:FlxGroup;
 	private var heart:FlxSprite;
@@ -63,7 +67,7 @@ class PlayState extends FlxState
 		bgColor = 0xffaaaaaa;
 		
 		level = new LevelMap("assets/tiled/leveltest.tmx");
-		player = new Player(this, level.startX, level.startY);
+		player = new Player(level.startX, level.startY);
 		
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
@@ -89,6 +93,24 @@ class PlayState extends FlxState
 	 */
 	override public function update():Void
 	{
+		var bAngle: Float = 0;
+		bulletDelay--;
+		var primary:Bool = FlxG.keys.justPressed.SPACE;
+		var secondary:Bool = FlxG.keys.justPressed.SHIFT;
+		
+		if (primary)
+		{
+			weapon = new Weapon(player.x, player.y, player.movementAngle, 2);
+			add(weapon);
+			weapons.add(weapon);
+		}
+		if (secondary)
+		{
+			weapon = new Weapon(player.x, player.y, player.movementAngle, 1);
+			add(weapon);
+			weapons.add(weapon);
+		}
+		
 		super.update();
 		
 		barForeground.scale.x = 100;
