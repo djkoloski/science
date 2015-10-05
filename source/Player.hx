@@ -1,30 +1,33 @@
 package;
-
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.util.FlxColor;
 import flixel.FlxState;
+import flixel.text.FlxText;
+import flixel.ui.FlxButton;
+import flixel.util.FlxMath;
+import flixel.util.FlxColor;
+import flixel.util.FlxAngle;
+
 
 class Player extends FlxSprite
 {
-	var state:FlxState;
-	var speed:Float;
+	public var speed:Float;
+	public var movementAngle:Float;
+	public var hitpoints: Float = 100;
 	
-	public function new(state:FlxState, startX:Float, startY:Float) 
+	public function new(startX:Float, startY:Float)
 	{
-		super();
+		super(startX, startY);
+		makeGraphic(32, 32, FlxColor.BLUE);
 		
-		this.state = state;
-		this.speed = 500.0;
-		this.x = startX;
-		this.y = startY;
-		this.makeGraphic(32, 32, FlxColor.RED);
+		speed = 200.0;
+		angle = 0.0;
+		
+		drag.x = drag.y = 1600.0;
 	}
 	
-	public override function update()
+	private function updateMovement():Void
 	{
-		super.update();
-		
 		var dx:Float = 0;
 		var dy:Float = 0;
 		
@@ -45,11 +48,25 @@ class Player extends FlxSprite
 			dy -= 1.0;
 		}
 		
-		var len = Math.sqrt(dx * dx + dy * dy);
-		if (len > 0)
+		if (dx != 0 || dy != 0)
 		{
-			x += dx * FlxG.elapsed * speed / len;
-			y += dy * FlxG.elapsed * speed / len;
+			movementAngle = Math.atan2(dy, dx) * 180 / Math.PI;
+			
+			var len = Math.sqrt(dx * dx + dy * dy);
+			velocity.x = dx * speed / len;
+			velocity.y = dy * speed / len;
 		}
+		else
+		{
+			movementAngle = 0;
+			velocity.x = 0;
+			velocity.y = 0;
+		}
+	}
+	
+	public override function update():Void
+	{
+		super.update();
+		updateMovement();
 	}
 }

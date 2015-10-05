@@ -81,11 +81,16 @@ class LevelMap extends TiledMap
 		}
 	}
 	
-	public function collideWith(obj:FlxObject, ?notifyCallback:FlxObject->FlxObject->Void):Bool
+	public function collideWith(obj:FlxObject, ?notifyCallback:FlxObject->FlxObject->Void, ?processCallback:FlxObject->FlxObject->Bool):Bool
 	{
+		if (processCallback == null)
+		{
+			processCallback = FlxObject.separate;
+		}
+		
 		for (tilemap in foregroundTiles)
 		{
-			if (FlxG.collide(tilemap, obj, notifyCallback))
+			if (FlxG.overlap(tilemap, obj, notifyCallback, processCallback))
 			{
 				return true;
 			}
