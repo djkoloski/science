@@ -39,30 +39,7 @@ class PlayState extends FlxState
 	{
 		super.create();
 		
-		hud = new FlxGroup();
-		
-		heart = new FlxSprite(10, 5);
-		heart.makeGraphic(1, 10, 0xffff0000);
-		heart.scale.x = 25;
-		heart.scrollFactor.x = heart.scrollFactor.y = 0;
-		hud.add(heart);
-		
-		barFrame = new FlxSprite(5, 25);
-		barFrame.makeGraphic(200, 50);
-		barFrame.scrollFactor.x = barFrame.scrollFactor.y = 0;
-		hud.add(barFrame);
-		
-		barBackground = new FlxSprite(10, 30);
-		barBackground.makeGraphic(190, 40, 0xff000000);
-		barBackground.scrollFactor.x = barBackground.scrollFactor.y = 0;
-		hud.add(barBackground);
-		
-		barForeground = new FlxSprite(10, 30);
-		barForeground.makeGraphic(1, 40, 0xffff0000);
-		barForeground.scrollFactor.x = barForeground.scrollFactor.y = 0;
-		barForeground.origin.x = barForeground.origin.y = 0;
-		barForeground.scale.x = 190;
-		hud.add(barForeground);
+		hud = new HUD();
 		
 		bgColor = 0xffaaaaaa;
 		
@@ -113,7 +90,6 @@ class PlayState extends FlxState
 		
 		super.update();
 		
-		barForeground.scale.x = 100;
 		level.collideWith(player);
 	}	
 }
