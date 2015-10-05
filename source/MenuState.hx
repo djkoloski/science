@@ -6,6 +6,8 @@ import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
+import flixel.util.FlxColor;
+import flixel.group.FlxGroup;
 
 import PlayState;
 
@@ -14,6 +16,11 @@ import PlayState;
  */
 class MenuState extends FlxState
 {
+	private var hud:FlxGroup;
+	private var heart:FlxSprite;
+	private var barFrame:FlxSprite;
+	private var barBackground:FlxSprite;
+	private var barForeground:FlxSprite;
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
