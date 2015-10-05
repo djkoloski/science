@@ -33,6 +33,8 @@ class PlayState extends FlxState
 	 */
 	override public function create():Void
 	{
+		super.create();
+		
 		hud = new FlxGroup();
 		
 		heart = new FlxSprite(10, 5);
@@ -58,10 +60,6 @@ class PlayState extends FlxState
 		barForeground.scale.x = 190;
 		hud.add(barForeground);
 		
-		add(hud);
-		
-		super.create();
-		
 		bgColor = 0xffaaaaaa;
 		
 		level = new LevelMap("assets/tiled/leveltest.tmx");
@@ -73,6 +71,8 @@ class PlayState extends FlxState
 		add(level.backgroundGroup);
 		add(player);
 		add(level.foregroundGroup);
+		
+		add(hud);
 	}
 	
 	/**
