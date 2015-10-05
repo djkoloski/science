@@ -27,10 +27,6 @@ class PlayState extends FlxState
 	private var bulletDelay:Float = 0;
 	
 	private var hud:FlxGroup;
-	private var heart:FlxSprite;
-	private var barFrame:FlxSprite;
-	private var barBackground:FlxSprite;
-	private var barForeground:FlxSprite;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
