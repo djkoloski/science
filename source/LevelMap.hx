@@ -12,18 +12,22 @@ import flixel.addons.editors.tiled.TiledTileSet;
 
 class LevelMap extends TiledMap
 {
-	public var tileLayers:Array<FlxTilemap>;
-	public var foregroundTiles:FlxGroup;
-	public var backgroundTiles:FlxGroup;
+	public var foregroundTiles:Array<FlxTilemap>;
+	public var foregroundGroup:FlxGroup;
+	public var backgroundTiles:Array<FlxTilemap>;
+	public var backgroundGroup:FlxGroup;
+	
+	public var startX:Float;
+	public var startY:Float;
 	
 	public function new(path:Dynamic) 
 	{
 		super(path);
 		
-		tileLayers = new Array<FlxTilemap>();
-		foregroundTiles = new FlxGroup();
-		backgroundTiles = new FlxGroup();
-		collidableTileLayers = new FlxGroup();
+		foregroundTiles = new Array<FlxTilemap>();
+		foregroundGroup = new FlxGroup();
+		backgroundTiles = new Array<FlxTilemap>();
+		backgroundGroup = new FlxGroup();
 		
 		var tileset:TiledTileSet = null;
 		for (ts in tilesets)
@@ -46,11 +50,13 @@ class LevelMap extends TiledMap
 			
 			if (tileLayer.name == "foreground")
 			{
-				foregroundTiles.add(tilemap);
+				foregroundTiles.push(tilemap);
+				foregroundGroup.add(tilemap);
 			}
 			else
 			{
-				backgroundTiles.add(tilemap);
+				backgroundTiles.push(tilemap);
+				backgroundGroup.add(tilemap);
 			}
 		}
 		
@@ -58,18 +64,24 @@ class LevelMap extends TiledMap
 		{
 			for (o in group.objects)
 			{
-				// TODO: process objects
+				if (o.name == "player_start")
+				{
+					startX = o.x;
+					startY = o.y;
+				}
 			}
 		}
 	}
 	
-	public function collideWithLevel(obj:FlxObject, ?notifyCallback:FlxObject->FlxObject->Void, ?processCallback:FlxObject->FlxObject->Bool):Bool
+	public function collideWith(obj:FlxObject, ?notifyCallback:FlxObject->FlxObject->Void):Bool
 	{
-		if (processCallback == null)
+		for (tilemap in foregroundTiles)
 		{
-			processCallback = FlxObject.separate;
+			if (FlxG.collide(tilemap, obj, notifyCallback))
+			{
+				return true;
+			}
 		}
-		
-		return FlxG.overlap(foregroundTiles, obj, notifyCallback, processCallback);
+		return false;
 	}
 }

@@ -9,6 +9,8 @@ import flixel.group.FlxGroup;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 import flixel.tile.FlxTilemap;
+import flixel.FlxCamera;
+import flixel.util.FlxPoint;
 
 /**
  * A FlxState which can be used for the actual gameplay.
@@ -16,11 +18,7 @@ import flixel.tile.FlxTilemap;
 class PlayState extends FlxState
 {
 	public var level:LevelMap;
-	
-	public var coins:FlxGroup;
-	public var player:FlxSprite;
-	public var floor:FlxObject;
-	public var exit:FlxSprite;
+	public var player:Player;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -32,9 +30,14 @@ class PlayState extends FlxState
 		bgColor = 0xffaaaaaa;
 		
 		level = new LevelMap("assets/tiled/leveltest.tmx");
+		player = new Player(this, level.startX, level.startY);
 		
-		add(level.backgroundTiles);
-		add(level.foregroundTiles);
+		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
+		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
+		
+		add(level.backgroundGroup);
+		add(player);
+		add(level.foregroundGroup);
 	}
 	
 	/**
@@ -53,6 +56,6 @@ class PlayState extends FlxState
 	{
 		super.update();
 		
-		level.collideWithLevel(player);
+		level.collideWith(player);
 	}	
 }
