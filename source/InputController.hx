@@ -2,10 +2,6 @@ package;
 
 import flixel.FlxG;
 
-/**
- * A basic input controller for the character.
- * @author David Koloski
- */
 class InputController
 {
 	public FlxVector movement;

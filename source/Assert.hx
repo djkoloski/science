@@ -3,10 +3,6 @@ import haxe.macro.Expr;
 import haxe.macro.ExprTools;
 import haxe.macro.Context;
 
-/**
- * Provides simple but extensive assertions.
- * @author David Koloski
- */
 class Assert
 {
 	public static macro function info(condition:Expr, ?message:String):Expr
