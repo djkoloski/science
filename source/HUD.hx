@@ -2,6 +2,7 @@ package;
 
 import flixel.group.FlxGroup;
 import flixel.FlxSprite;
+import flixel.util.FlxColor;
 
 class HUD extends FlxGroup
 {
@@ -9,6 +10,7 @@ class HUD extends FlxGroup
 	var barFrame:FlxSprite;
 	var barBackground:FlxSprite;
 	var barForeground:FlxSprite;
+	var currentWeaponSpr: FlxSprite;
 	
 	public function new() 
 	{
@@ -33,14 +35,33 @@ class HUD extends FlxGroup
 		barForeground.origin.x = barForeground.origin.y = 0;
 		barForeground.scale.x = 190;
 		
+		currentWeaponSpr = new FlxSprite(250, 30);
+		currentWeaponSpr.makeGraphic(50, 50, FlxColor.RED);
+		currentWeaponSpr.scrollFactor.x = currentWeaponSpr.scrollFactor.y = 0;
+		
+		
 		add(heart);
 		add(barFrame);
 		add(barBackground);
 		add(barForeground);
+		add(currentWeaponSpr);
 	}
 	
 	public override function update()
 	{
 		barForeground.scale.x = 100;
+		if (PlayState.currentWeapon == 1)
+		{
+			currentWeaponSpr.makeGraphic(50, 50, FlxColor.RED);
+		}
+		else if (PlayState.currentWeapon == 2)
+		{
+			currentWeaponSpr.makeGraphic(50, 50, FlxColor.GREEN);
+		}
+		else if (PlayState.currentWeapon == 3)
+		{
+			currentWeaponSpr.makeGraphic(50, 50, FlxColor.YELLOW);
+		}
+		
 	}
 }

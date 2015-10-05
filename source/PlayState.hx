@@ -24,7 +24,7 @@ class PlayState extends FlxState
 	public var player:Player;
 	public var weapon: Weapon;
 	public var weapons =  new FlxGroup(100);
-	public var currentWeapon = 1;
+	static public var currentWeapon = 1;
 	private var bulletDelay:Float = 0;
 	
 	private var hud:FlxGroup;
