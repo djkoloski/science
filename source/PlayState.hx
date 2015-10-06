@@ -1,5 +1,6 @@
 package;
 
+import flash.system.System;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -22,10 +23,7 @@ class PlayState extends FlxState
 {
 	public var level:LevelMap;
 	public var player:Player;
-	public var weapon: Weapon;
-	public var weapons =  new FlxGroup(100);
-	public var currentWeapon = 1;
-	private var bulletDelay:Float = 0;
+	public var bullets:Array<Bullet>;
 	
 	private var hud:FlxGroup;
 	
@@ -41,14 +39,19 @@ class PlayState extends FlxState
 		bgColor = 0xffaaaaaa;
 		
 		level = new LevelMap("assets/tiled/leveltest.tmx");
-		player = new Player(level.startX, level.startY);
+		player = new Player(this, level.startX, level.startY);
+		
 		
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
 		
+		bullets = new Array<Bullet>();
+		
 		add(level.backgroundGroup);
 		add(player);
 		add(level.foregroundGroup);
+
+		add(level.enemyGroup);
 		
 		add(hud);
 	}
@@ -67,37 +70,41 @@ class PlayState extends FlxState
 	 */
 	override public function update():Void
 	{
-		var bAngle: Float = 0;
-		bulletDelay--;
-		var primary:Bool = FlxG.keys.justPressed.SPACE;
-		var secondary:Bool = FlxG.keys.justPressed.SHIFT;
-		var weaponSwap: Bool = FlxG.keys.justPressed.Q;
-		
-		if (weaponSwap)
-		{
-			currentWeapon++;
-			weaponSwap = false;
-			if (currentWeapon == 4)
-			{
-				currentWeapon = 1;
-			}
-		}
-		
-		if (primary)
-		{
-			weapon = new Weapon(player.x, player.y, player.movementAngle,currentWeapon);
-			add(weapon);
-			weapons.add(weapon);
-		}
-		if (secondary)
-		{
-			weapon = new Weapon(player.x, player.y, player.movementAngle, 0);
-			add(weapon);
-			weapons.add(weapon);
-		}
-		
 		super.update();
 		
+		if (FlxG.keys.justPressed.ESCAPE)
+		{
+			System.exit(0);
+		}
+		
+		updateBullets();
+		
 		level.collideWith(player);
-	}	
+	}
+	
+	public function addBullet(bullet:Bullet):Void
+	{
+		bullets.push(bullet);
+		add(bullet);
+	}
+	
+	public function removeBullet(bullet:Bullet):Void
+	{
+		remove(bullet);
+		bullets.splice(bullets.indexOf(bullet), 1);
+	}
+	
+	public function updateBullets():Void
+	{
+		var i:Int = 0;
+		while (i < bullets.length)
+		{
+			if (bullets[i].expired() || level.collideWith(bullets[i]))
+			{
+				removeBullet(bullets[i]);
+				--i;
+			}
+			++i;
+		}
+	}
 }

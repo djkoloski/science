@@ -17,6 +17,8 @@ class LevelMap extends TiledMap
 	public var backgroundTiles:Array<FlxTilemap>;
 	public var backgroundGroup:FlxGroup;
 	
+	public var enemyGroup:FlxGroup;
+	
 	public var startX:Float;
 	public var startY:Float;
 	
@@ -28,6 +30,8 @@ class LevelMap extends TiledMap
 		foregroundGroup = new FlxGroup();
 		backgroundTiles = new Array<FlxTilemap>();
 		backgroundGroup = new FlxGroup();
+		
+		enemyGroup = new FlxGroup();
 		
 		var tileset:TiledTileSet = null;
 		for (ts in tilesets)
@@ -68,6 +72,10 @@ class LevelMap extends TiledMap
 				{
 					startX = o.x;
 					startY = o.y;
+				}else {
+					if (o.name == "test") {
+						enemyGroup.add(new Testenemy(o.x, o.y));
+					}
 				}
 			}
 		}

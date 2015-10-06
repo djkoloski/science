@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="50" height="50" tilewidth="32" tileheight="32">
- <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" nextobjectid="14">
+ <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32" tilecount="240">
   <image source="tileset.png" width="640" height="384"/>
   <terraintypes>
    <terrain name="basicterrain" tile="-1"/>
@@ -37,6 +37,7 @@
   </data>
  </layer>
  <objectgroup name="objects">
-  <object name="player_start" x="86" y="87.3333" width="82" height="82"/>
+  <object id="1" name="player_start" x="86" y="87.3333" width="82" height="82"/>
+  <object id="13" name="test" x="398" y="236" width="70" height="109"/>
  </objectgroup>
 </map>
