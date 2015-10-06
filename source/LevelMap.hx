@@ -12,7 +12,7 @@ import flixel.addons.editors.tiled.TiledTileSet;
 
 class LevelMap extends TiledMap
 {
-	public var foregroundTiles:Array<FlxTilemap>;
+	public var foregroundTiles:FlxTilemap;
 	public var foregroundGroup:FlxGroup;
 	public var backgroundTiles:Array<FlxTilemap>;
 	public var backgroundGroup:FlxGroup;
@@ -22,11 +22,11 @@ class LevelMap extends TiledMap
 	public var startX:Float;
 	public var startY:Float;
 	
-	public function new(path:Dynamic) 
+	public function new(state:PlayState, filePath:Dynamic) 
 	{
-		super(path);
+		super(filePath);
 		
-		foregroundTiles = new Array<FlxTilemap>();
+		foregroundTiles = null;
 		foregroundGroup = new FlxGroup();
 		backgroundTiles = new Array<FlxTilemap>();
 		backgroundGroup = new FlxGroup();
@@ -40,7 +40,7 @@ class LevelMap extends TiledMap
 			tileset = ts;
 		}
 		Assert.info(tileset != null, "Tile map has no tileset!");
-		var tilesetPath = (new Path(path)).dir + "/" + tileset.imageSource;
+		var tilesetPath = (new Path(filePath)).dir + "/" + tileset.imageSource;
 		trace("Tile set image path: '" + tilesetPath + "'");
 		
 		for (tileLayer in layers)
@@ -54,8 +54,9 @@ class LevelMap extends TiledMap
 			
 			if (tileLayer.name == "foreground")
 			{
-				foregroundTiles.push(tilemap);
-				foregroundGroup.add(tilemap);
+				Assert.info(foregroundTiles == null, "Foreground layer added while there is already a foreground layer. Only one foreground layer is allowed.");
+				foregroundTiles = tilemap;
+				foregroundGroup.add(foregroundTiles);
 			}
 			else
 			{
@@ -63,6 +64,8 @@ class LevelMap extends TiledMap
 				backgroundGroup.add(tilemap);
 			}
 		}
+		
+		Assert.info(foregroundTiles != null, "No foreground layer found in tilemap");
 		
 		for (group in objectGroups)
 		{
@@ -72,8 +75,11 @@ class LevelMap extends TiledMap
 				{
 					startX = o.x;
 					startY = o.y;
-				}else {
-					if (o.name == "test") {
+				}
+				else
+				{
+					if (o.name == "test")
+					{
 						enemyGroup.add(new Testenemy(o.x, o.y));
 					}
 				}
@@ -88,13 +94,6 @@ class LevelMap extends TiledMap
 			processCallback = FlxObject.separate;
 		}
 		
-		for (tilemap in foregroundTiles)
-		{
-			if (FlxG.overlap(tilemap, obj, notifyCallback, processCallback))
-			{
-				return true;
-			}
-		}
-		return false;
+		return FlxG.overlap(foregroundTiles, obj, notifyCallback, processCallback);
 	}
 }
