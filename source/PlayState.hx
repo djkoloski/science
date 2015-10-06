@@ -38,7 +38,7 @@ class PlayState extends FlxState
 		
 		bgColor = 0xffaaaaaa;
 		
-		level = new LevelMap("assets/tiled/leveltest.tmx");
+		level = new LevelMap(this, "assets/tiled/leveltest.tmx");
 		player = new Player(this, level.startX, level.startY);
 		
 		
