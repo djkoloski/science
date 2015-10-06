@@ -20,6 +20,11 @@ class Mob extends FlxSprite
 	
 	public var idleAction = function() { };
 	
+	private var hearts:Array<FlxSprite>;
+	private var barBackground:FlxSprite;
+	private var barForeground:FlxSprite;
+	private var mobStat:Stats;
+	
 	public function goTo() :Bool {
 		//Moves towards destination, returning true if it has arrived. 
 		moveTowards(destination);
@@ -50,7 +55,26 @@ class Mob extends FlxSprite
 		
 		speed = 50;
 		
+		mobStat = new Stats();
 		
+		hearts = [];
+		for (i in 0...mobStat.getHearts()) {
+			var h:FlxSprite = new FlxSprite(this.x + i*7, this.y - 20);
+			h.makeGraphic(5, 5);
+			hearts.push(h);
+		}
+		
+		barBackground = new FlxSprite(this.x, this.y - 10);
+		barBackground.makeGraphic(mobStat.getMaxResidual(), 5, 0xff000000);
+		barBackground.scrollFactor.x = barBackground.scrollFactor.y = 0;
+		
+		barForeground = new FlxSprite(this.x, this.y - 10);
+		barForeground.makeGraphic(1, 5, 0xffff0000);
+		barForeground.scrollFactor.x = barForeground.scrollFactor.y = 0;
+		barForeground.origin.x = barForeground.origin.y = 0;
+		barForeground.scale.x = mobStat.getMaxResidual();
+		
+		mobStat.addResidual(20);
 	}
 	
 	public function mobReset():Void {
@@ -69,6 +93,20 @@ class Mob extends FlxSprite
 		//}else {
 		//	reset();
 		//}
+		
+		barBackground.update();
+		barForeground.update();
+		barBackground.x = barForeground.x = this.x;
+		barBackground.y = barForeground.y = this.y - 10;
+		barForeground.scale.x = mobStat.getCurrentResidual();
+		
+		for (i in 0...hearts.length) {
+			hearts[i].update();
+			hearts[i].x = this.x + i*7;
+			hearts[i].y = this.y - 20;
+		}
+		
+		mobStat.update();
 	}
 	
 	public function towards(point:Vector2):Vector2 {
@@ -85,5 +123,15 @@ class Mob extends FlxSprite
 		x += dir.x * speed * FlxG.elapsed;
 		y += dir.y * speed * FlxG.elapsed;
 		trace("moving towards " + point.x + "," + point.y);
+	}
+	
+	public override function draw():Void {
+		super.draw();
+		barBackground.draw();
+		barForeground.draw();
+		
+		for (i in hearts) {
+			i.draw();
+		}
 	}
 }
