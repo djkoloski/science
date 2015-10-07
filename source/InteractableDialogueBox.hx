@@ -8,7 +8,7 @@ import flixel.util.FlxMath;
 import flixel.util.FlxColor;
 import flixel.util.FlxAngle;
 
-class InteractableDialogueBox
+class InteractableDialogueBox extends FlxSprite
 {
 	private var state:PlayState;
 	public var interact: Bool;

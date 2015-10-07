@@ -30,7 +30,7 @@ class DialogueManager extends FlxGroup
 		
 		super();
 		state = playState;
-		createDialogueBox(dialogue);
+		createDialogueBox();
 		
 
 	}
@@ -68,7 +68,7 @@ class DialogueManager extends FlxGroup
 	public function transitionOntoScreen()
 	{
 		openDialogue();
-		timer = new FlxTimer(3, Void, 1);
+		timer = new FlxTimer(3, null, 1);
 		while (timer.finished != true)
 		{
 			Y += 1;
@@ -76,7 +76,7 @@ class DialogueManager extends FlxGroup
 	}
 	public function transitionOffScreen()
 	{
-		timer = new FlxTimer(3, Void, 1);
+		timer = new FlxTimer(3, null, 1);
 		while (timer.finished != true)
 		{
 			Y -= 1;
@@ -100,7 +100,7 @@ class DialogueManager extends FlxGroup
 	}
 	public function addDialogue(dialogue:String)
 	{
-		dialogueBox = new FlxText(X+(width/16), Y+(height/16), foregroundWidth);
+		dialogueBox = new FlxText(X+(width/16), Y+(height/16), width - (width/8));
 		dialogueBox.color = FlxColor.BLACK;
 		dialogueBox.text = dialogue;
 		dialogueBox.visible = false;
