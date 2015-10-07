@@ -17,41 +17,66 @@ class DialogueManager extends FlxGroup
 	
 	public var boxForeground: FlxSprite;
 	public var boxBackground: FlxSprite;
-	public var dialogue: String;
 	public var dialogueBox:FlxText;
+	public var dialogueOpener: FlxSprite;
+	public var state: PlayState;
 	
-	public function new(dialogue:String)
+	public function new(playState:PlayState)
 	{
+		
 		super();
-		var backgroundWidth:Int = Std.int(width + (width / 8));
-		var backgroundHeight:Int = Std.int(height + (height / 8));
+		state = playState;
+		createDialogueBox(dialogue);
+		
+
+	}
+	public function createDialogueBox()
+	{
+		var foregroundWidth:Int = Std.int(width - (width / 8));
+		var foregroundHeight:Int = Std.int(height - (height / 8));
 		var X: Float = FlxG.width/4;
 		var Y: Float = FlxG.height/8 * 6;
 		
-		boxForeground = new FlxSprite(X,Y);
-		boxForeground.makeGraphic(width,height,FlxColor.WHITE);
+		boxForeground = new FlxSprite(X+ (width/16),Y +(height/16));
+		boxForeground.makeGraphic(foregroundWidth,foregroundHeight,FlxColor.WHITE);
 		boxForeground.scrollFactor.x = boxForeground.scrollFactor.y = 0; 
 		
 		boxBackground = new FlxSprite(X, Y);
-		boxBackground.makeGraphic(backgroundWidth,backgroundHeight, FlxColor.BLACK);
+		boxBackground.makeGraphic(width,height, FlxColor.BLACK);
 		boxBackground.scrollFactor.x = boxBackground.scrollFactor.y = 0; 
 		
-		//add(boxBackground);
+		add(boxBackground);
 		add(boxForeground);
+	
+		boxBackground.visible = false;
+		boxForeground.visible = false;
 		
-		dialogueBox = new FlxText(X, Y, width);
-		dialogueBox.color = FlxColor.BLACK;
-		dialogueBox.text = dialogue;
-		add(dialogueBox);
-	}
-	public override function update()
-	{
-		if (FlxG.keys.pressed.SPACE)
-		{
-			remove(boxBackground);
-			remove(boxForeground);
-			remove(dialogueBox);
-		}
+
 	}
 
+	public function closeDialogue()
+	{
+		boxForeground.visible = false;
+		boxBackground.visible = false;
+		dialogueBox.visible = false;
+	}
+	public function openDialogue()
+	{
+		boxForeground.visible = true;
+		boxBackground.visible = true;
+		dialogueBox.visible = true;
+	}
+	public function IDsearch(Id:String)
+	{
+		var dialogue: String;
+		dialogue = state.dialogue.getString();
+		return dialogue;
+	}
+	public function addDialogue(dialogue:String)
+	{
+		dialogueBox = new FlxText(X+(width/16), Y+(height/16), foregroundWidth);
+		dialogueBox.color = FlxColor.BLACK;
+		dialogueBox.text = dialogue;
+		dialogueBox.visible = false;
+	}
 }

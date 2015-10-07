@@ -24,11 +24,14 @@ class PlayState extends FlxState
 {
 	public var level:LevelMap;
 	public var player:Player;
+	public var dialogueManager:DialogueManager;
+	public var interactanble: InteractableDialogueBox;
 	public var bullets:Array<Bullet>;
 	static public var bulletCooldown:Int = 0;
 	
 	private var hud:FlxGroup;
-	private var dialogueBox:FlxGroup;
+	
+	
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -38,7 +41,9 @@ class PlayState extends FlxState
 		super.create();
 		
 		hud = new HUD();
-		dialogueBox = new DialogueManager(File.getContent("assets/text/TestText.txt"));
+		dialogueManager = new DialogueManager(this);
+		
+		
 		
 		
 		bgColor = 0xffaaaaaa;
@@ -59,7 +64,7 @@ class PlayState extends FlxState
 		add(level.enemyGroup);
 		
 		add(hud);
-		add(dialogueBox);
+		add(dialogueManager);
 	}
 	
 	/**
