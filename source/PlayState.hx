@@ -22,6 +22,8 @@ import flixel.util.FlxAngle;
 class PlayState extends FlxState
 {
 	public var level:LevelMap;
+	public var dialogue:DialogueDictionary;
+	
 	public var player:Player;
 	public var bullets:Array<Bullet>;
 	
@@ -44,6 +46,7 @@ class PlayState extends FlxState
 		damagables = new FlxGroup();
 		
 		level = null;
+		dialogue = new DialogueDictionary();
 		player = new Player(this);
 		
 		damagables.add(player);

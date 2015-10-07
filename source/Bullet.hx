@@ -37,6 +37,7 @@ class Bullet extends FlxSprite implements Damager
 			this.destroy();
 		}
 	}
+	
 	public override function update()
 	{
 		super.update();

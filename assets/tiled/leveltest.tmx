@@ -44,5 +44,8 @@
     <property name="location" value="leveltest2"/>
    </properties>
   </object>
+  <object x="1079" y="431" width="77" height="80">
+   <ellipse/>
+  </object>
  </objectgroup>
 </map>
