@@ -25,7 +25,7 @@ class Player extends FlxSprite
 		
 		state = playState;
 		speed = 200.0;
-		stats = new Stats(1);
+		stats = new Stats(10);
 		weaponManager = new WeaponManager(playState, side, WeaponType_Bullet1);
 		
 		drag.x = drag.y = 1600.0;

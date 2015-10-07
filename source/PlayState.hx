@@ -15,6 +15,7 @@ import flixel.util.FlxPoint;
 import flixel.group.FlxGroup;
 import flixel.util.FlxColor;
 import flixel.util.FlxAngle;
+import openfl.Vector.VectorDataIterator;
 
 /**
  * A FlxState which can be used for the actual gameplay.
@@ -32,6 +33,7 @@ class PlayState extends FlxState
 	
 	public var damagers:FlxGroup;
 	public var damagables:FlxGroup;
+	public var collectibles:FlxGroup;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -44,6 +46,7 @@ class PlayState extends FlxState
 		
 		damagers = new FlxGroup();
 		damagables = new FlxGroup();
+		collectibles = new FlxGroup();
 		
 		level = null;
 		dialogue = new DialogueDictionary();
@@ -80,6 +83,12 @@ class PlayState extends FlxState
 			damager.damage(damagable);
 		});
 		
+		FlxG.overlap(player, collectibles, function(player:Player, collectible:Collectible) {
+			if (collectible.getType() == "health") {
+				player.stats.addHearts(cast(collectible, HeartCollectible).getHeal());
+				collectible.destroy();
+			}
+		});
 		
 		if (FlxG.keys.justPressed.ESCAPE)
 		{

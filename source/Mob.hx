@@ -124,6 +124,9 @@ class Mob extends FlxSprite implements Damageable
 		//trace("taking " + damage + " damage");
 		stats.damage(damage);
 		if (stats.isDead()) {
+			var hc:HeartCollectible = new HeartCollectible(this.x, this.y, 2);
+			playstate.add(hc);
+			playstate.collectibles.add(hc);
 			this.destroy();
 		}
 	}
