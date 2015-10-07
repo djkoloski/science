@@ -58,6 +58,7 @@ class Stats
 			residualCurrent -= regen;
 		}
 		*/
+		
 		if (residualCurrent < 0) {
 			residualCurrent = 0;
 		}

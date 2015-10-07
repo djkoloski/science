@@ -100,7 +100,7 @@ class Mob extends FlxSprite
 		barBackground.y = barForeground.y = this.y - 10;
 		barForeground.scale.x = mobStat.getCurrentResidual();
 		
-		for (i in 0...hearts.length) {
+		for (i in 0...mobStat.getHearts()) {
 			hearts[i].update();
 			hearts[i].x = this.x + i*7;
 			hearts[i].y = this.y - 20;
@@ -130,8 +130,8 @@ class Mob extends FlxSprite
 		barBackground.draw();
 		barForeground.draw();
 		
-		for (i in hearts) {
-			i.draw();
+		for (i in 0...mobStat.getHearts()) {
+			hearts[i].draw();
 		}
 	}
 }
