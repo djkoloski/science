@@ -20,10 +20,12 @@ class DialogueDictionary
 		for (key in Reflect.fields(dialogueJSON))
 		{
 			trace(key);
+			/*
 			var value:String = Reflect.getProperty(dialogueJSON, key);
 			stringMap[key] = value;
 			
 			trace(key + " = " + value);
+			*/
 		}
 	}
 	

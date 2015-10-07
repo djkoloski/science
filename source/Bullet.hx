@@ -26,9 +26,12 @@ class Bullet extends FlxSprite implements Damager
 	{
 		return lifespan <= 0.0;
 	}
-	public function damage(target:Damageable) {
+	
+	public function damage(target:Damageable)
+	{
 		target.takeDamage(dmg);
 	}
+	
 	public override function update()
 	{
 		super.update();
