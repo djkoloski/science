@@ -11,21 +11,15 @@ class DialogueDictionary
 	
 	public function new() 
 	{
+		stringMap = new Map<String, String>();
+		
 		var dialogueFile:String = File.getContent(PATH);
 		var dialogueJSON:Dynamic = Json.parse(dialogueFile);
 		
-		trace(dialogueJSON);
-		trace("Dialogue JSON is a " + Type.getClass(dialogueJSON));
-		
 		for (key in Reflect.fields(dialogueJSON))
 		{
-			trace(key);
-			/*
-			var value:String = Reflect.getProperty(dialogueJSON, key);
+			var value:String = Reflect.field(dialogueJSON, key);
 			stringMap[key] = value;
-			
-			trace(key + " = " + value);
-			*/
 		}
 	}
 	
