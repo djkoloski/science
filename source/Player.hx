@@ -17,6 +17,7 @@ class Player extends FlxSprite
 	public var stats:Stats;
 	public var side:Int = 0;//size 0 is the player's side, side 1 is an enemy side. 
 	public var weaponManager:WeaponManager;
+	static public var firing:Bool = false;
 	
 	public function new(playState:PlayState)
 	{
@@ -25,15 +26,13 @@ class Player extends FlxSprite
 		
 		state = playState;
 		speed = 200.0;
-		stats = new Stats(10);
+		stats = new Stats();
 		weaponManager = new WeaponManager(playState, side, WeaponType_Bullet1);
 		
 		drag.x = drag.y = 1600.0;
 	}
 	
 	public function takeDamage(damage:Int) {
-		// TODO: make the mob actually take damage
-		trace("taking " + damage + " damage " + Math.random());
 		stats.damage(damage);
 		if (stats.isDead()) {
 			FlxG.switchState(new GameOverState());
@@ -80,6 +79,7 @@ class Player extends FlxSprite
 	{
 		var dx:Float = 0.0;
 		var dy:Float = 0.0;
+		firing = false;
 		
 		if (FlxG.keys.pressed.RIGHT)
 		{

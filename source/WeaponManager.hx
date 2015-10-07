@@ -22,7 +22,7 @@ class WeaponManager
 	public var type:WeaponType;
 	public var side:Int;
 	
-	public var cooldownTimer:Float;
+	private var cooldownTimer:Float;
 	
 	public var bulletCooldown:Float;
 	public var bulletRadius:Float;
@@ -42,6 +42,8 @@ class WeaponManager
 		
 		bullets = new FlxGroup();
 		setType(newType);
+		
+		cooldownTimer = 0;
 	}
 	
 	public function setType(newType:WeaponType)
@@ -55,24 +57,28 @@ class WeaponManager
 				bulletLifespan = 0.05;
 				bulletSpeed = 600;
 				bulletColor = FlxColor.RED;
+				
 			case WeaponType_Bullet1:
 				bulletCooldown = 0.2;
 				bulletRadius = 4;
-				bulletLifespan = 1.0;
+				bulletLifespan = .5;
 				bulletSpeed = 600;
 				bulletColor = FlxColor.RED;
+				
 			case WeaponType_Bullet2:
 				bulletCooldown = 0.2;
 				bulletRadius = 4;
 				bulletLifespan = 1.0;
 				bulletSpeed = 600;
 				bulletColor = FlxColor.GREEN;
+				
 			case WeaponType_Bullet3:
-				bulletCooldown = 0.2;
-				bulletRadius = 4;
-				bulletLifespan = 1.0;
-				bulletSpeed = 600;
+				bulletCooldown = 0.6;
+				bulletRadius = 2;
+				bulletLifespan = 3.0;
+				bulletSpeed = 1000;
 				bulletColor = FlxColor.YELLOW;
+
 			default:
 				throw "Unknown weapon type";
 		}
@@ -114,5 +120,9 @@ class WeaponManager
 		{
 			cooldownTimer -= FlxG.elapsed;
 		}
+	}
+	public function getTimer()
+	{
+		return cooldownTimer;
 	}
 }

@@ -15,6 +15,7 @@ import flixel.util.FlxPoint;
 import flixel.group.FlxGroup;
 import flixel.util.FlxColor;
 import flixel.util.FlxAngle;
+import sys.io.File;
 import openfl.Vector.VectorDataIterator;
 
 /**
@@ -24,8 +25,10 @@ class PlayState extends FlxState
 {
 	public var level:LevelMap;
 	public var dialogue:DialogueDictionary;
+	public var dialogueManager:DialogueManager;
 	
 	public var player:Player;
+	public var interactanble: InteractableDialogueBox;
 	public var bullets:Array<Bullet>;
 	
 	public var teleporters:Array<Teleporter>;
@@ -50,8 +53,9 @@ class PlayState extends FlxState
 		
 		level = null;
 		dialogue = new DialogueDictionary();
-		player = new Player(this);
+		dialogueManager = new DialogueManager(this);
 		
+		player = new Player(this);
 		damagables.add(player);
 		
 		bullets = new Array<Bullet>();
@@ -61,6 +65,7 @@ class PlayState extends FlxState
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		
 		loadLevel("assets/tiled/leveltest.tmx");
+		add(dialogueManager);
 	}
 	
 	/**
