@@ -14,17 +14,17 @@ class Player extends FlxSprite
 	private var state:PlayState;
 	
 	public var speed:Float;
-	public var hitpoints:Float;
+	public var stats:Stats;
 	public var weaponManager:WeaponManager;
 	
-	public function new(playState:PlayState, startX:Float, startY:Float)
+	public function new(playState:PlayState)
 	{
-		super(startX, startY);
+		super();
 		makeGraphic(32, 32, FlxColor.BLUE);
 		
 		state = playState;
 		speed = 200.0;
-		hitpoints = 100;
+		stats = new Stats();
 		weaponManager = new WeaponManager(playState, WeaponType_Bullet1);
 		
 		drag.x = drag.y = 1600.0;
@@ -88,8 +88,11 @@ class Player extends FlxSprite
 		}
 		
 		var len:Float = Math.sqrt(dx * dx + dy * dy);
-		dx /= len;
-		dy /= len;
+		if (len != 0)
+		{
+			dx /= len;
+			dy /= len;
+		}
 		var fireAngle:Float = Math.atan2(dy, dx);
 		
 		var weaponSwap: Bool = FlxG.keys.justPressed.Q;
@@ -142,5 +145,7 @@ class Player extends FlxSprite
 		super.update();
 		updateMovement();
 		updateWeapon();
+		
+		stats.update();
 	}
 }

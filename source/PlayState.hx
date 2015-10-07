@@ -25,7 +25,11 @@ class PlayState extends FlxState
 	public var player:Player;
 	public var bullets:Array<Bullet>;
 	
-	private var hud:FlxGroup;
+	public var teleporters:Array<Teleporter>;
+	public var hud:PlayerHUD;
+	
+	public var damagers:FlxGroup;
+	public var damagables:FlxGroup;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -34,26 +38,20 @@ class PlayState extends FlxState
 	{
 		super.create();
 		
-		hud = new HUD();
-		
 		bgColor = 0xffaaaaaa;
 		
-		level = new LevelMap("assets/tiled/leveltest.tmx");
-		player = new Player(this, level.startX, level.startY);
-		
-		
-		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
-		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
+		level = null;
+		player = new Player(this);
 		
 		bullets = new Array<Bullet>();
+		teleporters = new Array<Teleporter>();
+		hud = new PlayerHUD(player);
+		damagers = new FlxGroup();
+		damagables = new FlxGroup();
 		
-		add(level.backgroundGroup);
-		add(player);
-		add(level.foregroundGroup);
-
-		add(level.enemyGroup);
+		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		
-		add(hud);
+		loadLevel("assets/tiled/leveltest.tmx");
 	}
 	
 	/**
@@ -72,6 +70,11 @@ class PlayState extends FlxState
 	{
 		super.update();
 		
+		FlxG.overlap(damagers, damagables, function(damager:Damager, damagable:Damageable) {
+			damager.damage(damagable);
+		});
+		
+		
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
 			System.exit(0);
@@ -82,9 +85,48 @@ class PlayState extends FlxState
 		level.collideWith(player);
 	}
 	
+	public function changeLevel(path:String):Void
+	{
+		if (level != null)
+		{
+			unloadLevel();
+		}
+		
+		loadLevel(path);
+	}
+	
+	public function unloadLevel():Void
+	{
+		clear();
+		
+		level = null;
+		bullets = new Array<Bullet>();
+		teleporters = new Array<Teleporter>();
+	}
+	
+	public function loadLevel(path:String):Void
+	{
+		level = new LevelMap(this, path);
+		
+		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
+		
+		add(level.backgroundGroup);
+		
+		for (teleporter in teleporters)
+		{
+			add(teleporter);
+		}
+		
+		add(player);
+		add(level.foregroundGroup);
+		add(level.enemyGroup);
+		add(hud);
+	}
+	
 	public function addBullet(bullet:Bullet):Void
 	{
 		bullets.push(bullet);
+		damagers.add(bullet);
 		add(bullet);
 	}
 	
