@@ -22,7 +22,12 @@ class Player extends FlxSprite
 	public function new(playState:PlayState)
 	{
 		super();
-		makeGraphic(32, 32, FlxColor.BLUE);
+		loadGraphic("assets/images/player.png", true, 32, 32);
+		animation.add("up", [0, 1], 4, false);
+		animation.add("down", [2,3], 4, false);
+		animation.add("right", [4, 5], 4,false);
+		animation.add("left", [6, 7], 4, false);
+		
 		
 		state = playState;
 		speed = 200.0;
@@ -72,6 +77,27 @@ class Player extends FlxSprite
 		{
 			velocity.x = 0;
 			velocity.y = 0;
+		}
+		
+		animationPlayer(dx, dy);
+	}
+	private function animationPlayer(dx:Float, dy:Float)
+	{
+		if (dy == 1.0)
+		{
+			animation.play("up");
+		} 
+		else if (dy == -1.0)
+		{
+			animation.play("down");
+		}
+		else if (dx == 1.0)
+		{
+			animation.play("right");
+		}
+		else if (dx == -1.0)
+		{
+			animation.play("left");
 		}
 	}
 	
