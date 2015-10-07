@@ -24,8 +24,8 @@ class PlayState extends FlxState
 	public var level:LevelMap;
 	public var player:Player;
 	public var bullets:Array<Bullet>;
-	
-	private var hud:FlxGroup;
+	public var teleporters:Array<Teleporter>;
+	public var hud:FlxGroup;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -34,26 +34,17 @@ class PlayState extends FlxState
 	{
 		super.create();
 		
-		hud = new HUD();
-		
 		bgColor = 0xffaaaaaa;
 		
-		level = new LevelMap(this, "assets/tiled/leveltest.tmx");
-		player = new Player(this, level.startX, level.startY);
-		
+		level = null;
+		player = new Player(this);
+		bullets = new Array<Bullet>();
+		teleporters = new Array<Teleporter>();
+		hud = new HUD();
 		
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
-		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
 		
-		bullets = new Array<Bullet>();
-		
-		add(level.backgroundGroup);
-		add(player);
-		add(level.foregroundGroup);
-
-		add(level.enemyGroup);
-		
-		add(hud);
+		loadLevel("assets/tiled/leveltest.tmx");
 	}
 	
 	/**
@@ -80,6 +71,44 @@ class PlayState extends FlxState
 		updateBullets();
 		
 		level.collideWith(player);
+	}
+	
+	public function changeLevel(path:String):Void
+	{
+		if (level != null)
+		{
+			unloadLevel();
+		}
+		
+		loadLevel(path);
+	}
+	
+	public function unloadLevel():Void
+	{
+		clear();
+		
+		level = null;
+		bullets = new Array<Bullet>();
+		teleporters = new Array<Teleporter>();
+	}
+	
+	public function loadLevel(path:String):Void
+	{
+		level = new LevelMap(this, path);
+		
+		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
+		
+		add(level.backgroundGroup);
+		
+		for (teleporter in teleporters)
+		{
+			add(teleporter);
+		}
+		
+		add(player);
+		add(level.foregroundGroup);
+		add(level.enemyGroup);
+		add(hud);
 	}
 	
 	public function addBullet(bullet:Bullet):Void

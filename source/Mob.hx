@@ -24,7 +24,6 @@ class Mob extends FlxSprite
 		//Moves towards destination, returning true if it has arrived. 
 		moveTowards(destination);
 		if (distanceTo(destination) < speed * FlxG.elapsed) {
-			trace("distance to dest: " + distanceTo(destination) + " speed: " +  (speed * FlxG.elapsed));
 			return true;
 		}
 		return false;
@@ -36,7 +35,6 @@ class Mob extends FlxSprite
 		super(X, Y);
 		if (spritefilename == null) {
 			spritefilename = "assets/images/linda.png";
-			trace("filename is now " + spritefilename);
 		}
 		//loadGraphic("assets/images/linda.png", true, 16, 16);
 		//animation.add("idle", [0]);
@@ -76,7 +74,6 @@ class Mob extends FlxSprite
 		var tempx = point.x - x;
 		var tempy = point.y - y;
 		var len:Float = Math.sqrt( tempx * tempx + tempy * tempy);
-		trace("direction: " + (tempx / len) + "," + (tempy / len));
 		return new Vector2(tempx / len, tempy / len);
 	}
 	
@@ -84,6 +81,5 @@ class Mob extends FlxSprite
 		var dir = towards(destination);
 		x += dir.x * speed * FlxG.elapsed;
 		y += dir.y * speed * FlxG.elapsed;
-		trace("moving towards " + point.x + "," + point.y);
 	}
 }

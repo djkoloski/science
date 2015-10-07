@@ -38,10 +38,10 @@
  </layer>
  <objectgroup name="objects">
   <object name="player_start" x="86" y="87.3333" width="82" height="82"/>
-  <object name="test" x="398" y="236" width="70" height="109"/>
-  <object name="teleporter" x="83" y="496" width="308" height="136">
+  <object name="test" x="676" y="508" width="70" height="109"/>
+  <object name="teleporter" x="934" y="104" width="308" height="136">
    <properties>
-    <property name="location" value="leveltest2"/>
+    <property name="location" value="leveltest"/>
    </properties>
   </object>
  </objectgroup>

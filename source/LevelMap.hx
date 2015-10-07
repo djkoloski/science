@@ -12,6 +12,8 @@ import flixel.addons.editors.tiled.TiledTileSet;
 
 class LevelMap extends TiledMap
 {
+	public var state:PlayState;
+	
 	public var foregroundTiles:FlxTilemap;
 	public var foregroundGroup:FlxGroup;
 	public var backgroundTiles:Array<FlxTilemap>;
@@ -22,9 +24,11 @@ class LevelMap extends TiledMap
 	public var startX:Float;
 	public var startY:Float;
 	
-	public function new(state:PlayState, filePath:Dynamic) 
+	public function new(playState:PlayState, filePath:Dynamic) 
 	{
 		super(filePath);
+		
+		state = playState;
 		
 		foregroundTiles = null;
 		foregroundGroup = new FlxGroup();
@@ -41,12 +45,9 @@ class LevelMap extends TiledMap
 		}
 		Assert.info(tileset != null, "Tile map has no tileset!");
 		var tilesetPath = (new Path(filePath)).dir + "/" + tileset.imageSource;
-		trace("Tile set image path: '" + tilesetPath + "'");
 		
 		for (tileLayer in layers)
 		{
-			trace(tileLayer.name);
-			
 			var tilemap = new FlxTilemap();
 			tilemap.widthInTiles = width;
 			tilemap.heightInTiles = height;
@@ -75,13 +76,18 @@ class LevelMap extends TiledMap
 				{
 					startX = o.x;
 					startY = o.y;
+					
+					state.player.x = startX;
+					state.player.y = startY;
 				}
-				else
+				else if (o.name == "test")
 				{
-					if (o.name == "test")
-					{
-						enemyGroup.add(new Testenemy(o.x, o.y));
-					}
+					enemyGroup.add(new Testenemy(o.x, o.y));
+				}
+				else if (o.name == "teleporter")
+				{
+					Assert.info(o.custom.contains("location"), "Teleporter missing location");
+					state.teleporters.push(new Teleporter(state, o.x, o.y, o.width, o.height, o.custom.get("location")));
 				}
 			}
 		}

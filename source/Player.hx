@@ -17,9 +17,9 @@ class Player extends FlxSprite
 	public var hitpoints:Float;
 	public var weaponManager:WeaponManager;
 	
-	public function new(playState:PlayState, startX:Float, startY:Float)
+	public function new(playState:PlayState)
 	{
-		super(startX, startY);
+		super();
 		makeGraphic(32, 32, FlxColor.BLUE);
 		
 		state = playState;
