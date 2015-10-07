@@ -20,6 +20,7 @@ class WeaponManager
 	
 	public var bullets:FlxGroup;
 	public var type:WeaponType;
+	public var side:Int;
 	
 	public var cooldownTimer:Float;
 	
@@ -29,7 +30,7 @@ class WeaponManager
 	public var bulletSpeed:Float;
 	public var bulletColor:Int;
 	
-	public function new(playState:PlayState, ?newType:WeaponType)
+	public function new(playState:PlayState, side:Int, ?newType:WeaponType)
 	{
 		if (newType == null)
 		{
@@ -37,6 +38,7 @@ class WeaponManager
 		}
 		
 		state = playState;
+		this.side = side;
 		
 		bullets = new FlxGroup();
 		setType(newType);
@@ -89,6 +91,7 @@ class WeaponManager
 				bulletX,
 				bulletY,
 				bulletAngle,
+				side,
 				bulletRadius,
 				bulletLifespan,
 				bulletSpeed,

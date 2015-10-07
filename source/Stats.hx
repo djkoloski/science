@@ -9,7 +9,7 @@ class Stats
 	private var residualCurrent:Float;
 	private var regen:Float;
 
-	public function new(h:Int = 3, resMax:Float = 30.0, resCurr:Float = 0.0, reg:Float = 2) 
+	public function new(h:Int = 3, resMax:Float = 30.0, resCurr:Float = 0.0, reg:Float = 1) 
 	{
 		hearts = h;
 		residualMax = resMax;
@@ -45,6 +45,10 @@ class Stats
 	public function setRegen(r:Float = 0):Void
 	{
 		regen = r;
+	}
+	
+	public function damage(damage:Float) {
+		setResidual(getCurrentResidual() + damage);
 	}
 	
 	public function setResidual(r:Float = 0):Void

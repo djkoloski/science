@@ -16,6 +16,8 @@ class Mob extends FlxSprite implements Damageable
 	public var destination:FlxPoint;
 	public var playstate:PlayState;
 	
+	public var side:Int = 1; //the default side for enemies is 1, but this is not always the case. 
+	
 	public var weapon:WeaponManager;
 	//public var weaponType:WeaponType = WeaponType_Bullet1;
 	
@@ -31,10 +33,7 @@ class Mob extends FlxSprite implements Damageable
 		//Moves towards target point, returning true if it has arrived. 
 		Assert.info(point.x > 0 && point.y > 0,"Something is moving to a point offscreen.");
 		moveTowards(point);
-		//trace("distance to dest: " + distanceTo(point) + " speed: " +  (speed * FlxG.elapsed));
-		//trace("point: " + point.toString());
 		if (distanceTo(point) < speed * FlxG.elapsed) {
-			
 			return true;
 		}
 		return false;
@@ -93,13 +92,6 @@ class Mob extends FlxSprite implements Damageable
 		target = playstate.player;
 	}
 	
-	//public function follow():Bool {
-		//Should only be called after a successful gettarget call.
-	//	Assert.info(target != null);
-	//	if (distanceTo(new FlxPoint(target.x, target.y)) > followDistance) {
-			
-	//	}
-	//}
 	
 	public function new(playstate:PlayState, X:Float = 200, Y:Float = 200,spritefilename:String=null) {
 		//loadGraphic(spritefile,
@@ -119,7 +111,7 @@ class Mob extends FlxSprite implements Damageable
 		//this.addChild(collider);
 		action = idleAction;
 		
-		weapon = new WeaponManager(playstate, WeaponType_Bullet2);
+		weapon = new WeaponManager(playstate, side, WeaponType_Bullet2);
 		followDistance = 100;
 		speed = 50;
 		
@@ -130,6 +122,10 @@ class Mob extends FlxSprite implements Damageable
 	public function takeDamage(damage:Int) {
 		// TODO: make the mob actually take damage
 		//trace("taking " + damage + " damage");
+		stats.damage(damage);
+		if (stats.isDead()) {
+			this.destroy();
+		}
 	}
 	
 	public function mobReset():Void {
