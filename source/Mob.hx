@@ -64,11 +64,9 @@ class Mob extends FlxSprite
 		
 		barBackground = new FlxSprite(this.x, this.y - 10);
 		barBackground.makeGraphic(mobStat.getMaxResidual(), 5, 0xff000000);
-		barBackground.scrollFactor.x = barBackground.scrollFactor.y = 0;
 		
 		barForeground = new FlxSprite(this.x, this.y - 10);
 		barForeground.makeGraphic(1, 5, 0xffff0000);
-		barForeground.scrollFactor.x = barForeground.scrollFactor.y = 0;
 		barForeground.origin.x = barForeground.origin.y = 0;
 		barForeground.scale.x = mobStat.getMaxResidual();
 		
