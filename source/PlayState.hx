@@ -22,6 +22,8 @@ import flixel.util.FlxAngle;
 class PlayState extends FlxState
 {
 	public var level:LevelMap;
+	public var dialogue:DialogueDictionary;
+	
 	public var player:Player;
 	public var bullets:Array<Bullet>;
 	
@@ -40,14 +42,18 @@ class PlayState extends FlxState
 		
 		bgColor = 0xffaaaaaa;
 		
+		damagers = new FlxGroup();
+		damagables = new FlxGroup();
+		
 		level = null;
+		dialogue = new DialogueDictionary();
 		player = new Player(this);
+		
+		damagables.add(player);
 		
 		bullets = new Array<Bullet>();
 		teleporters = new Array<Teleporter>();
 		hud = new PlayerHUD(player);
-		damagers = new FlxGroup();
-		damagables = new FlxGroup();
 		
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		
@@ -143,6 +149,7 @@ class PlayState extends FlxState
 		{
 			if (bullets[i].expired() || level.collideWith(bullets[i]))
 			{
+				bullets[i].destroy();
 				removeBullet(bullets[i]);
 				--i;
 			}
