@@ -15,6 +15,7 @@ class Player extends FlxSprite
 	
 	public var speed:Float;
 	public var stats:Stats;
+	public var side:Int = 0;//size 0 is the player's side, side 1 is an enemy side. 
 	public var weaponManager:WeaponManager;
 	static public var firing:Bool = false;
 	
@@ -26,9 +27,16 @@ class Player extends FlxSprite
 		state = playState;
 		speed = 200.0;
 		stats = new Stats();
-		weaponManager = new WeaponManager(playState, WeaponType_Bullet1);
+		weaponManager = new WeaponManager(playState, side, WeaponType_Bullet1);
 		
 		drag.x = drag.y = 1600.0;
+	}
+	
+	public function takeDamage(damage:Int) {
+		stats.damage(damage);
+		if (stats.isDead()) {
+			this.destroy();
+		}
 	}
 	
 	private function updateMovement():Void
@@ -112,6 +120,8 @@ class Player extends FlxSprite
 				case WeaponType_Bullet2:
 					weaponManager.setType(WeaponType_Bullet3);
 				case WeaponType_Bullet3:
+					weaponManager.setType(WeaponType_Bullet1);
+				case WeaponType_Melee:
 					weaponManager.setType(WeaponType_Bullet1);
 				default:
 					throw "Unknown weapon type";
