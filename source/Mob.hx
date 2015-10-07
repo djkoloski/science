@@ -5,9 +5,6 @@ import lime.math.Vector2;
 import flixel.FlxG;
 import flixel.util.FlxColor;
 
-/**
- * 
- */
 class Mob extends FlxSprite
 {
 //	var collider:Collider;
@@ -20,10 +17,8 @@ class Mob extends FlxSprite
 	
 	public var idleAction = function() { };
 	
-	private var hearts:Array<FlxSprite>;
-	private var barBackground:FlxSprite;
-	private var barForeground:FlxSprite;
-	private var mobStat:Stats;
+	public var hud:MobHUD;
+	public var stats:Stats;
 	
 	public function goTo() :Bool {
 		//Moves towards destination, returning true if it has arrived. 
@@ -53,30 +48,13 @@ class Mob extends FlxSprite
 		
 		speed = 50;
 		
-		mobStat = new Stats();
-		
-		hearts = [];
-		for (i in 0...mobStat.getHearts()) {
-			var h:FlxSprite = new FlxSprite(this.x + i*7, this.y - 20);
-			h.makeGraphic(5, 5);
-			hearts.push(h);
-		}
-		
-		barBackground = new FlxSprite(this.x, this.y - 10);
-		barBackground.makeGraphic(mobStat.getMaxResidual(), 5, 0xff000000);
-		
-		barForeground = new FlxSprite(this.x, this.y - 10);
-		barForeground.makeGraphic(1, 5, 0xffff0000);
-		barForeground.origin.x = barForeground.origin.y = 0;
-		barForeground.scale.x = mobStat.getMaxResidual();
-		
-		mobStat.addResidual(20);
+		stats = new Stats();
+		hud = new MobHUD(this);
 	}
 	
 	public function mobReset():Void {
 		action = idleAction;
 	}
-	
 	
 	public function distanceTo(point:Vector2):Float {
 		return Math.sqrt(  (x - point.x)  * (x - point.x)  + (y - point.y) * (y - point.y));
@@ -90,19 +68,8 @@ class Mob extends FlxSprite
 		//	reset();
 		//}
 		
-		barBackground.update();
-		barForeground.update();
-		barBackground.x = barForeground.x = this.x;
-		barBackground.y = barForeground.y = this.y - 10;
-		barForeground.scale.x = mobStat.getCurrentResidual();
-		
-		for (i in 0...mobStat.getHearts()) {
-			hearts[i].update();
-			hearts[i].x = this.x + i*7;
-			hearts[i].y = this.y - 20;
-		}
-		
-		mobStat.update();
+		stats.update();
+		hud.update();
 	}
 	
 	public function towards(point:Vector2):Vector2 {
@@ -121,11 +88,7 @@ class Mob extends FlxSprite
 	
 	public override function draw():Void {
 		super.draw();
-		barBackground.draw();
-		barForeground.draw();
 		
-		for (i in 0...mobStat.getHearts()) {
-			hearts[i].draw();
-		}
+		hud.draw();
 	}
 }

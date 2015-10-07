@@ -16,13 +16,14 @@ class Testenemy extends Mob
 		super(X, Y, spritefilename);
 		
 		wanderAction = function() {
-		if (destination == null) {
-			destination = new Vector2(Math.random() * 70 - 35 + x, Math.random() * 70 - 35 + y);
-		}
-		if (goTo()) {
-			destination = null;
-		}
-	};
+			if (destination == null) {
+				destination = new Vector2(Math.random() * 70 - 35 + x, Math.random() * 70 - 35 + y);
+			}
+			if (goTo()) {
+				destination = null;
+			}
+		};
+		
 		action = wanderAction;
 	}
 	

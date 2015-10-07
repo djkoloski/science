@@ -25,7 +25,7 @@ class PlayState extends FlxState
 	public var player:Player;
 	public var bullets:Array<Bullet>;
 	public var teleporters:Array<Teleporter>;
-	public var hud:FlxGroup;
+	public var hud:PlayerHUD;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -40,7 +40,7 @@ class PlayState extends FlxState
 		player = new Player(this);
 		bullets = new Array<Bullet>();
 		teleporters = new Array<Teleporter>();
-		hud = new HUD();
+		hud = new PlayerHUD(player);
 		
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		
