@@ -40,7 +40,7 @@ class InteractableDialogueBox
 	{
 			if (interact == true && FlxG.keys.justPressed.SPACE)
 			{
-				dialogueManager.closeDialogue();
+				dialogueManager.transitionOffScreen();
 				interact = false;
 				
 			}
@@ -48,7 +48,7 @@ class InteractableDialogueBox
 			{
 				dialogue = dialogueManager.IDsearch(id);
 				dialogueManager.addDialogue(dialogue);
-				dialogueManager.openDialogue();
+				dialogueManager.transitionOntoScreen();
 				interact = true;
 			}
 		

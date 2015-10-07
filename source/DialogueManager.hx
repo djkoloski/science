@@ -8,6 +8,7 @@ import flixel.util.FlxMath;
 import flixel.util.FlxColor;
 import flixel.util.FlxAngle;
 import flixel.group.FlxGroup;
+import flixel.util.FlxTimer;
 
 class DialogueManager extends FlxGroup
 {
@@ -20,6 +21,9 @@ class DialogueManager extends FlxGroup
 	public var dialogueBox:FlxText;
 	public var dialogueOpener: FlxSprite;
 	public var state: PlayState;
+	public var X:Float;
+	public var Y:Float;
+	public var timer:FlxTimer;
 	
 	public function new(playState:PlayState)
 	{
@@ -34,8 +38,8 @@ class DialogueManager extends FlxGroup
 	{
 		var foregroundWidth:Int = Std.int(width - (width / 8));
 		var foregroundHeight:Int = Std.int(height - (height / 8));
-		var X: Float = FlxG.width/4;
-		var Y: Float = FlxG.height/8 * 6;
+		X = FlxG.width/4;
+		Y = FlxG.height;
 		
 		boxForeground = new FlxSprite(X+ (width/16),Y +(height/16));
 		boxForeground.makeGraphic(foregroundWidth,foregroundHeight,FlxColor.WHITE);
@@ -56,9 +60,31 @@ class DialogueManager extends FlxGroup
 
 	public function closeDialogue()
 	{
+		
 		boxForeground.visible = false;
 		boxBackground.visible = false;
 		dialogueBox.visible = false;
+	}
+	public function transitionOntoScreen()
+	{
+		openDialogue();
+		timer = new FlxTimer(3, Void, 1);
+		while (timer.finished != true)
+		{
+			Y += 1;
+		}
+	}
+	public function transitionOffScreen()
+	{
+		timer = new FlxTimer(3, Void, 1);
+		while (timer.finished != true)
+		{
+			Y -= 1;
+		}
+		if (timer.finished == true)
+		{
+			closeDialogue();
+		}
 	}
 	public function openDialogue()
 	{
