@@ -16,6 +16,7 @@ class Player extends FlxSprite
 	public var speed:Float;
 	public var stats:Stats;
 	public var weaponManager:WeaponManager;
+	static public var firing:Bool = false;
 	
 	public function new(playState:PlayState)
 	{
@@ -69,6 +70,7 @@ class Player extends FlxSprite
 	{
 		var dx:Float = 0.0;
 		var dy:Float = 0.0;
+		firing = false;
 		
 		if (FlxG.keys.pressed.RIGHT)
 		{
@@ -130,6 +132,7 @@ class Player extends FlxSprite
 		
 		if (dx != 0 || dy != 0)
 		{
+			trace("Firing");
 			weaponManager.fire(
 				weaponX,
 				weaponY,

@@ -15,6 +15,7 @@ import flixel.util.FlxPoint;
 import flixel.group.FlxGroup;
 import flixel.util.FlxColor;
 import flixel.util.FlxAngle;
+import sys.io.File;
 
 /**
  * A FlxState which can be used for the actual gameplay.
@@ -25,7 +26,11 @@ class PlayState extends FlxState
 	public var dialogue:DialogueDictionary;
 	
 	public var player:Player;
+	public var dialogue:DialogueDictionary;
+	public var dialogueManager:DialogueManager;
+	public var interactanble: InteractableDialogueBox;
 	public var bullets:Array<Bullet>;
+	static public var bulletCooldown:Int = 0;
 	
 	public var teleporters:Array<Teleporter>;
 	public var hud:PlayerHUD;
@@ -44,6 +49,7 @@ class PlayState extends FlxState
 		
 		level = null;
 		dialogue = new DialogueDictionary();
+		dialogueManager = new DialogueManager(this);
 		player = new Player(this);
 		
 		bullets = new Array<Bullet>();
@@ -55,6 +61,7 @@ class PlayState extends FlxState
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		
 		loadLevel("assets/tiled/leveltest.tmx");
+		add(dialogueManager);
 	}
 	
 	/**
@@ -72,6 +79,7 @@ class PlayState extends FlxState
 	override public function update():Void
 	{
 		super.update();
+		bulletCooldown = Math.round(player.weaponManager.getTimer() * 1000);
 		
 		FlxG.overlap(damagers, damagables, function(damager:Damager, damagable:Damageable) {
 			damager.damage(damagable);
