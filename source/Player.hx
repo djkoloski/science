@@ -88,8 +88,11 @@ class Player extends FlxSprite
 		}
 		
 		var len:Float = Math.sqrt(dx * dx + dy * dy);
-		dx /= len;
-		dy /= len;
+		if (len != 0)
+		{
+			dx /= len;
+			dy /= len;
+		}
 		var fireAngle:Float = Math.atan2(dy, dx);
 		
 		var weaponSwap: Bool = FlxG.keys.justPressed.Q;

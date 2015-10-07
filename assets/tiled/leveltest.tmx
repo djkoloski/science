@@ -37,7 +37,7 @@
   </data>
  </layer>
  <objectgroup name="objects">
-  <object id="1" name="player_start" x="86" y="87.3333" width="82" height="82"/>
-  <object id="13" name="test" x="398" y="236" width="70" height="109"/>
+  <object id="1" name="player_start" x="344" y="535.333" width="82" height="82"/>
+  <object id="13" name="test" x="105" y="532" width="70" height="109"/>
  </objectgroup>
 </map>

@@ -12,6 +12,7 @@ class Bullet extends FlxSprite
 	{
 		super(startX - radius, startY - radius);
 		
+		trace("successful fire");
 		velocity.x = Math.cos(movementAngle) * speed;
 		velocity.y = Math.sin(movementAngle) * speed;
 		drag.x = drag.y = 0;

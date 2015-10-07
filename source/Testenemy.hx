@@ -11,7 +11,7 @@ import flixel.util.FlxPoint;
 class Testenemy extends Mob
 {
 	var wanderAction:Dynamic; 
-	var chaseAction:Dynamic; 
+	var chaseAction:Dynamic;
 	
 	public function new(playstate:PlayState, X:Float=200, Y:Float=200,spritefilename:String=null) 
 	{
@@ -35,12 +35,15 @@ class Testenemy extends Mob
 				return;
 			}
 			if (destination == null) {
-				trace(target.y);
 				destination = stopShort(new FlxPoint(target.x, target.y));
-				//NOTE THAT CURRENTLY THIS WILL CAUSE PATH TO BE RECALCULATED EVERY FRAME.
+				//as is, the path is recalculated every frame the player moves.
 			}
-			pathTo(destination);
-		}
+			if (pathTo(destination)) {
+				destination = null;
+			};
+			fire();
+		};
+		
 		
 		action = chaseAction;
 	}
