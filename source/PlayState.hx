@@ -25,6 +25,8 @@ class PlayState extends FlxState
 	public var player:Player;
 	public var bullets:Array<Bullet>;
 	
+	public var damagers:FlxGroup;
+	public var damagables:FlxGroup;
 	
 	private var hud:FlxGroup;
 	
@@ -38,6 +40,10 @@ class PlayState extends FlxState
 		hud = new HUD();
 		
 		bgColor = 0xffaaaaaa;
+		
+		
+		damagers = new FlxGroup();
+		damagables = new FlxGroup();
 		
 		level = new LevelMap("assets/tiled/leveltest.tmx",this);
 		player = new Player(this, level.startX, level.startY);
@@ -73,6 +79,11 @@ class PlayState extends FlxState
 	{
 		super.update();
 		
+		FlxG.overlap(damagers, damagables, function(damager:Damager, damagable:Damageable) {
+			damager.damage(damagable);
+		});
+		
+		
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
 			System.exit(0);
@@ -86,6 +97,7 @@ class PlayState extends FlxState
 	public function addBullet(bullet:Bullet):Void
 	{
 		bullets.push(bullet);
+		damagers.add(bullet);
 		add(bullet);
 	}
 	

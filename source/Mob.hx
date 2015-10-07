@@ -9,7 +9,7 @@ import flixel.util.FlxPoint;
 /**
  * 
  */
-class Mob extends FlxSprite
+class Mob extends FlxSprite implements Damageable
 {
 //	var collider:Collider;
 	
@@ -105,6 +105,7 @@ class Mob extends FlxSprite
 		//loadGraphic(spritefile,
 		super(X, Y);
 		this.playstate = playstate;
+		playstate.damagables.add(this);
 		if (spritefilename == null) {
 			spritefilename = "assets/images/linda.png";
 			trace("filename is now " + spritefilename);
@@ -122,6 +123,10 @@ class Mob extends FlxSprite
 		weapon = new WeaponManager(playstate, WeaponType_Bullet2);
 		followDistance = 100;
 		speed = 50;
+	}
+	
+	public function takeDamage(damage:Int) {
+		trace("taking " + damage + " damage");
 	}
 	
 	public function mobReset():Void {

@@ -4,9 +4,10 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
 
-class Bullet extends FlxSprite
+class Bullet extends FlxSprite implements Damager
 {
 	public var lifespan:Float;
+	public var dmg:Int = 5;
 	
 	public function new(startX:Float, startY:Float, movementAngle:Float, radius:Float, lifespan:Float, speed:Float, color:Int)
 	{
@@ -26,7 +27,9 @@ class Bullet extends FlxSprite
 	{
 		return lifespan <= 0.0;
 	}
-	
+	public function damage(target:Damageable) {
+		target.takeDamage(dmg);
+	}
 	public override function update()
 	{
 		super.update();
