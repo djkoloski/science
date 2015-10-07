@@ -95,7 +95,7 @@ class DialogueManager extends FlxGroup
 	public function IDsearch(Id:String)
 	{
 		var dialogue: String;
-		dialogue = state.dialogue.getString();
+		dialogue = state.dialogue.getString(Id);
 		return dialogue;
 	}
 	public function addDialogue(dialogue:String)

@@ -132,7 +132,6 @@ class Player extends FlxSprite
 		
 		if (dx != 0 || dy != 0)
 		{
-			trace("Firing");
 			weaponManager.fire(
 				weaponX,
 				weaponY,

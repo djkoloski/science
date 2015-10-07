@@ -24,13 +24,11 @@ class PlayState extends FlxState
 {
 	public var level:LevelMap;
 	public var dialogue:DialogueDictionary;
+	public var dialogueManager:DialogueManager;
 	
 	public var player:Player;
-	public var dialogue:DialogueDictionary;
-	public var dialogueManager:DialogueManager;
 	public var interactanble: InteractableDialogueBox;
 	public var bullets:Array<Bullet>;
-	static public var bulletCooldown:Int = 0;
 	
 	public var teleporters:Array<Teleporter>;
 	public var hud:PlayerHUD;
@@ -50,8 +48,9 @@ class PlayState extends FlxState
 		level = null;
 		dialogue = new DialogueDictionary();
 		dialogueManager = new DialogueManager(this);
-		player = new Player(this);
 		
+		player = new Player(this);
+		// TODO: interactable
 		bullets = new Array<Bullet>();
 		teleporters = new Array<Teleporter>();
 		hud = new PlayerHUD(player);
@@ -79,7 +78,6 @@ class PlayState extends FlxState
 	override public function update():Void
 	{
 		super.update();
-		bulletCooldown = Math.round(player.weaponManager.getTimer() * 1000);
 		
 		FlxG.overlap(damagers, damagables, function(damager:Damager, damagable:Damageable) {
 			damager.damage(damagable);
