@@ -22,7 +22,7 @@ class LevelMap extends TiledMap
 	public var startX:Float;
 	public var startY:Float;
 	
-	public function new(path:Dynamic) 
+	public function new(path:Dynamic,playstate:PlayState) 
 	{
 		super(path);
 		
@@ -74,7 +74,7 @@ class LevelMap extends TiledMap
 					startY = o.y;
 				}else {
 					if (o.name == "test") {
-						enemyGroup.add(new Testenemy(o.x, o.y));
+						enemyGroup.add(new Testenemy(playstate,o.x, o.y));
 					}
 				}
 			}
