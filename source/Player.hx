@@ -25,7 +25,7 @@ class Player extends FlxSprite
 		
 		state = playState;
 		speed = 200.0;
-		stats = new Stats(100);
+		stats = new Stats(1);
 		weaponManager = new WeaponManager(playState, side, WeaponType_Bullet1);
 		
 		drag.x = drag.y = 1600.0;
@@ -36,6 +36,7 @@ class Player extends FlxSprite
 		trace("taking " + damage + " damage " + Math.random());
 		stats.damage(damage);
 		if (stats.isDead()) {
+			FlxG.switchState(new GameOverState());
 			this.destroy();
 		}
 	}
