@@ -24,7 +24,7 @@ class LevelMap extends TiledMap
 	public var startX:Float;
 	public var startY:Float;
 	
-	public function new(playState:PlayState, filePath:Dynamic) 
+	public function new(playState:PlayState, filePath:Dynamic)
 	{
 		super(filePath);
 		
@@ -82,7 +82,7 @@ class LevelMap extends TiledMap
 				}
 				else if (o.name == "test")
 				{
-					enemyGroup.add(new Testenemy(o.x, o.y));
+					enemyGroup.add(new Testenemy(state, o.x, o.y));
 				}
 				else if (o.name == "teleporter")
 				{

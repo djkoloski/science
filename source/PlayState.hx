@@ -24,8 +24,12 @@ class PlayState extends FlxState
 	public var level:LevelMap;
 	public var player:Player;
 	public var bullets:Array<Bullet>;
+	
 	public var teleporters:Array<Teleporter>;
 	public var hud:PlayerHUD;
+	
+	public var damagers:FlxGroup;
+	public var damagables:FlxGroup;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -38,9 +42,12 @@ class PlayState extends FlxState
 		
 		level = null;
 		player = new Player(this);
+		
 		bullets = new Array<Bullet>();
 		teleporters = new Array<Teleporter>();
 		hud = new PlayerHUD(player);
+		damagers = new FlxGroup();
+		damagables = new FlxGroup();
 		
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		
@@ -62,6 +69,11 @@ class PlayState extends FlxState
 	override public function update():Void
 	{
 		super.update();
+		
+		FlxG.overlap(damagers, damagables, function(damager:Damager, damagable:Damageable) {
+			damager.damage(damagable);
+		});
+		
 		
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
@@ -114,6 +126,7 @@ class PlayState extends FlxState
 	public function addBullet(bullet:Bullet):Void
 	{
 		bullets.push(bullet);
+		damagers.add(bullet);
 		add(bullet);
 	}
 	

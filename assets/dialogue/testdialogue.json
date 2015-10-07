@@ -1,0 +1,14 @@
+{
+	"DIALOGUE_TEST": [
+		{
+			"type": "text",
+			"content": "Hello world!"
+		},
+		{
+			"type": "effect",
+			"effect": "shake",
+			"length": 1.0,
+			"async": false
+		}
+	]
+}
