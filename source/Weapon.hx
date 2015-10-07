@@ -19,17 +19,27 @@ class Weapon extends FlxSprite
 	public function new(X:Float, Y:Float, angle:Float, choice:Float)
 	{
 		Angle = angle;
-		super(X, Y);
-		if (choice== 1)
+		super(X+12, Y+12);
+		if (choice== 0)
 		{
 			makeGraphic(16, 16, FlxColor.RED);
 			Death = 3;
 			speed = 600;
 		}
 		
-		if (choice == 2)
+		if (choice == 1)
 		{
 			makeGraphic(8, 8, FlxColor.RED);
+			Death = 60;
+		}
+		if (choice == 2)
+		{
+			makeGraphic(8, 8, FlxColor.GREEN);
+			Death = 60;
+		}
+		if (choice == 3)
+		{
+			makeGraphic(8, 8, FlxColor.YELLOW);
 			Death = 60;
 		}
 	}
