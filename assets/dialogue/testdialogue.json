@@ -1,14 +1,4 @@
 {
-	"DIALOGUE_TEST": [
-		{
-			"type": "text",
-			"content": "Hello world!"
-		},
-		{
-			"type": "effect",
-			"effect": "shake",
-			"length": 1.0,
-			"async": false
-		}
-	]
+	"DIALOGUE_HELLO": "Hello world! How's it going?",
+	"DIALOGUE_OTHER": "Other world! ?gniog ti s'woH"
 }
