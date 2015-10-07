@@ -16,6 +16,7 @@ class Player extends FlxSprite
 	public var speed:Float;
 	public var hitpoints:Float;
 	public var weaponManager:WeaponManager;
+	static public var firing:Bool = false;
 	
 	public function new(playState:PlayState, startX:Float, startY:Float)
 	{
@@ -69,6 +70,7 @@ class Player extends FlxSprite
 	{
 		var dx:Float = 0.0;
 		var dy:Float = 0.0;
+		firing = false;
 		
 		if (FlxG.keys.pressed.RIGHT)
 		{
@@ -88,8 +90,11 @@ class Player extends FlxSprite
 		}
 		
 		var len:Float = Math.sqrt(dx * dx + dy * dy);
-		dx /= len;
-		dy /= len;
+		if (len != 0)
+		{
+			dx /= len;
+			dy /= len;
+		}
 		var fireAngle:Float = Math.atan2(dy, dx);
 		
 		var weaponSwap: Bool = FlxG.keys.justPressed.Q;
@@ -127,6 +132,7 @@ class Player extends FlxSprite
 		
 		if (dx != 0 || dy != 0)
 		{
+			trace("Firing");
 			weaponManager.fire(
 				weaponX,
 				weaponY,

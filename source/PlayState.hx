@@ -15,6 +15,7 @@ import flixel.util.FlxPoint;
 import flixel.group.FlxGroup;
 import flixel.util.FlxColor;
 import flixel.util.FlxAngle;
+import sys.io.File;
 
 /**
  * A FlxState which can be used for the actual gameplay.
@@ -24,8 +25,10 @@ class PlayState extends FlxState
 	public var level:LevelMap;
 	public var player:Player;
 	public var bullets:Array<Bullet>;
+	static public var bulletCooldown:Int = 0;
 	
 	private var hud:FlxGroup;
+	private var dialogueBox:FlxGroup;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -35,6 +38,8 @@ class PlayState extends FlxState
 		super.create();
 		
 		hud = new HUD();
+		dialogueBox = new DialogueManager(File.getContent("assets/text/TestText.txt"));
+		
 		
 		bgColor = 0xffaaaaaa;
 		
@@ -54,6 +59,7 @@ class PlayState extends FlxState
 		add(level.enemyGroup);
 		
 		add(hud);
+		add(dialogueBox);
 	}
 	
 	/**
@@ -71,6 +77,7 @@ class PlayState extends FlxState
 	override public function update():Void
 	{
 		super.update();
+		bulletCooldown = Math.round(player.weaponManager.getTimer() * 1000);
 		
 		if (FlxG.keys.justPressed.ESCAPE)
 		{

@@ -2,6 +2,8 @@ package;
 
 import flixel.group.FlxGroup;
 import flixel.FlxSprite;
+import flixel.util.FlxColor;
+import flixel.text.FlxText;
 
 class HUD extends FlxGroup
 {
@@ -9,6 +11,8 @@ class HUD extends FlxGroup
 	var barFrame:FlxSprite;
 	var barBackground:FlxSprite;
 	var barForeground:FlxSprite;
+	var barCooldownTimer: FlxSprite;
+	
 	
 	public function new() 
 	{
@@ -33,14 +37,20 @@ class HUD extends FlxGroup
 		barForeground.origin.x = barForeground.origin.y = 0;
 		barForeground.scale.x = 190;
 		
+		barCooldownTimer = new FlxSprite(5,80);
+		barCooldownTimer.makeGraphic(200,20,FlxColor.YELLOW);
+		barCooldownTimer.scrollFactor.x = barCooldownTimer.scrollFactor.y = 0;
+		
 		add(heart);
 		add(barFrame);
 		add(barBackground);
 		add(barForeground);
+		add(barCooldownTimer);
 	}
 	
 	public override function update()
 	{
 		barForeground.scale.x = 100;
+		barCooldownTimer.makeGraphic(PlayState.bulletCooldown, 20, FlxColor.YELLOW);
 	}
 }
