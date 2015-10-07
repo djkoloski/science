@@ -85,7 +85,7 @@ class Mob extends FlxSprite
 		Assert.info(target != null);
 		//trace("firing");
 		var velocities:FlxPoint = towardsSprite(target);
-		var angle:Float = Math.acos(x);
+		var angle:Float = Math.atan2(velocities.y,velocities.x);
 		weapon.fire(x, y, angle);
 	}
 	
@@ -144,6 +144,7 @@ class Mob extends FlxSprite
 	public override function update():Void {
 		super.update();
 		action();
+		weapon.update();
 	}
 	
 	

@@ -25,6 +25,7 @@ class PlayState extends FlxState
 	public var player:Player;
 	public var bullets:Array<Bullet>;
 	
+	
 	private var hud:FlxGroup;
 	
 	/**
