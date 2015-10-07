@@ -35,6 +35,7 @@ class Player extends FlxSprite
 	public function takeDamage(damage:Int) {
 		stats.damage(damage);
 		if (stats.isDead()) {
+			FlxG.switchState(new GameOverState());
 			this.destroy();
 		}
 	}

@@ -47,6 +47,11 @@ class Stats
 		regen = r;
 	}
 	
+	public function addHearts(h:Int):Void 
+	{
+		hearts += h;
+	}
+	
 	public function damage(damage:Float) {
 		setResidual(getCurrentResidual() + damage);
 	}
