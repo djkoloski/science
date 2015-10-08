@@ -1,5 +1,6 @@
 package;
 
+import flash.system.System;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -14,6 +15,8 @@ import flixel.util.FlxPoint;
 import flixel.group.FlxGroup;
 import flixel.util.FlxColor;
 import flixel.util.FlxAngle;
+import sys.io.File;
+import openfl.Vector.VectorDataIterator;
 
 /**
  * A FlxState which can be used for the actual gameplay.
@@ -21,13 +24,19 @@ import flixel.util.FlxAngle;
 class PlayState extends FlxState
 {
 	public var level:LevelMap;
-	public var player:Player;
-	public var weapon: Weapon;
-	public var weapons =  new FlxGroup(100);
-	static public var currentWeapon = 1;
-	private var bulletDelay:Float = 0;
+	public var dialogue:DialogueDictionary;
+	public var dialogueManager:DialogueManager;
 	
-	private var hud:FlxGroup;
+	public var player:Player;
+	public var interactanble: InteractableDialogueBox;
+	public var bullets:Array<Bullet>;
+	
+	public var teleporters:Array<Teleporter>;
+	public var hud:PlayerHUD;
+	
+	public var damagers:FlxGroup;
+	public var damagables:FlxGroup;
+	public var collectibles:FlxGroup;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -36,21 +45,26 @@ class PlayState extends FlxState
 	{
 		super.create();
 		
-		hud = new HUD();
-		
 		bgColor = 0xffaaaaaa;
 		
-		level = new LevelMap("assets/tiled/leveltest.tmx");
-		player = new Player(level.startX, level.startY);
+		damagers = new FlxGroup();
+		damagables = new FlxGroup();
+		collectibles = new FlxGroup();
+		
+		level = null;
+		dialogue = new DialogueDictionary();
+		dialogueManager = new DialogueManager(this);
+		
+		player = new Player(this);
+		damagables.add(player);
+		
+		bullets = new Array<Bullet>();
+		teleporters = new Array<Teleporter>();
+		hud = new PlayerHUD(player);
 		
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
-		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
 		
-		add(level.backgroundGroup);
-		add(player);
-		add(level.foregroundGroup);
-		
-		add(hud);
+		changeLevel("assets/tiled/Level1.tmx");
 	}
 	
 	/**
@@ -67,37 +81,109 @@ class PlayState extends FlxState
 	 */
 	override public function update():Void
 	{
-		var bAngle: Float = 0;
-		bulletDelay--;
-		var primary:Bool = FlxG.keys.justPressed.SPACE;
-		var secondary:Bool = FlxG.keys.justPressed.SHIFT;
-		var weaponSwap: Bool = FlxG.keys.justPressed.Q;
-		
-		if (weaponSwap)
-		{
-			currentWeapon++;
-			weaponSwap = false;
-			if (currentWeapon == 4)
-			{
-				currentWeapon = 1;
-			}
-		}
-		
-		if (primary)
-		{
-			weapon = new Weapon(player.x, player.y, player.movementAngle,currentWeapon);
-			add(weapon);
-			weapons.add(weapon);
-		}
-		if (secondary)
-		{
-			weapon = new Weapon(player.x, player.y, player.movementAngle, 0);
-			add(weapon);
-			weapons.add(weapon);
-		}
-		
 		super.update();
 		
+		FlxG.overlap(damagers, damagables, function(damager:Damager, damagable:Damageable) {
+			damager.damage(damagable);
+		});
+		
+		FlxG.overlap(player, collectibles, function(player:Player, collectible:Collectible) {
+			if (collectible.getType() == "health") {
+				player.stats.addHearts(cast(collectible, HeartCollectible).getHeal());
+				collectible.destroy();
+			}
+		});
+		
+		if (FlxG.keys.justPressed.ESCAPE)
+		{
+			System.exit(0);
+		}
+		
+		updateBullets();
+		
 		level.collideWith(player);
-	}	
+		
+		if (FlxG.keys.justPressed.R)
+		{
+			trace("opening");
+			dialogueManager.addDialogue("DIALOGUE_OTHER");
+			dialogueManager.openDialogue();
+		}
+	}
+	
+	public function changeLevel(path:String, ?spawn:String):Void
+	{
+		if (spawn == null)
+		{
+			spawn = "player_start";
+		}
+		
+		if (level != null)
+		{
+			unloadLevel();
+		}
+		
+		loadLevel(path);
+		
+		Assert.info(level.spawnPoints.exists(spawn), "Spawn point '" + spawn + "' not found in level '" + path + "'");
+		player.x = level.spawnPoints[spawn].x;
+		player.y = level.spawnPoints[spawn].y;
+	}
+	
+	public function unloadLevel():Void
+	{
+		clear();
+		
+		level = null;
+		bullets = new Array<Bullet>();
+		teleporters = new Array<Teleporter>();
+	}
+	
+	public function loadLevel(path:String):Void
+	{
+		level = new LevelMap(this, path);
+		
+		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
+		
+		add(level.backgroundGroup);
+		
+		for (teleporter in teleporters)
+		{
+			add(teleporter);
+		}
+		
+		add(player);
+		add(level.foregroundGroup);
+		add(level.enemyGroup);
+		add(hud);
+		add(dialogueManager);
+	}
+	
+	public function addBullet(bullet:Bullet):Void
+	{
+		bullets.push(bullet);
+		damagers.add(bullet);
+		add(bullet);
+	}
+	
+	public function removeBullet(bullet:Bullet):Void
+	{
+		remove(bullet);
+		bullets.splice(bullets.indexOf(bullet), 1);
+	}
+	
+	public function updateBullets():Void
+	{
+		var i:Int = 0;
+		while (i < bullets.length)
+		{
+			if (bullets[i].expired() || level.collideWith(bullets[i]))
+			{
+				bullets[i].destroy();
+				removeBullet(bullets[i]);
+				--i;
+			}
+			++i;
+		}
+	}
 }
