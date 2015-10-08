@@ -5,7 +5,7 @@ import haxe.macro.Context;
 
 class Assert
 {
-	public static macro function info(condition:Expr, ?message:String):Expr
+	public static macro function info(condition:Expr, ?message:Expr):Expr
 	{
 		#if debug
 		var pos = Context.getPosInfos(Context.currentPos());
@@ -39,8 +39,8 @@ class Assert
 				var message = "******** Assertion Failed ********\n";
 				message += "Location:\t" + $v{pos.file} + ":" + $v{line} + "\n";
 				message += "Expression:\t" + ($v{ExprTools.toString(condition)}) + "\n";
-				if ($v{message} != null)
-					message += "Message:\t" + ($v{message}) + "\n";
+				if ($v{message == null})
+					message += "Message:\t" + ($e{message}) + "\n";
 				message += "Variables:\n";
 				for (i in 0...names.length)
 					message += "\t" + (i + 1) + ": " + names[i] + " = " + values[i] + "\n";

@@ -3,6 +3,7 @@ package;
 import haxe.io.Path;
 import flixel.FlxG;
 import flixel.FlxObject;
+import flixel.util.FlxPoint;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
 import flixel.addons.editors.tiled.TiledMap;
@@ -19,6 +20,8 @@ class LevelMap extends TiledMap
 	public var backgroundTiles:Array<FlxTilemap>;
 	public var backgroundGroup:FlxGroup;
 	
+	public var spawnPoints:Map<String, FlxPoint>;
+	
 	public var enemyGroup:FlxGroup;
 	
 	public var startX:Float;
@@ -34,6 +37,8 @@ class LevelMap extends TiledMap
 		foregroundGroup = new FlxGroup();
 		backgroundTiles = new Array<FlxTilemap>();
 		backgroundGroup = new FlxGroup();
+		
+		spawnPoints = new Map<String, FlxPoint>();
 		
 		enemyGroup = new FlxGroup();
 		
@@ -72,13 +77,10 @@ class LevelMap extends TiledMap
 		{
 			for (o in group.objects)
 			{
-				if (o.name == "player_start")
+				if (o.name == "spawn")
 				{
-					startX = o.x;
-					startY = o.y;
-					
-					state.player.x = startX;
-					state.player.y = startY;
+					Assert.info(o.custom.contains("id"), "Spawn at (" + o.x + "," + o.y + ") missing id property");
+					spawnPoints[o.custom.get("id")] = new FlxPoint(o.x + o.width / 2, o.y + o.height / 2);
 				}
 				else if (o.name == "test")
 				{
@@ -86,8 +88,9 @@ class LevelMap extends TiledMap
 				}
 				else if (o.name == "teleporter")
 				{
-					Assert.info(o.custom.contains("location"), "Teleporter missing location");
-					state.teleporters.push(new Teleporter(state, o.x, o.y, o.width, o.height, o.custom.get("location")));
+					Assert.info(o.custom.contains("level"), "Teleporter at (" + o.x + "," + o.y + ") missing level property");
+					Assert.info(o.custom.contains("spawn"), "Teleporter at (" + o.x + "," + o.y + ") missing spawn property");
+					state.teleporters.push(new Teleporter(state, o.x, o.y, o.width, o.height, o.custom.get("level"), o.custom.get("spawn")));
 				}
 			}
 		}

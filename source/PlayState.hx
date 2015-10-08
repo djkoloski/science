@@ -64,8 +64,7 @@ class PlayState extends FlxState
 		
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		
-		loadLevel("assets/tiled/leveltest.tmx");
-		add(dialogueManager);
+		changeLevel("assets/tiled/leveltest.tmx");
 	}
 	
 	/**
@@ -103,16 +102,32 @@ class PlayState extends FlxState
 		updateBullets();
 		
 		level.collideWith(player);
+		
+		if (FlxG.keys.justPressed.R)
+		{
+			trace("opening");
+			dialogueManager.addDialogue("DIALOGUE_OTHER");
+			dialogueManager.openDialogue();
+		}
 	}
 	
-	public function changeLevel(path:String):Void
+	public function changeLevel(path:String, ?spawn:String):Void
 	{
+		if (spawn == null)
+		{
+			spawn = "player_start";
+		}
+		
 		if (level != null)
 		{
 			unloadLevel();
 		}
 		
 		loadLevel(path);
+		
+		Assert.info(level.spawnPoints.exists(spawn), "Spawn point '" + spawn + "' not found in level '" + path + "'");
+		player.x = level.spawnPoints[spawn].x;
+		player.y = level.spawnPoints[spawn].y;
 	}
 	
 	public function unloadLevel():Void
@@ -141,6 +156,7 @@ class PlayState extends FlxState
 		add(level.foregroundGroup);
 		add(level.enemyGroup);
 		add(hud);
+		add(dialogueManager);
 	}
 	
 	public function addBullet(bullet:Bullet):Void

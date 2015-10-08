@@ -14,7 +14,6 @@ class DialogueManager extends FlxGroup
 {
 	public var width: Int = Std.int(FlxG.width/2);
 	public var height: Int =Std.int(FlxG.height / 4);
-
 	
 	public var boxForeground: FlxSprite;
 	public var boxBackground: FlxSprite;
@@ -31,15 +30,13 @@ class DialogueManager extends FlxGroup
 		super();
 		state = playState;
 		createDialogueBox();
-		
-
 	}
 	public function createDialogueBox()
 	{
 		var foregroundWidth:Int = Std.int(width - (width / 8));
 		var foregroundHeight:Int = Std.int(height - (height / 8));
 		X = FlxG.width/4;
-		Y = FlxG.height;
+		Y = FlxG.height * 3 / 4;
 		
 		boxForeground = new FlxSprite(X+ (width/16),Y +(height/16));
 		boxForeground.makeGraphic(foregroundWidth,foregroundHeight,FlxColor.WHITE);
@@ -92,17 +89,13 @@ class DialogueManager extends FlxGroup
 		boxBackground.visible = true;
 		dialogueBox.visible = true;
 	}
-	public function IDsearch(Id:String)
+	public function addDialogue(id:String)
 	{
-		var dialogue: String;
-		dialogue = state.dialogue.getString(Id);
-		return dialogue;
-	}
-	public function addDialogue(dialogue:String)
-	{
+		var text:String = state.dialogue.getString(id);
+		
 		dialogueBox = new FlxText(X+(width/16), Y+(height/16), width - (width/8));
 		dialogueBox.color = FlxColor.BLACK;
-		dialogueBox.text = dialogue;
+		dialogueBox.text = text;
 		dialogueBox.visible = false;
 	}
 }

@@ -46,8 +46,7 @@ class InteractableDialogueBox extends FlxSprite
 			}
 			else if (interact == false && FlxG.keys.justPressed.SPACE && playerOverlap)
 			{
-				dialogue = dialogueManager.IDsearch(id);
-				dialogueManager.addDialogue(dialogue);
+				dialogueManager.addDialogue(id);
 				dialogueManager.transitionOntoScreen();
 				interact = true;
 			}
