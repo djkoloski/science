@@ -10,9 +10,10 @@ class Teleporter extends FlxSprite
 	public static var TARGET_SUFFIX = ".tmx";
 	
 	public var state:PlayState;
-	public var target:String;
+	public var level:String;
+	public var spawn:String;
 	
-	public function new(state:PlayState, x:Float, y:Float, width:Float, height:Float, target:String) 
+	public function new(state:PlayState, x:Float, y:Float, width:Float, height:Float, level:String, spawn:String) 
 	{
 		super(x, y);
 		makeGraphic(Math.round(width), Math.round(height), 0x7fff00ff);
@@ -24,7 +25,8 @@ class Teleporter extends FlxSprite
 		updateHitbox();
 		
 		this.state = state;
-		this.target = target;
+		this.level = level;
+		this.spawn = spawn;
 	}
 	
 	public override function update()
@@ -33,7 +35,7 @@ class Teleporter extends FlxSprite
 		
 		if (FlxG.overlap(state.player, this))
 		{
-			state.changeLevel(TARGET_PREFIX + target + TARGET_SUFFIX);
+			state.changeLevel(TARGET_PREFIX + level + TARGET_SUFFIX, spawn);
 		}
 	}
 }

@@ -41,7 +41,7 @@ class Testenemy extends Mob
 			if (pathTo(destination)) {
 				destination = null;
 			};
-			fire();
+			//fire();
 		};
 		
 		action = chaseAction;
