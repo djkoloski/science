@@ -23,10 +23,10 @@ class Player extends FlxSprite
 	{
 		super();
 		loadGraphic("assets/images/player.png", true, 32, 32);
-		animation.add("up", [0, 1], 4, false);
-		animation.add("down", [2,3], 4, false);
-		animation.add("right", [4, 5], 4,false);
-		animation.add("left", [6, 7], 4, false);
+		animation.add("up", [2, 3], 4, false);
+		animation.add("down", [0,1], 4, false);
+		animation.add("right", [6, 7], 4,false);
+		animation.add("left", [4, 5], 4, false);
 		
 		
 		state = playState;
