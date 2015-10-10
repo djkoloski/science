@@ -2,6 +2,7 @@ package;
 
 import haxe.io.Path;
 import flixel.FlxG;
+import flixel.FlxBasic;
 import flixel.FlxObject;
 import flixel.util.FlxPoint;
 import flixel.group.FlxGroup;
@@ -96,7 +97,7 @@ class LevelMap extends TiledMap
 		}
 	}
 	
-	public function collideWith(obj:FlxObject, ?notifyCallback:FlxObject->FlxObject->Void, ?processCallback:FlxObject->FlxObject->Bool):Bool
+	public function collideWith(obj:FlxBasic, ?notifyCallback:Dynamic->Dynamic->Void, ?processCallback:Dynamic->Dynamic->Bool):Bool
 	{
 		if (processCallback == null)
 		{

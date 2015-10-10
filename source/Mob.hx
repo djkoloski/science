@@ -1,26 +1,22 @@
 package;
 
-import flixel.FlxSprite;
-//import lime.math.Vector2;
 import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.group.FlxGroup;
 import flixel.util.FlxColor;
 import flixel.util.FlxPoint;
 
-class Mob extends FlxSprite implements Damageable
+class Mob extends FlxGroup
 {
-//	var collider:Collider;
+	public var state:PlayState;
 	
-	public var speed:Int;
+	public var speed:Float;
 	public var target:FlxSprite;
 	public var action:Dynamic;
 	public var destination:FlxPoint;
-	public var playstate:PlayState;
 	
-	public var side:Int = 1; //the default side for enemies is 1, but this is not always the case. 
-	
+	public var side:Side;
 	public var weapon:WeaponManager;
-	//public var weaponType:WeaponType = WeaponType_Bullet1;
-	
 	
 	public var followDistance:Int;
 	
@@ -97,7 +93,7 @@ class Mob extends FlxSprite implements Damageable
 		//loadGraphic(spritefile,
 		super(X, Y);
 		this.playstate = playstate;
-		playstate.damagables.add(this);
+		playstate.damageables.add(this);
 		if (spritefilename == null) {
 			spritefilename = "assets/images/linda.png";
 		}

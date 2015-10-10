@@ -18,32 +18,28 @@ class WeaponManager
 {
 	private var state:PlayState;
 	
-	public var bullets:FlxGroup;
+	public var side:Side;
+	public var cooldownTimer:Float;
+	
 	public var type:WeaponType;
-	public var side:Int;
-	
-	private var cooldownTimer:Float;
-	
 	public var bulletCooldown:Float;
 	public var bulletRadius:Float;
 	public var bulletLifespan:Float;
 	public var bulletSpeed:Float;
 	public var bulletColor:Int;
 	
-	public function new(playState:PlayState, side:Int, ?newType:WeaponType)
+	public function new(state:PlayState, side:Side, ?newType:WeaponType)
 	{
 		if (newType == null)
 		{
 			newType = WeaponType_Melee;
 		}
 		
-		state = playState;
+		this.state = state;
 		this.side = side;
+		this.cooldownTimer = 0;
 		
-		bullets = new FlxGroup();
 		setType(newType);
-		
-		cooldownTimer = 0;
 	}
 	
 	public function setType(newType:WeaponType)
@@ -82,6 +78,7 @@ class WeaponManager
 			default:
 				throw "Unknown weapon type";
 		}
+		cooldownTimer = bulletCooldown;
 	}
 	
 	public function fire(bulletX:Float, bulletY:Float, bulletAngle:Float)
@@ -92,8 +89,9 @@ class WeaponManager
 		}
 		cooldownTimer = bulletCooldown;
 		
-		state.addBullet(
+		state.add(
 			new Bullet(
+				state,
 				bulletX,
 				bulletY,
 				bulletAngle,
@@ -121,8 +119,9 @@ class WeaponManager
 			cooldownTimer -= FlxG.elapsed;
 		}
 	}
-	public function getTimer()
+	
+	public function getCooldown()
 	{
-		return cooldownTimer;
+		return cooldownTimer / bulletCooldown;
 	}
 }

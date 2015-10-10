@@ -2,6 +2,7 @@ package;
 
 import flash.system.System;
 import flixel.FlxG;
+import flixel.FlxBasic;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.FlxObject;
@@ -18,6 +19,8 @@ import flixel.util.FlxAngle;
 import sys.io.File;
 import openfl.Vector.VectorDataIterator;
 
+import collision.Collidable;
+
 /**
  * A FlxState which can be used for the actual gameplay.
  */
@@ -29,14 +32,11 @@ class PlayState extends FlxState
 	
 	public var player:Player;
 	public var interactanble: InteractableDialogueBox;
-	public var bullets:Array<Bullet>;
 	
 	public var teleporters:Array<Teleporter>;
 	public var hud:PlayerHUD;
 	
-	public var damagers:FlxGroup;
-	public var damagables:FlxGroup;
-	public var collectibles:FlxGroup;
+	public var colliders:FlxGroup;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -47,18 +47,13 @@ class PlayState extends FlxState
 		
 		bgColor = 0xffaaaaaa;
 		
-		damagers = new FlxGroup();
-		damagables = new FlxGroup();
-		collectibles = new FlxGroup();
-		
 		level = null;
 		dialogue = new DialogueDictionary();
 		dialogueManager = new DialogueManager(this);
 		
 		player = new Player(this);
-		damagables.add(player);
+		// TODO: Interactables
 		
-		bullets = new Array<Bullet>();
 		teleporters = new Array<Teleporter>();
 		hud = new PlayerHUD(player);
 		
@@ -83,25 +78,28 @@ class PlayState extends FlxState
 	{
 		super.update();
 		
-		FlxG.overlap(damagers, damagables, function(damager:Damager, damagable:Damageable) {
-			damager.damage(damagable);
-		});
+		FlxG.overlap(
+			colliders,
+			colliders,
+			function(first:Collidable, second:Collidable) {
+				first.onCollision(second);
+				second.onCollision(first);
+			}
+		);
 		
+		/*
 		FlxG.overlap(player, collectibles, function(player:Player, collectible:Collectible) {
 			if (collectible.getType() == "health") {
 				player.stats.addHearts(cast(collectible, HeartCollectible).getHeal());
 				collectible.destroy();
 			}
 		});
+		*/
 		
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
 			System.exit(0);
 		}
-		
-		updateBullets();
-		
-		level.collideWith(player);
 		
 		if (FlxG.keys.justPressed.R)
 		{
@@ -135,7 +133,6 @@ class PlayState extends FlxState
 		clear();
 		
 		level = null;
-		bullets = new Array<Bullet>();
 		teleporters = new Array<Teleporter>();
 	}
 	
@@ -159,31 +156,13 @@ class PlayState extends FlxState
 		add(dialogueManager);
 	}
 	
-	public function addBullet(bullet:Bullet):Void
+	public function addCollider(collidable:FlxObject):Void
 	{
-		bullets.push(bullet);
-		damagers.add(bullet);
-		add(bullet);
+		colliders.add(collidable);
 	}
 	
-	public function removeBullet(bullet:Bullet):Void
+	public function removeCollider(collidable:FlxObject):Void
 	{
-		remove(bullet);
-		bullets.splice(bullets.indexOf(bullet), 1);
-	}
-	
-	public function updateBullets():Void
-	{
-		var i:Int = 0;
-		while (i < bullets.length)
-		{
-			if (bullets[i].expired() || level.collideWith(bullets[i]))
-			{
-				bullets[i].destroy();
-				removeBullet(bullets[i]);
-				--i;
-			}
-			++i;
-		}
+		colliders.remove(collidable);
 	}
 }

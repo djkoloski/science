@@ -2,45 +2,59 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.group.FlxGroup;
 import flixel.util.FlxColor;
 
-class Bullet extends FlxSprite implements Damager
+class Bullet extends FlxGroup implements Damager
 {
+	public var state:PlayState;
 	public var lifespan:Float;
-	public var dmg:Int = 5;
-	public var side:Int;	
+	public var side:Side;
+	public var damageAmount:Int;
+	public var sprite:FlxSprite;
 	
-	public function new(startX:Float, startY:Float, movementAngle:Float, side:Int, radius:Float, lifespan:Float, speed:Float, color:Int)
+	public function new(state:PlayState, startX:Float, startY:Float, movementAngle:Float, side:Side, radius:Float, lifespan:Float, speed:Float, color:Int)
 	{
-		super(startX - radius, startY - radius);
+		super();
 		
-		velocity.x = Math.cos(movementAngle) * speed;
-		velocity.y = Math.sin(movementAngle) * speed;
-		drag.x = drag.y = 0;
-		
-		this.side = side;
+		this.state = state;
 		
 		this.lifespan = lifespan;
+		this.side = side;
+		this.damageAmount = 5;
 		
-		makeGraphic(Math.floor(radius * 2), Math.floor(radius * 2), color);
+		this.sprite = new FlxSprite(startX, startY);
+		this.sprite.makeGraphic(Math.floor(radius * 2), Math.floor(radius * 2), color);
+		this.sprite.centerOrigin();
+		this.sprite.velocity.x = Math.cos(movementAngle) * speed;
+		this.sprite.velocity.y = Math.sin(movementAngle) * speed;
+		this.sprite.drag.x = this.sprite.drag.y = 0;
+		
+		add(this.sprite);
+		
+		this.state.addDamager(this, this.sprite);
 	}
 	
-	public function expired()
+	public function getDamageSide():Side
 	{
-		return lifespan <= 0.0;
+		return side;
 	}
-	public function damage(target:Damageable) {
-		if (side != target.side) {
-			//trace("giving " + dmg + " damage");
-			target.takeDamage(dmg);
-			//this.kill();
-			this.destroy();
-		}
+	
+	public function dealDamage():Int
+	{
+		destroy();
+		return damageAmount;
 	}
 	
 	public override function update()
 	{
 		super.update();
+		
 		lifespan -= FlxG.elapsed;
+		
+		if (lifespan <= 0 || state.level.collideWith(sprite))
+		{
+			destroy();
+		}
 	}
 }
