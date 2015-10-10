@@ -157,6 +157,7 @@ class PlayState extends FlxState
 		add(level.enemyGroup);
 		add(hud);
 		add(dialogueManager);
+		add(level.dialogueGroup);
 	}
 	
 	public function addBullet(bullet:Bullet):Void
