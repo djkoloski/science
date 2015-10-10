@@ -64,7 +64,7 @@ class PlayState extends FlxState
 		
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		
-		changeLevel("assets/tiled/leveltest.tmx");
+		changeLevel("assets/tiled/Level1.tmx");
 	}
 	
 	/**
