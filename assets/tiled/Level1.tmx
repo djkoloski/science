@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="72" height="90" tilewidth="32" tileheight="32" nextobjectid="8">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="72" height="90" tilewidth="32" tileheight="32" nextobjectid="10">
  <tileset firstgid="1" name="SchoolTileSet" tilewidth="32" tileheight="32" tilecount="240">
   <image source="tileset.png" width="640" height="384"/>
  </tileset>
@@ -28,5 +28,6 @@
     <property name="id" value="player_start"/>
    </properties>
   </object>
+  <object id="8" name="dialogue" x="1334" y="141" width="42" height="43"/>
  </objectgroup>
 </map>

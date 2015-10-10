@@ -65,6 +65,9 @@ class PlayState extends FlxState
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		
 		changeLevel("assets/tiled/Level1.tmx");
+		
+		//var test:FlxText = new FlxText(500, 500, 500, "test asdfhksdlajhfsjadlfhsld", 20, true);
+		//add(test);
 	}
 	
 	/**
@@ -158,6 +161,8 @@ class PlayState extends FlxState
 		add(hud);
 		add(dialogueManager);
 		add(level.dialogueGroup);
+		
+		//add(new InteractableDialogueBox(this, "dialogue box test", 150, 150));
 	}
 	
 	public function addBullet(bullet:Bullet):Void
