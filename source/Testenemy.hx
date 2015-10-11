@@ -43,7 +43,7 @@ class Testenemy extends Mob
 			//	trace("successful path");
 				destination = null;
 			};
-			dwfire();
+			fire();
 		};
 		
 		action = chaseAction;
