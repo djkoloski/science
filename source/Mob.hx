@@ -11,6 +11,7 @@ import collision.ICollidable;
 import collision.IHittable;
 import collision.DamageableSprite;
 import collision.Collision;
+import collision.CollisionFlags;
 
 class Mob extends FlxGroup implements IHittable
 {
@@ -134,14 +135,9 @@ class Mob extends FlxGroup implements IHittable
 		weapon.update();
 	}
 	
-	public function isSolid():Bool
+	public function getCollisionFlags():Int
 	{
-		return true;
-	}
-	
-	public function getObject():Dynamic
-	{
-		return this;
+		return CollisionFlags.SOLID;
 	}
 	
 	public function onCollision(other:ICollidable):Void
@@ -167,7 +163,7 @@ class Mob extends FlxGroup implements IHittable
 		if (stats.isDead())
 		{
 			destroy();
-			state.add(new Collectible(state, x, y));
+			state.add(new HeartCollectible(state, x, y));
 		}
 	}
 	

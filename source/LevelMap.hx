@@ -93,6 +93,11 @@ class LevelMap extends TiledMap
 					Assert.info(o.custom.contains("spawn"), "Teleporter at (" + o.x + "," + o.y + ") missing spawn property");
 					state.add(new Teleporter(state, o.x, o.y, o.width, o.height, o.custom.get("level"), o.custom.get("spawn")));
 				}
+				else if (o.name == "dialogue")
+				{
+					Assert.info(o.custom.contains("id"), "Dialog at (" + o.x + "," + o.y + ") missing id property");
+					state.add(new InteractiveDialogue(state, o.x, o.y, o.custom.get("id")));
+				}
 			}
 		}
 	}

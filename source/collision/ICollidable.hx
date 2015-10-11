@@ -2,7 +2,6 @@ package collision;
 
 interface ICollidable
 {
-	public function isSolid():Bool;
-	public function getObject():Dynamic;
+	public function getCollisionFlags():Int;
 	public function onCollision(other:ICollidable):Void;
 }

@@ -27,13 +27,13 @@ import collision.CollisionManager;
 class PlayState extends FlxState
 {
 	public var collision:CollisionManager;
+	public var group:FlxGroup;
 	
 	public var level:LevelMap;
-	public var dialogue:DialogDictionary;
-	public var dialogueManager:DialogManager;
+	public var dialogue:DialogueDictionary;
+	public var dialogueManager:DialogueManager;
 	
 	public var player:Player;
-	public var playerHUD:PlayerHUD;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -44,19 +44,17 @@ class PlayState extends FlxState
 		
 		bgColor = 0xffaaaaaa;
 		
-		collision = new CollisionManager();
+		collision = null;
+		group = null;
 		
 		level = null;
-		dialogue = new DialogDictionary();
-		dialogueManager = new DialogManager(this);
+		dialogue = new DialogueDictionary();
+		dialogueManager = new DialogueManager(this);
 		
-		player = new Player(this);
-		playerHUD = new PlayerHUD(player);
+		player = null;
 		// TODO: Interactables
 		
-		FlxG.camera.follow(player.sprite, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
-		
-		changeLevel("assets/tiled/Level1.tmx");
+		changeLevel("assets/tiled/leveltest.tmx");
 	}
 	
 	/**
@@ -84,10 +82,19 @@ class PlayState extends FlxState
 		
 		if (FlxG.keys.justPressed.R)
 		{
-			trace("opening");
-			dialogueManager.addDialogue("DIALOGUE_OTHER");
-			dialogueManager.openDialogue();
+			dialogueManager.startDialogue("DIALOGUE_OTHER");
 		}
+	}
+	
+	public override function add(object:FlxBasic):FlxBasic
+	{
+		group.add(object);
+		return object;
+	}
+	
+	public override function remove(object:FlxBasic, splice:Bool = false):FlxBasic
+	{
+		return group.remove(object, splice);
 	}
 	
 	public function changeLevel(path:String, ?spawn:String):Void
@@ -111,23 +118,54 @@ class PlayState extends FlxState
 	
 	public function unloadLevel():Void
 	{
-		clear();
+		remove(player);
+		
+		if (collision != null)
+		{
+			collision.clear();
+			collision = null;
+		}
+		
+		if (group != null)
+		{
+			group.destroy();
+			group = null;
+		}
 		
 		level = null;
 	}
 	
 	public function loadLevel(path:String):Void
 	{
+		collision = new CollisionManager();
+		group = new FlxGroup();
+		super.add(group);
+		
+		if (player == null)
+		{
+			player = new Player(this);
+		}
+		else
+		{
+			player.setup();
+		}
+		
 		level = new LevelMap(this, path);
 		
+		FlxG.camera.follow(player.sprite, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
 		
 		add(level.background);
+		
 		level.loadObjects();
+		
 		add(player);
+		
 		add(level.foreground);
 		collision.add(level.foreground);
+		
 		add(dialogueManager);
-		add(playerHUD);
+		
+		add(new PlayerHUD(player));
 	}
 }
