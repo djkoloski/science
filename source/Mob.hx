@@ -51,7 +51,7 @@ class Mob extends FlxGroup implements IHittable
 	//public var stats:Stats;
 	
 	
-		public function new(playstate:PlayState, startX:Float, startY:Float, damageMask:Int, spritePath:String = null)
+	public function new(playstate:PlayState, startX:Float, startY:Float, damageMask:Int, spritePath:String = null)
 	{
 		super();
 		sightRadius = 500;

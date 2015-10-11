@@ -54,7 +54,7 @@ class PlayState extends FlxState
 		player = null;
 		// TODO: Interactables
 		
-		changeLevel("assets/tiled/leveltest.tmx");
+		changeLevel("assets/tiled/Level1.tmx");
 	}
 	
 	/**
