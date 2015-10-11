@@ -15,6 +15,7 @@ import collision.DamageMask;
 import collision.IHittable;
 import collision.ICollidable;
 import collision.Collision;
+import collision.CollisionFlags;
 
 class Player extends FlxGroup implements IHittable
 {
@@ -25,7 +26,6 @@ class Player extends FlxGroup implements IHittable
 	public var weapon:Weapon;
 	
 	public var sprite:DamageableSprite;
-	public var hud:PlayerHUD;
 	
 	public var x(get, set):Float;
 	public var y(get, set):Float;
@@ -38,7 +38,7 @@ class Player extends FlxGroup implements IHittable
 		this.state = state;
 		
 		this.stats = new Stats();
-		this.speed = 200.0;
+		this.speed = 500.0;
 		this.weapon = new Weapon(this.state, DamageMask.PLAYER, WeaponType_Bullet1);
 		
 		this.sprite = new DamageableSprite();
@@ -49,11 +49,13 @@ class Player extends FlxGroup implements IHittable
 		this.sprite.animation.add("right", [4, 5], 4,false);
 		this.sprite.animation.add("left", [6, 7], 4, false);
 		
-		this.hud = new PlayerHUD(this);
-		
 		add(this.sprite);
+		setup();
+	}
+	
+	public function setup():Void
+	{
 		this.state.collision.add(this.sprite);
-		add(this.hud);
 	}
 	
 	private function updateMovement():Void
@@ -210,14 +212,9 @@ class Player extends FlxGroup implements IHittable
 		stats.damage(amount);
 	}
 	
-	public function isSolid():Bool
+	public function getCollisionFlags():Int
 	{
-		return true;
-	}
-	
-	public function getObject():Dynamic
-	{
-		return this;
+		return CollisionFlags.SOLID;
 	}
 	
 	public function onCollision(other:ICollidable):Void

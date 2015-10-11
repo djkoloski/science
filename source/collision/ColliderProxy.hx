@@ -11,14 +11,9 @@ class ColliderProxy<T:(FlxObject, IProxy)> extends T implements ICollidable
 		return cast getProxy();
 	}
 	
-	public function isSolid():Bool
+	public function getCollisionFlags():Int
 	{
-		return getColliderProxy().isSolid();
-	}
-	
-	public function getObject():Dynamic
-	{
-		return getColliderProxy();
+		return getColliderProxy().getCollisionFlags();
 	}
 	
 	public function onCollision(other:ICollidable):Void

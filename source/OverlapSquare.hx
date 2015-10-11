@@ -6,6 +6,7 @@ import flixel.FlxObject;
 import collision.Collision;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
+import collision.CollisionFlags;
 /**
  * ...
  * @author ...
@@ -20,12 +21,8 @@ class OverlapSquare extends FlxSprite implements ICollidable
 		makeGraphic(Math.floor(Width), Math.floor(Height), FlxColor.YELLOW);
 		inRange = new Array<IDamageable>();
 	}
-	
-	public function isSolid():Bool {
-		return false;
-	}
-	public function getObject():Dynamic {
-		return this;
+	public function getCollisionFlags():Int {
+		return CollisionFlags.NONE;
 	}
 	public function onCollision(other:ICollidable):Void {
 		Collision.switchFlags(
@@ -36,7 +33,7 @@ class OverlapSquare extends FlxSprite implements ICollidable
 			// Let damagers assign damage
 			null,
 			function() {
-				this.inRange.push(cast other);
+				this.inRange.push(cast Collision.resolve(other));
 				if (this.inRange.length > 10) {
 					trace(other);
 				}

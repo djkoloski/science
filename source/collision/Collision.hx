@@ -4,6 +4,16 @@ import flixel.FlxObject;
 
 class Collision
 {
+	public static function resolve(collidable:ICollidable):ICollidable
+	{
+		if (Std.is(collidable, IProxy))
+		{
+			var proxy:IProxy = cast collidable;
+			return proxy.getProxy();
+		}
+		return collidable;
+	}
+	
 	public static function separate(first:flixel.FlxObject, second:FlxObject)
 	{
 		FlxObject.separate(first, second);
@@ -19,7 +29,7 @@ class Collision
 	
 	public static function switchFlags(first:ICollidable, second:ICollidable, ?onSolid:Void->Void, ?onDamager:Void->Void, ?onDamageable:Void->Void):Void
 	{
-		if (second.isSolid() && onSolid != null)
+		if ((second.getCollisionFlags() & CollisionFlags.SOLID) != 0 && onSolid != null)
 		{
 			onSolid();
 		}

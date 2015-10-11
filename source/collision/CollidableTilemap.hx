@@ -4,17 +4,13 @@ import flixel.FlxObject;
 import flixel.tile.FlxTilemap;
 
 import collision.ICustomCollidable;
+import collision.CollisionFlags;
 
 class CollidableTilemap extends FlxTilemap implements ICustomCollidable
 {
-	public function isSolid():Bool
+	public function getCollisionFlags():Int
 	{
-		return true;
-	}
-	
-	public function getObject():Dynamic
-	{
-		return this;
+		return CollisionFlags.SOLID;
 	}
 	
 	public function onCollision(other:ICollidable):Void

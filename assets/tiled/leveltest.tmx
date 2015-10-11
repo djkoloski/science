@@ -54,5 +54,10 @@
     <property name="id" value="right"/>
    </properties>
   </object>
+  <object name="dialogue" x="154" y="556" width="121.333" height="111.333">
+   <properties>
+    <property name="id" value="DIALOG_HELLO"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

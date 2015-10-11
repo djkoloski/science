@@ -10,6 +10,7 @@ import collision.ICollidable;
 import collision.IDamageable;
 import collision.IHurtable;
 import collision.DamagerSprite;
+import collision.CollisionFlags;
 
 class Bullet extends FlxGroup implements IHurtable
 {
@@ -56,14 +57,9 @@ class Bullet extends FlxGroup implements IHurtable
 		}
 	}
 	
-	public function isSolid():Bool
+	public function getCollisionFlags():Int
 	{
-		return false;
-	}
-	
-	public function getObject():Dynamic
-	{
-		return this;
+		return CollisionFlags.NONE;
 	}
 	
 	public function onCollision(other:ICollidable):Void
