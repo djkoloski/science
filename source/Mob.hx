@@ -1,6 +1,8 @@
 package;
 
+import collision.IDamageable;
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
 import flixel.util.FlxColor;
@@ -14,14 +16,21 @@ import collision.Collision;
 
 class Mob extends FlxGroup implements IHittable
 {
-	public var state:PlayState;
+	public var playstate:PlayState;
 	
 	public var stats:Stats;
 	public var speed:Float;
-	public var target:FlxPoint;
+	public var target:Dynamic;
 	public var maximumDistance:Float;
 	public var minimumDistance:Float;
 	public var weapon:Weapon;
+	public var action:Dynamic;
+	
+	public var destination: FlxPoint;
+	
+	
+	public var sightRadius:Int;
+	public var sightCollider:OverlapSquare;
 	
 	public var sprite:DamageableSprite;
 	public var hud:MobHUD;
@@ -32,18 +41,29 @@ class Mob extends FlxGroup implements IHittable
 	public var height(get, set):Float;
 	public var velocity(get, never):FlxPoint;
 	
-	public function new(state:PlayState, startX:Float, startY:Float, damageMask:Int, spritePath:String = null)
+	
+	public var followDistance:Int;
+	
+	public var idleAction = function() { };
+	
+	//public var hud:MobHUD;
+	//public var stats:Stats;
+	
+	
+		public function new(playstate:PlayState, startX:Float, startY:Float, damageMask:Int, spritePath:String = null)
 	{
 		super();
-		
-		this.state = state;
+		sightRadius = 500;
+		followDistance = 100;
+
+		this.playstate = playstate;
 		
 		this.stats = new Stats();
 		this.speed = 50.0;
-		this.target = new FlxPoint(startX, startY);
+		//this.target = new FlxPoint(startX, startY);
 		this.maximumDistance = 1000.0;
 		this.minimumDistance = 100.0;
-		this.weapon = new Weapon(state, damageMask, WeaponType_Bullet2);
+		this.weapon = new Weapon(playstate, damageMask, WeaponType_Bullet2);
 		
 		this.sprite = new DamageableSprite(startX, startY);
 		this.sprite.setProxy(this);
@@ -59,77 +79,149 @@ class Mob extends FlxGroup implements IHittable
 		}
 		
 		this.hud = new MobHUD(this);
+		sightCollider = new OverlapSquare(x - (sightRadius / 2), y - (sightRadius / 2), sightRadius, sightRadius);
+		add(sightCollider);
+		this.playstate.collision.add(sightCollider);
 		
 		add(this.sprite);
-		this.state.collision.add(this.sprite);
+		this.playstate.collision.add(this.sprite);
 		add(this.hud);
+		sprite.immovable = true;
 	}
 	
-	public function updatePathing():Void
-	{
-		var dx = x - target.x;
-		var dy = y - target.y;
-		var dist = Math.sqrt(dx * dx + dy * dy);
+	
+	public function goTo(point:FlxPoint): Bool {
+		//Moves towards target point, returning true if it has arrived. 
+		Assert.info(point.x > 0 && point.y > 0, "Something is moving to a point offscreen.");
+		//trace("going to");
+		moveTowards(point);
+		if (distanceTo(point) < speed * FlxG.elapsed) {
+			return true;
+		}
+		return false;
+	}
+	
+	
+	public var path:Array<FlxPoint>;
+	public function pathTo(point:FlxPoint): Bool {
+		//Paths towards the given point, returning true if it has arrived, false otherwise. CALLED EVERY FRAME.
 		
-		if (dist > maximumDistance)
-		{
-			// TODO: simple wander
-			dx = 0;
-			dy = 0;
-		}
-		else if (dist < minimumDistance)
-		{
-			if (dist != 0)
-			{
-				dx /= dist;
-				dy /= dist;
+		if (path == null ||  path[path.length - 1].x != point.x || path[path.length - 1].y != point.y) {
+			//trace("path is not valid");
+			
+			//trace("going from: " + x + "," + y + " to: " + point.x + "," + point.y);
+			path = playstate.level.foreground.findPath(new FlxPoint(x, y), new FlxPoint(point.x, point.y));
+			/*for (point in path) {
+				trace(point.toString());
+			}*/
+			//trace("reaches here");
+			//path = playstate.level.foreground.findPath(new FlxPoint(128, 128), new FlxPoint(256, 128));
+			if (path == null) {
+				//trace("there is no path.");
+			}
+			if (path == null || path.length == 0) {
+				//trace("path length 0");
+				path = null;
+				return true;
 			}
 		}
-		else
-		{
-			var path = state.level.foreground.findPath(new FlxPoint(x, y), target);
-			if (path == null)
-			{
-				dx = 0;
-				dy = 0;
-			}
-			else
-			{
-				dx = path[1].x - x;
-				dy = path[1].y - y;
-				dist = Math.sqrt(dx * dx + dy * dy);
-				if (dist != 0)
-				{
-					dx /= dist;
-					dy /= dist;
-				}
+		//trace("reaches 2");
+		if (path.length == 0) {
+			trace("path length 0");
+			path = null;
+			return true;
+		}
+		if (goTo(path[0])) {
+			
+			path.reverse();
+			path.pop();
+			path.reverse();
+			if (path.length == 0) {
+				path = null;
+				return true;
 			}
 		}
+		return false;
+	}
+	
+	public function fire() {
+		//fires at the target
+		Assert.info(target != null);
+		//trace("firing");
+		var velocities:FlxPoint = towardsSprite(target);
+		var angle:Float = Math.atan2(velocities.y,velocities.x);
+		weapon.fire(x, y, angle);
+	}
+	
+	public function getTarget() {
+		for (obj in sightCollider.getCollisionList()) {
+			if (obj.getDamageableMask() != this.getDamageableMask()) {
+				target = obj;
+				return true;
+			}
+		}
+		return false;	
+	}
+	
+
+	public function stopShort(point:FlxPoint):FlxPoint {
+		//returns a point that is followdistance away from point. If closer than followdistance, it will return the current position.
+		var temp :FlxPoint = towards(point);
+		var dist :Float = distanceTo(point);
+		return new FlxPoint(x + temp.x * (dist - followDistance), y + temp.y * (dist - followDistance));
+	}
+
+	public function distanceTo(point:FlxPoint):Float {
+		return Math.max(Math.sqrt(  (x - point.x)  * (x - point.x)  + (y - point.y) * (y - point.y)),0);
+	}
+
+	public function towardsSprite(sprite:FlxSprite):FlxPoint {
+		//towards for a sprite..
+		return towards(new FlxPoint(sprite.x, sprite.y));
+	}
+
+	public function towards(point:FlxPoint):FlxPoint {
+		//returns a normalized FlxPoint in the direction of point.
+		Assert.info(!Math.isNaN(point.x) && !Math.isNaN(point.y));
+		var tempx = point.x - x;
+		var tempy = point.y - y;
+		var len:Float = Math.sqrt( tempx * tempx + tempy * tempy);
 		
-		velocity.x = dx * speed;
-		velocity.y = dy * speed;
-	}
-	
-	public function attack():Void
-	{
-		var dx = target.x - x;
-		var dy = target.y - y;
-		var dist = Math.sqrt(dx * dx + dy * dy);
-		if (dist != 0)
-		{
-			dx /= dist;
-			dy /= dist;
+		if (len == 0) {
+			return new FlxPoint(0, 0);
 		}
-		var radius = Math.sqrt(width * width / 4 + height * height / 4) + 15.0;
-		weapon.fire(x + width / 2 + dx * radius, y + height / 2 + dy * radius, Math.atan2(target.y - y, target.x - x));
+		//trace("direction: " + (tempx / len) + "," + (tempy / len));
+		return new FlxPoint(tempx / len, tempy / len);
 	}
 	
+	public function moveTowards(point:FlxPoint):Void {
+		Assert.info(!Math.isNaN(point.x) && !Math.isNaN(point.y));
+		Assert.info(!Math.isNaN(x) && !Math.isNaN(y));
+		
+		var dir = towards(point);
+		x += dir.x * speed * FlxG.elapsed;
+		y += dir.y * speed * FlxG.elapsed;
+		
+		Assert.info(!Math.isNaN(x) && !Math.isNaN(y));
+		//trace("moving towards " + point.x + "," + point.y);
+	}
+	
+	public override function draw():Void {
+		super.draw();
+		
+		hud.draw();
+	}
+	
+	
+
 	public override function update()
 	{
 		super.update();
 		
-		updatePathing();
-		
+		//updatePathing();
+		action();
+		sightCollider.clear();
+		sightCollider.updateXY(x, y);
 		stats.update();
 		weapon.update();
 	}
@@ -167,7 +259,7 @@ class Mob extends FlxGroup implements IHittable
 		if (stats.isDead())
 		{
 			destroy();
-			state.add(new Collectible(state, x, y));
+			playstate.add(new Collectible(playstate, x, y));
 		}
 	}
 	
