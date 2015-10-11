@@ -36,15 +36,36 @@ class CollisionManager
 			function(first:ICollidable, second:ICollidable)
 			{
 				var colliding = true;
-				if (colliding && Std.is(first, ICustomCollidable))
+				
+				var firstCustom = Std.is(first, ICustomCollidable);
+				var secondCustom = Std.is(second, ICustomCollidable);
+				
+				var firstNoCustom = (first.getCollisionFlags() & CollisionFlags.NOCUSTOM) != 0;
+				var secondNoCustom = (second.getCollisionFlags() & CollisionFlags.NOCUSTOM) != 0;
+				
+				if (colliding && firstCustom)
 				{
-					var customCollidable:ICustomCollidable = cast first;
-					colliding = customCollidable.collisionOverlaps(cast second);
+					if (secondNoCustom)
+					{
+						colliding = false;
+					}
+					else
+					{
+						var customCollidable:ICustomCollidable = cast first;
+						colliding = customCollidable.collisionOverlaps(cast second);
+					}
 				}
 				if (colliding && Std.is(second, ICustomCollidable))
 				{
-					var customCollidable:ICustomCollidable = cast second;
-					colliding = customCollidable.collisionOverlaps(cast first);
+					if (firstNoCustom)
+					{
+						colliding = false;
+					}
+					else
+					{
+						var customCollidable:ICustomCollidable = cast second;
+						colliding = customCollidable.collisionOverlaps(cast first);
+					}
 				}
 				if (colliding)
 				{

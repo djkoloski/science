@@ -22,7 +22,7 @@ class OverlapSquare extends FlxSprite implements ICollidable
 		inRange = new Array<IDamageable>();
 	}
 	public function getCollisionFlags():Int {
-		return CollisionFlags.NONE;
+		return CollisionFlags.NOCUSTOM;
 	}
 	public function onCollision(other:ICollidable):Void {
 		Collision.switchFlags(
