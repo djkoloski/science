@@ -7,42 +7,53 @@ import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 import flixel.util.FlxColor;
 import flixel.util.FlxAngle;
+import flixel.group.FlxGroup;
+import flixel.util.FlxPoint;
 
+import collision.DamageableSprite;
+import collision.DamageMask;
+import collision.IHittable;
+import collision.ICollidable;
+import collision.Collision;
 
-class Player extends FlxSprite
+class Player extends FlxGroup implements IHittable
 {
-	private var state:PlayState;
+	public var state:PlayState;
 	
-	public var speed:Float;
 	public var stats:Stats;
-	public var side:Int = 0;//size 0 is the player's side, side 1 is an enemy side. 
-	public var weaponManager:WeaponManager;
-	static public var firing:Bool = false;
+	public var speed:Float;
+	public var weapon:Weapon;
 	
-	public function new(playState:PlayState)
+	public var sprite:DamageableSprite;
+	public var hud:PlayerHUD;
+	
+	public var x(get, set):Float;
+	public var y(get, set):Float;
+	public var velocity(get, never):FlxPoint;
+	
+	public function new(state:PlayState)
 	{
 		super();
-		loadGraphic("assets/images/player.png", true, 32, 32);
-		animation.add("up", [0, 1], 4, false);
-		animation.add("down", [2,3], 4, false);
-		animation.add("right", [4, 5], 4,false);
-		animation.add("left", [6, 7], 4, false);
 		
+		this.state = state;
 		
-		state = playState;
-		speed = 200.0;
-		stats = new Stats();
-		weaponManager = new WeaponManager(playState, side, WeaponType_Bullet1);
+		this.stats = new Stats();
+		this.speed = 200.0;
+		this.weapon = new Weapon(this.state, DamageMask.PLAYER, WeaponType_Bullet1);
 		
-		drag.x = drag.y = 1600.0;
-	}
-	
-	public function takeDamage(damage:Int) {
-		stats.damage(damage);
-		if (stats.isDead()) {
-			FlxG.switchState(new GameOverState());
-			this.destroy();
-		}
+		this.sprite = new DamageableSprite();
+		this.sprite.setProxy(this);
+		this.sprite.loadGraphic("assets/images/player.png", true, 32, 32);
+		this.sprite.animation.add("up", [0, 1], 4, false);
+		this.sprite.animation.add("down", [2,3], 4, false);
+		this.sprite.animation.add("right", [4, 5], 4,false);
+		this.sprite.animation.add("left", [6, 7], 4, false);
+		
+		this.hud = new PlayerHUD(this);
+		
+		add(this.sprite);
+		this.state.collision.add(this.sprite);
+		add(this.hud);
 	}
 	
 	private function updateMovement():Void
@@ -81,23 +92,24 @@ class Player extends FlxSprite
 		
 		animationPlayer(dx, dy);
 	}
-	private function animationPlayer(dx:Float, dy:Float)
+	
+	public function animationPlayer(dx:Float, dy:Float):Void
 	{
 		if (dy == 1.0)
 		{
-			animation.play("up");
+			sprite.animation.play("up");
 		} 
 		else if (dy == -1.0)
 		{
-			animation.play("down");
+			sprite.animation.play("down");
 		}
 		else if (dx == 1.0)
 		{
-			animation.play("right");
+			sprite.animation.play("right");
 		}
 		else if (dx == -1.0)
 		{
-			animation.play("left");
+			sprite.animation.play("left");
 		}
 	}
 	
@@ -105,7 +117,6 @@ class Player extends FlxSprite
 	{
 		var dx:Float = 0.0;
 		var dy:Float = 0.0;
-		firing = false;
 		
 		if (FlxG.keys.pressed.RIGHT)
 		{
@@ -135,21 +146,22 @@ class Player extends FlxSprite
 		var weaponSwap: Bool = FlxG.keys.justPressed.Q;
 		var meleeSwap:Bool = FlxG.keys.justPressed.SHIFT;
 		
-		var weaponX:Float = x + width / 2.0 + dx * width / 2.0;
-		var weaponY:Float = y + height / 2.0 + dy * height / 2.0;
+		// TODO: Increase this so that bullets stop hitting the player immediately and dying
+		var weaponX:Float = x + sprite.width / 2.0 + dx * sprite.width;
+		var weaponY:Float = y + sprite.height / 2.0 + dy * sprite.height;
 		
 		if (weaponSwap)
 		{
-			switch (weaponManager.type)
+			switch (weapon.type)
 			{
 				case WeaponType_Bullet1:
-					weaponManager.setType(WeaponType_Bullet2);
+					weapon.setType(WeaponType_Bullet2);
 				case WeaponType_Bullet2:
-					weaponManager.setType(WeaponType_Bullet3);
+					weapon.setType(WeaponType_Bullet3);
 				case WeaponType_Bullet3:
-					weaponManager.setType(WeaponType_Bullet1);
+					weapon.setType(WeaponType_Bullet1);
 				case WeaponType_Melee:
-					weaponManager.setType(WeaponType_Bullet1);
+					weapon.setType(WeaponType_Bullet1);
 				default:
 					throw "Unknown weapon type";
 			}
@@ -157,26 +169,26 @@ class Player extends FlxSprite
 		
 		if (meleeSwap)
 		{
-			if (weaponManager.type == WeaponType_Melee)
+			if (weapon.type == WeaponType_Melee)
 			{
-				weaponManager.setType(WeaponType_Bullet1);
+				weapon.setType(WeaponType_Bullet1);
 			}
 			else
 			{
-				weaponManager.setType(WeaponType_Melee);
+				weapon.setType(WeaponType_Melee);
 			}
 		}
 		
 		if (dx != 0 || dy != 0)
 		{
-			weaponManager.fire(
+			weapon.fire(
 				weaponX,
 				weaponY,
 				fireAngle
 			);
 		}
 		
-		weaponManager.update();
+		weapon.update();
 	}
 	
 	public override function update():Void
@@ -186,5 +198,62 @@ class Player extends FlxSprite
 		updateWeapon();
 		
 		stats.update();
+	}
+	
+	public function getDamageableMask():Int
+	{
+		return DamageMask.ENEMY;
+	}
+	
+	public function receiveDamage(amount:Int):Void
+	{
+		stats.damage(amount);
+	}
+	
+	public function isSolid():Bool
+	{
+		return true;
+	}
+	
+	public function getObject():Dynamic
+	{
+		return this;
+	}
+	
+	public function onCollision(other:ICollidable):Void
+	{
+		Collision.switchFlags(
+			this,
+			other,
+			Collision.separate.bind(sprite, cast other),
+			// Let damagers assign damage
+			null,
+			null
+		);
+	}
+	
+	public function get_x():Float
+	{
+		return this.sprite.x;
+	}
+	
+	public function set_x(value:Float):Float
+	{
+		return this.sprite.x = value;
+	}
+	
+	public function get_y():Float
+	{
+		return this.sprite.y;
+	}
+	
+	public function set_y(value:Float):Float
+	{
+		return this.sprite.y = value;
+	}
+	
+	public function get_velocity():FlxPoint
+	{
+		return this.sprite.velocity;
 	}
 }

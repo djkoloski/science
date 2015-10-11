@@ -1,36 +1,56 @@
 package;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
+import flixel.group.FlxGroup;
 
-/**
- * ...
- * @author ...
- */
-class Collectible extends FlxSprite
+import collision.ICollidable;
+import collision.CollidableSprite;
+
+class Collectible extends FlxGroup implements ICollidable
 {
+	public var state:PlayState;
+	public var type:String;
 	
-	private var type:String;
-
-	public function new(x:Float, y:Float, t:String = "health") 
+	public var sprite:CollidableSprite;
+	
+	public function new(state:PlayState, startX:Float, startY:Float, type:String = "health")
 	{
 		super();
-		this.x = x;
-		this.y = y;
-		type = t;
-		if (type == "health") {
-			this.makeGraphic(20, 20, FlxColor.PINK);
-		} else {
-			this.makeGraphic(20, 20, FlxColor.KHAKI);
+		
+		this.state = state;
+		this.type = type;
+		
+		this.sprite = new CollidableSprite(startX, startY);
+		this.sprite.setProxy(this);
+		if (this.type == "health")
+		{
+			this.sprite.makeGraphic(20, 20, FlxColor.PINK);
 		}
+		else
+		{
+			this.sprite.makeGraphic(20, 20, FlxColor.KHAKI);
+		}
+		
+		add(this.sprite);
+		this.state.collision.add(this.sprite);
 	}
 	
-	public function getType():String 
+	public function isSolid():Bool
 	{
-		return type;
+		return false;
 	}
 	
-	public function setType(t:String):Void 
+	public function getObject():Dynamic
 	{
-		type = t;
+		return this;
+	}
+	
+	public function onCollision(other:ICollidable):Void
+	{
+		if (other.getObject() == state.player)
+		{
+			state.player.stats.addHearts(1);
+			destroy();
+		}
 	}
 }

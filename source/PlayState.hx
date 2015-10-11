@@ -19,24 +19,21 @@ import flixel.util.FlxAngle;
 import sys.io.File;
 import openfl.Vector.VectorDataIterator;
 
-import collision.Collidable;
+import collision.CollisionManager;
 
 /**
  * A FlxState which can be used for the actual gameplay.
  */
 class PlayState extends FlxState
 {
+	public var collision:CollisionManager;
+	
 	public var level:LevelMap;
-	public var dialogue:DialogueDictionary;
-	public var dialogueManager:DialogueManager;
+	public var dialogue:DialogDictionary;
+	public var dialogueManager:DialogManager;
 	
 	public var player:Player;
-	public var interactanble: InteractableDialogueBox;
-	
-	public var teleporters:Array<Teleporter>;
-	public var hud:PlayerHUD;
-	
-	public var colliders:FlxGroup;
+	public var playerHUD:PlayerHUD;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -47,17 +44,17 @@ class PlayState extends FlxState
 		
 		bgColor = 0xffaaaaaa;
 		
+		collision = new CollisionManager();
+		
 		level = null;
-		dialogue = new DialogueDictionary();
-		dialogueManager = new DialogueManager(this);
+		dialogue = new DialogDictionary();
+		dialogueManager = new DialogManager(this);
 		
 		player = new Player(this);
+		playerHUD = new PlayerHUD(player);
 		// TODO: Interactables
 		
-		teleporters = new Array<Teleporter>();
-		hud = new PlayerHUD(player);
-		
-		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
+		FlxG.camera.follow(player.sprite, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		
 		changeLevel("assets/tiled/Level1.tmx");
 	}
@@ -78,23 +75,7 @@ class PlayState extends FlxState
 	{
 		super.update();
 		
-		FlxG.overlap(
-			colliders,
-			colliders,
-			function(first:Collidable, second:Collidable) {
-				first.onCollision(second);
-				second.onCollision(first);
-			}
-		);
-		
-		/*
-		FlxG.overlap(player, collectibles, function(player:Player, collectible:Collectible) {
-			if (collectible.getType() == "health") {
-				player.stats.addHearts(cast(collectible, HeartCollectible).getHeal());
-				collectible.destroy();
-			}
-		});
-		*/
+		collision.update();
 		
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
@@ -133,7 +114,6 @@ class PlayState extends FlxState
 		clear();
 		
 		level = null;
-		teleporters = new Array<Teleporter>();
 	}
 	
 	public function loadLevel(path:String):Void
@@ -142,27 +122,12 @@ class PlayState extends FlxState
 		
 		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
 		
-		add(level.backgroundGroup);
-		
-		for (teleporter in teleporters)
-		{
-			add(teleporter);
-		}
-		
+		add(level.background);
+		level.loadObjects();
 		add(player);
-		add(level.foregroundGroup);
-		add(level.enemyGroup);
-		add(hud);
+		add(level.foreground);
+		collision.add(level.foreground);
 		add(dialogueManager);
-	}
-	
-	public function addCollider(collidable:FlxObject):Void
-	{
-		colliders.add(collidable);
-	}
-	
-	public function removeCollider(collidable:FlxObject):Void
-	{
-		colliders.remove(collidable);
+		add(playerHUD);
 	}
 }

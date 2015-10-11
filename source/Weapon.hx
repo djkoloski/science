@@ -14,11 +14,11 @@ enum WeaponType
 	WeaponType_Bullet3;
 }
 
-class WeaponManager
+class Weapon
 {
 	private var state:PlayState;
 	
-	public var side:Side;
+	public var damageMask:Int;
 	public var cooldownTimer:Float;
 	
 	public var type:WeaponType;
@@ -28,7 +28,7 @@ class WeaponManager
 	public var bulletSpeed:Float;
 	public var bulletColor:Int;
 	
-	public function new(state:PlayState, side:Side, ?newType:WeaponType)
+	public function new(state:PlayState, damageMask:Int, ?newType:WeaponType)
 	{
 		if (newType == null)
 		{
@@ -36,7 +36,7 @@ class WeaponManager
 		}
 		
 		this.state = state;
-		this.side = side;
+		this.damageMask = damageMask;
 		this.cooldownTimer = 0;
 		
 		setType(newType);
@@ -95,7 +95,7 @@ class WeaponManager
 				bulletX,
 				bulletY,
 				bulletAngle,
-				side,
+				damageMask,
 				bulletRadius,
 				bulletLifespan,
 				bulletSpeed,

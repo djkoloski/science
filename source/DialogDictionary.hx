@@ -3,7 +3,7 @@ package;
 import sys.io.File;
 import haxe.Json;
 
-class DialogueDictionary
+class DialogDictionary
 {
 	private static var PATH:String = "assets/dialogue/testdialogue.json";
 	

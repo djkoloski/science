@@ -10,7 +10,7 @@ import flixel.util.FlxAngle;
 import flixel.group.FlxGroup;
 import flixel.util.FlxTimer;
 
-class DialogueManager extends FlxGroup
+class DialogManager extends FlxGroup
 {
 	public var width: Int = Std.int(FlxG.width/2);
 	public var height: Int =Std.int(FlxG.height / 4);

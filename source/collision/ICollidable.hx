@@ -2,6 +2,7 @@ package collision;
 
 interface ICollidable
 {
-	public var onCollision:ICollidable->Void;
-	public var collisionTag:ECollisionTag;
+	public function isSolid():Bool;
+	public function getObject():Dynamic;
+	public function onCollision(other:ICollidable):Void;
 }

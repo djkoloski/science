@@ -14,7 +14,7 @@ class InteractableDialogueBox extends FlxSprite
 	public var interact: Bool;
 	public var player:Player;
 	public var playerOverlap:Bool;
-	public var dialogueManager:DialogueManager;
+	public var dialogueManager:DialogManager;
 	public var id: String;
 	public var dialogue: String;
 	
@@ -54,6 +54,7 @@ class InteractableDialogueBox extends FlxSprite
 	}
 	public function playerOnObject()
 	{
+		/*
 	if (player.overlaps(this, false))
 	{
 		playerOverlap = true;
@@ -63,6 +64,7 @@ class InteractableDialogueBox extends FlxSprite
 	{
 		playerOverlap = false;
 	}
+		*/
 	}
 	public override function update()
 	{

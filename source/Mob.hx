@@ -6,189 +6,213 @@ import flixel.group.FlxGroup;
 import flixel.util.FlxColor;
 import flixel.util.FlxPoint;
 
-class Mob extends FlxGroup
+import collision.DamageMask;
+import collision.ICollidable;
+import collision.IHittable;
+import collision.DamageableSprite;
+import collision.Collision;
+
+class Mob extends FlxGroup implements IHittable
 {
 	public var state:PlayState;
 	
-	public var speed:Float;
-	public var target:FlxSprite;
-	public var action:Dynamic;
-	public var destination:FlxPoint;
-	
-	public var side:Side;
-	public var weapon:WeaponManager;
-	
-	public var followDistance:Int;
-	
-	public var idleAction = function() { };
-	
-	public var hud:MobHUD;
 	public var stats:Stats;
+	public var speed:Float;
+	public var target:FlxPoint;
+	public var maximumDistance:Float;
+	public var minimumDistance:Float;
+	public var weapon:Weapon;
 	
-	public function goTo(point:FlxPoint): Bool {
-		//Moves towards target point, returning true if it has arrived. 
-		Assert.info(point.x > 0 && point.y > 0,"Something is moving to a point offscreen.");
-		moveTowards(point);
-		if (distanceTo(point) < speed * FlxG.elapsed) {
-			return true;
+	public var sprite:DamageableSprite;
+	public var hud:MobHUD;
+	
+	public var x(get, set):Float;
+	public var y(get, set):Float;
+	public var width(get, set):Float;
+	public var height(get, set):Float;
+	public var velocity(get, never):FlxPoint;
+	
+	public function new(state:PlayState, startX:Float, startY:Float, damageMask:Int, spritePath:String = null)
+	{
+		super();
+		
+		this.state = state;
+		
+		this.stats = new Stats();
+		this.speed = 50.0;
+		this.target = new FlxPoint(startX, startY);
+		this.maximumDistance = 1000.0;
+		this.minimumDistance = 100.0;
+		this.weapon = new Weapon(state, damageMask, WeaponType_Bullet2);
+		
+		this.sprite = new DamageableSprite(startX, startY);
+		this.sprite.setProxy(this);
+		if (spritePath == null)
+		{
+			this.sprite.makeGraphic(32, 32, FlxColor.GREEN);
 		}
-		return false;
+		else
+		{
+			this.sprite.loadGraphic(spritePath, true, 16, 16);
+			this.sprite.animation.add("idle", [0]);
+			this.sprite.animation.play("idle");
+		}
+		
+		this.hud = new MobHUD(this);
+		
+		add(this.sprite);
+		this.state.collision.add(this.sprite);
+		add(this.hud);
 	}
 	
-	
-	public var path:Array<FlxPoint>;
-	public function pathTo(point:FlxPoint): Bool {
-		//Paths towards the given point, returning true if it has arrived, false otherwise. CALLED EVERY FRAME.
+	public function updatePathing():Void
+	{
+		var dx = x - target.x;
+		var dy = y - target.y;
+		var dist = Math.sqrt(dx * dx + dy * dy);
 		
-		if (path == null ||  path[path.length - 1].x != point.x || path[path.length - 1].y != point.y) {
-			//trace("path is not valid");
-			
-			//trace("going from: " + x + "," + y + " to: " + point.x + "," + point.y);
-			path = playstate.level.foregroundTiles.findPath(new FlxPoint(x, y), new FlxPoint(point.x, point.y));
-			if (path == null) {
-			//	trace("there is no path.");
+		if (dist > maximumDistance)
+		{
+			// TODO: simple wander
+			dx = 0;
+			dy = 0;
+		}
+		else if (dist < minimumDistance)
+		{
+			if (dist != 0)
+			{
+				dx /= dist;
+				dy /= dist;
 			}
-			if (path == null || path.length == 0) {
-				path = null;
-				return true;
+		}
+		else
+		{
+			var path = state.level.foreground.findPath(new FlxPoint(x, y), target);
+			if (path == null)
+			{
+				dx = 0;
+				dy = 0;
+			}
+			else
+			{
+				dx = path[1].x - x;
+				dy = path[1].y - y;
+				dist = Math.sqrt(dx * dx + dy * dy);
+				if (dist != 0)
+				{
+					dx /= dist;
+					dy /= dist;
+				}
 			}
 		}
-		if (path.length == 0) {
-			path = null;
-			return true;
-		}
-		//for (point in path) {
-		//	trace(point.toString());
-		//}
-		//trace("path is valid");
-		//trace(path[0].toString() + " isthe destination and we are at " + x + "," + y);
-		if (goTo(path[0])) {
-			
-			path.reverse();
-			path.pop();
-			path.reverse();
-			if (path.length == 0) {
-				path = null;
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public function fire() {
-		//fires at the target
-		Assert.info(target != null);
-		//trace("firing");
-		var velocities:FlxPoint = towardsSprite(target);
-		var angle:Float = Math.atan2(velocities.y,velocities.x);
-		weapon.fire(x, y, angle);
-	}
-	
-	public function getTarget() {
-		target = playstate.player;
-	}
-	
-	
-	public function new(playstate:PlayState, X:Float = 200, Y:Float = 200,spritefilename:String=null) {
-		//loadGraphic(spritefile,
-		super(X, Y);
-		this.playstate = playstate;
-		playstate.damageables.add(this);
-		if (spritefilename == null) {
-			spritefilename = "assets/images/linda.png";
-		}
-		//loadGraphic("assets/images/linda.png", true, 16, 16);
-		//animation.add("idle", [0]);
-		//animation.play("idle");
 		
-		this.makeGraphic(32, 32, FlxColor.GREEN);
-		updateHitbox();
-	//	collider = new Collider(x,y);
-		//this.addChild(collider);
-		action = idleAction;
-		
-		weapon = new WeaponManager(playstate, side, WeaponType_Bullet2);
-		followDistance = 100;
-		speed = 50;
-		
-		stats = new Stats();
-		hud = new MobHUD(this);
+		velocity.x = dx * speed;
+		velocity.y = dy * speed;
 	}
 	
-	public function takeDamage(damage:Int) {
-		// TODO: make the mob actually take damage
-		//trace("taking " + damage + " damage");
-		stats.damage(damage);
-		if (stats.isDead()) {
-			var hc:HeartCollectible = new HeartCollectible(this.x, this.y, 2);
-			playstate.add(hc);
-			playstate.collectibles.add(hc);
-			this.destroy();
+	public function attack():Void
+	{
+		var dx = target.x - x;
+		var dy = target.y - y;
+		var dist = Math.sqrt(dx * dx + dy * dy);
+		if (dist != 0)
+		{
+			dx /= dist;
+			dy /= dist;
 		}
+		var radius = Math.sqrt(width * width / 4 + height * height / 4) + 15.0;
+		weapon.fire(x + width / 2 + dx * radius, y + height / 2 + dy * radius, Math.atan2(target.y - y, target.x - x));
 	}
 	
-	public function mobReset():Void {
-		action = idleAction;
-	}
-	
-	public function stopShort(point:FlxPoint):FlxPoint {
-		//returns a point that is followdistance away from point. If closer than followdistance, it will return the current position.
-		var temp :FlxPoint = towards(point);
-		var dist :Float = distanceTo(point);
-		return new FlxPoint(x + temp.x * (dist - followDistance), y + temp.y * (dist - followDistance));
-	}
-	
-	public function distanceTo(point:FlxPoint):Float {
-		return Math.max(Math.sqrt(  (x - point.x)  * (x - point.x)  + (y - point.y) * (y - point.y)),0);
-	}
-	
-	public override function update():Void {
+	public override function update()
+	{
 		super.update();
-		action();
-		//}else {
-		//	reset();
-		//}
+		
+		updatePathing();
 		
 		stats.update();
-		hud.update();
 		weapon.update();
 	}
 	
-	
-	public function towardsSprite(sprite:FlxSprite):FlxPoint {
-		//towards for a sprite..
-		return towards(new FlxPoint(sprite.x, sprite.y));
+	public function isSolid():Bool
+	{
+		return true;
 	}
-
-	public function towards(point:FlxPoint):FlxPoint {
-		//returns a normalized FlxPoint in the direction of point.
-		Assert.info(!Math.isNaN(point.x) && !Math.isNaN(point.y));
-		var tempx = point.x - x;
-		var tempy = point.y - y;
-		var len:Float = Math.sqrt( tempx * tempx + tempy * tempy);
-		
-		if (len == 0) {
-			return new FlxPoint(0, 0);
+	
+	public function getObject():Dynamic
+	{
+		return this;
+	}
+	
+	public function onCollision(other:ICollidable):Void
+	{
+		Collision.switchFlags(
+			this,
+			other,
+			Collision.separate.bind(this.sprite, cast other),
+			// Let damagers assign damage
+			null,
+			null
+		);
+	}
+	
+	public function getDamageableMask():Int
+	{
+		return DamageMask.PLAYER;
+	}
+	
+	public function receiveDamage(amount:Int):Void
+	{
+		stats.damage(amount);
+		if (stats.isDead())
+		{
+			destroy();
+			state.add(new Collectible(state, x, y));
 		}
-		//trace("direction: " + (tempx / len) + "," + (tempy / len));
-		return new FlxPoint(tempx / len, tempy / len);
 	}
 	
-	public function moveTowards(point:FlxPoint):Void {
-		Assert.info(!Math.isNaN(point.x) && !Math.isNaN(point.y));
-		Assert.info(!Math.isNaN(x) && !Math.isNaN(y));
-		
-		var dir = towards(point);
-		x += dir.x * speed * FlxG.elapsed;
-		y += dir.y * speed * FlxG.elapsed;
-		
-		Assert.info(!Math.isNaN(x) && !Math.isNaN(y));
-		//trace("moving towards " + point.x + "," + point.y);
+	public function get_x():Float
+	{
+		return sprite.x;
 	}
 	
-	public override function draw():Void {
-		super.draw();
-		
-		hud.draw();
+	public function set_x(value:Float):Float
+	{
+		return sprite.x = value;
+	}
+	
+	public function get_y():Float
+	{
+		return sprite.y;
+	}
+	
+	public function set_y(value:Float):Float
+	{
+		return sprite.y = value;
+	}
+	
+	public function get_width():Float
+	{
+		return sprite.width;
+	}
+	
+	public function set_width(value:Float):Float
+	{
+		return sprite.width = value;
+	}
+	
+	public function get_height():Float
+	{
+		return sprite.height;
+	}
+	
+	public function set_height(value:Float):Float
+	{
+		return sprite.height = value;
+	}
+	
+	public function get_velocity():FlxPoint
+	{
+		return sprite.velocity;
 	}
 }
