@@ -42,7 +42,7 @@ class Mob extends FlxGroup implements IHittable
 	public var height(get, set):Float;
 	public var velocity(get, never):FlxPoint;
 	
-	
+	public var maxHearts:Int;
 	public var followDistance:Int;
 	
 	public var idleAction = function() { };
@@ -54,12 +54,15 @@ class Mob extends FlxGroup implements IHittable
 	public function new(playstate:PlayState, startX:Float, startY:Float, damageMask:Int, spritePath:String = null)
 	{
 		super();
-		sightRadius = 500;
+		sightRadius = 1000;
 		followDistance = 100;
 
 		this.playstate = playstate;
-		
-		this.stats = new Stats();
+		if (maxHearts == null) {
+			this.stats = new Stats();
+		}else {
+			this.stats = new Stats(maxHearts);
+		}
 		this.speed = 50.0;
 		//this.target = new FlxPoint(startX, startY);
 		this.maximumDistance = 1000.0;
