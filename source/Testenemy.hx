@@ -35,7 +35,7 @@ class Testenemy extends Mob
 			//	trace("dest is null");
 				//trace(target);
 				//trace(target.get_x() + ", " + target.get_y());
-				trace(target);
+				//trace(target);
 				destination = stopShort(new FlxPoint(target.get_x(), target.get_y()));
 				//as is, the path is recalculated every frame the player moves.
 			}

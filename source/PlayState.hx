@@ -31,8 +31,8 @@ class PlayState extends FlxState
 	
 	public var level:LevelMap;
 	public var dialogue:DialogueDictionary;
-	public var dialogueManager:DialogueManager;
 	
+	public var dialogueManager:DialogueManager;
 	public var player:Player;
 	
 	/**
@@ -49,12 +49,11 @@ class PlayState extends FlxState
 		
 		level = null;
 		dialogue = new DialogueDictionary();
-		dialogueManager = new DialogueManager(this);
 		
+		dialogueManager = null;
 		player = null;
-		// TODO: Interactables
 		
-		changeLevel("assets/tiled/Level1.tmx");
+		changeLevel("assets/tiled/leveltest.tmx");
 	}
 	
 	/**
@@ -118,7 +117,10 @@ class PlayState extends FlxState
 	
 	public function unloadLevel():Void
 	{
+		player.onLevelUnload();
 		remove(player);
+		dialogueManager.onLevelUnload();
+		remove(dialogueManager);
 		
 		if (collision != null)
 		{
@@ -145,17 +147,20 @@ class PlayState extends FlxState
 		{
 			player = new Player(this);
 		}
-		else
+		player.onLevelLoad();
+		
+		if (dialogueManager == null)
 		{
-			player.setup();
+			dialogueManager = new DialogueManager(this);
 		}
+		dialogueManager.onLevelLoad();
 		
 		level = new LevelMap(this, path);
 		
 		FlxG.camera.follow(player.sprite, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
 		
-		add(level.background);
+		//add(level.background);
 		
 		level.loadObjects();
 		

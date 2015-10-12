@@ -7,6 +7,7 @@ import flixel.FlxSprite;
 import flixel.group.FlxGroup;
 import flixel.util.FlxColor;
 import flixel.util.FlxPoint;
+import weapon.Weapon;
 
 import collision.DamageMask;
 import collision.ICollidable;
@@ -24,7 +25,7 @@ class Mob extends FlxGroup implements IHittable
 	public var target:Dynamic;
 	public var maximumDistance:Float;
 	public var minimumDistance:Float;
-	public var weapon:Weapon;
+	public var weapon:weapon.Weapon;
 	public var action:Dynamic;
 	
 	public var destination: FlxPoint;
@@ -64,7 +65,15 @@ class Mob extends FlxGroup implements IHittable
 		//this.target = new FlxPoint(startX, startY);
 		this.maximumDistance = 1000.0;
 		this.minimumDistance = 100.0;
-		this.weapon = new Weapon(playstate, damageMask, WeaponType_Bullet2);
+		this.weapon = new weapon.Gun(
+			playstate,
+			damageMask,
+			0.2,
+			4,
+			.5,
+			600,
+			FlxColor.RED
+		);
 		
 		this.sprite = new DamageableSprite(startX, startY);
 		this.sprite.setProxy(this);
@@ -84,6 +93,7 @@ class Mob extends FlxGroup implements IHittable
 		add(sightCollider);
 		this.playstate.collision.add(sightCollider);
 		
+		add(this.weapon);
 		add(this.sprite);
 		this.playstate.collision.add(this.sprite);
 		add(this.hud);
@@ -224,7 +234,6 @@ class Mob extends FlxGroup implements IHittable
 		sightCollider.clear();
 		sightCollider.updateXY(x, y);
 		stats.update();
-		weapon.update();
 	}
 	
 	public function getCollisionFlags():Int

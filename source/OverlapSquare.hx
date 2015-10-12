@@ -18,7 +18,7 @@ class OverlapSquare extends FlxSprite implements ICollidable
 	{
 		//super(X, Y, Width, Height);
 		super(X, Y);
-		makeGraphic(Math.floor(Width), Math.floor(Height), FlxColor.YELLOW);
+		makeGraphic(Math.floor(Width), Math.floor(Height), FlxColor.TRANSPARENT);
 		inRange = new Array<IDamageable>();
 	}
 	public function getCollisionFlags():Int {

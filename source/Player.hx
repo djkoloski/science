@@ -9,6 +9,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxAngle;
 import flixel.group.FlxGroup;
 import flixel.util.FlxPoint;
+import weapon.Weapon;
 
 import collision.DamageableSprite;
 import collision.DamageMask;
@@ -17,14 +18,14 @@ import collision.ICollidable;
 import collision.Collision;
 import collision.CollisionFlags;
 
-class Player extends FlxGroup implements IHittable
+class Player extends FlxGroup implements IHittable implements IPersistent
 {
 	public var state:PlayState;
 	
 	public var stats:Stats;
 	public var speed:Float;
-	public var weapon:Weapon;
 	
+	public var weapon:weapon.Weapon;
 	public var sprite:DamageableSprite;
 	
 	public var x(get, set):Float;
@@ -39,8 +40,8 @@ class Player extends FlxGroup implements IHittable
 		
 		this.stats = new Stats();
 		this.speed = 500.0;
-		this.weapon = new Weapon(this.state, DamageMask.PLAYER, WeaponType_Bullet1);
 		
+		this.weapon = new weapon.Laser(this.state, DamageMask.PLAYER, 60.0);
 		this.sprite = new DamageableSprite();
 		this.sprite.setProxy(this);
 		this.sprite.loadGraphic("assets/images/player.png", true, 32, 32);
@@ -49,14 +50,17 @@ class Player extends FlxGroup implements IHittable
 		this.sprite.animation.add("right", [4, 5], 4,false);
 		this.sprite.animation.add("left", [6, 7], 4, false);
 		
+		add(this.weapon);
 		add(this.sprite);
-		setup();
 	}
 	
-	public function setup():Void
+	public function onLevelLoad():Void
 	{
-		this.state.collision.add(this.sprite);
+		state.collision.add(this.sprite);
 	}
+	
+	public function onLevelUnload():Void
+	{}
 	
 	private function updateMovement():Void
 	{
@@ -154,31 +158,12 @@ class Player extends FlxGroup implements IHittable
 		
 		if (weaponSwap)
 		{
-			switch (weapon.type)
-			{
-				case WeaponType_Bullet1:
-					weapon.setType(WeaponType_Bullet2);
-				case WeaponType_Bullet2:
-					weapon.setType(WeaponType_Bullet3);
-				case WeaponType_Bullet3:
-					weapon.setType(WeaponType_Bullet1);
-				case WeaponType_Melee:
-					weapon.setType(WeaponType_Bullet1);
-				default:
-					throw "Unknown weapon type";
-			}
+			// TODO: change weapons
 		}
 		
 		if (meleeSwap)
 		{
-			if (weapon.type == WeaponType_Melee)
-			{
-				weapon.setType(WeaponType_Bullet1);
-			}
-			else
-			{
-				weapon.setType(WeaponType_Melee);
-			}
+			// TODO: change to melee
 		}
 		
 		if (dx != 0 || dy != 0)
@@ -189,8 +174,6 @@ class Player extends FlxGroup implements IHittable
 				fireAngle
 			);
 		}
-		
-		weapon.update();
 	}
 	
 	public override function update():Void
