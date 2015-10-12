@@ -64,10 +64,17 @@ class Bullet extends FlxGroup implements IHurtable
 	
 	public function onCollision(other:ICollidable):Void
 	{
+		var bullet = this;
 		Collision.switchFlags(
 			this,
 			other,
-			this.destroy,
+			function()
+			{
+				if (!Std.is(other, IDamageable) || (cast(other, IDamageable).getDamageableMask() & bullet.getDamagerMask()) != 0)
+				{
+					bullet.destroy();
+				}
+			},
 			null,
 			Collision.performDamage.bind(this, cast other)
 		);
