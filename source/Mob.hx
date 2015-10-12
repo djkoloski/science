@@ -40,7 +40,7 @@ class Mob extends FlxGroup implements IHittable
 	public var y(get, set):Float;
 	public var width(get, set):Float;
 	public var height(get, set):Float;
-	public var velocity(get, never):FlxPoint;
+	public var velocity(get, set):FlxPoint;
 	
 	public var maxHearts:Int;
 	public var followDistance:Int;
@@ -90,7 +90,7 @@ class Mob extends FlxGroup implements IHittable
 		add(this.sprite);
 		this.playstate.collision.add(this.sprite);
 		add(this.hud);
-		sprite.immovable = true;
+		//sprite.immovable = true;
 	}
 	
 	
@@ -112,9 +112,14 @@ class Mob extends FlxGroup implements IHittable
 		
 		if (path == null ||  path[path.length - 1].x != point.x || path[path.length - 1].y != point.y) {
 			//trace("path is not valid");
-			
+			//var other =  new FlxPoint(point.x, point.y);
 			//trace("going from: " + x + "," + y + " to: " + point.x + "," + point.y);
-			path = playstate.level.foreground.findPath(new FlxPoint(x, y), new FlxPoint(point.x, point.y));
+			if (!playstate.level.foreground.getBounds().containsFlxPoint(point)) {
+				trace("path outside of level");
+				return true;
+			}
+			path = playstate.level.foreground.findPath(new FlxPoint(x, y), point);
+			
 			/*for (point in path) {
 				trace(point.toString());
 			}*/
@@ -153,7 +158,8 @@ class Mob extends FlxGroup implements IHittable
 		Assert.info(target != null);
 		//trace("firing");
 		var velocities:FlxPoint = towardsSprite(target);
-		var angle:Float = Math.atan2(velocities.y,velocities.x);
+		var angle:Float = Math.atan2(velocities.y, velocities.x);
+		//trace(angle);
 		weapon.fire(x, y, angle);
 	}
 	
@@ -179,9 +185,9 @@ class Mob extends FlxGroup implements IHittable
 		return Math.max(Math.sqrt(  (x - point.x)  * (x - point.x)  + (y - point.y) * (y - point.y)),0);
 	}
 
-	public function towardsSprite(sprite:FlxSprite):FlxPoint {
+	public function towardsSprite(sprite:Dynamic):FlxPoint {
 		//towards for a sprite..
-		return towards(new FlxPoint(sprite.x, sprite.y));
+		return towards(new FlxPoint(sprite.get_x(), sprite.get_y()));
 	}
 
 	public function towards(point:FlxPoint):FlxPoint {
@@ -203,10 +209,10 @@ class Mob extends FlxGroup implements IHittable
 		Assert.info(!Math.isNaN(x) && !Math.isNaN(y));
 		
 		var dir = towards(point);
-		x += dir.x * speed * FlxG.elapsed;
-		y += dir.y * speed * FlxG.elapsed;
-		
-		Assert.info(!Math.isNaN(x) && !Math.isNaN(y));
+		this.velocity = new FlxPoint(dir.x * speed /* FlxG.elapsed*/, dir.y * speed /* FlxG.elapsed*/);
+		//x += dir.x * speed * FlxG.elapsed;
+		//y += dir.y * speed * FlxG.elapsed;
+		Assert.info(!Math.isNaN(this.velocity.x) && !Math.isNaN(this.velocity.y));
 		//trace("moving towards " + point.x + "," + point.y);
 	}
 	
@@ -220,6 +226,7 @@ class Mob extends FlxGroup implements IHittable
 
 	public override function update()
 	{
+		Assert.info(action != null);
 		super.update();
 		
 		//updatePathing();
@@ -305,5 +312,12 @@ class Mob extends FlxGroup implements IHittable
 	public function get_velocity():FlxPoint
 	{
 		return sprite.velocity;
+	}
+	
+	public function set_velocity(value:FlxPoint):FlxPoint
+	{
+		sprite.velocity.x = value.x;
+		sprite.velocity.y = value.y;
+		return value;
 	}
 }
