@@ -85,6 +85,14 @@ class LevelMap extends TiledMap
 				}
 				else if (o.name == "test")
 				{
+					state.add(new Testenemy(state, o.x, o.y));
+				}
+				else if (o.name == "blob")
+				{
+					state.add(new BlobEnemy(state, o.x, o.y));
+				}
+				else if (o.name == "hive")
+				{
 					state.add(new HiveEnemy(state, o.x, o.y));
 				}
 				else if (o.name == "teleporter")

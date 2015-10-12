@@ -59,7 +59,10 @@ class HiveEnemy extends Mob
 	public function alert(alarm:PodEnemy) {
 		if (!angry) {
 			for (pod in pods) {
-				pod.assist(alarm);
+				if (pod != alarm) {
+					pod.assist(alarm);
+				}
+				
 			}
 		}
 	}

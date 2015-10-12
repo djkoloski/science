@@ -23,7 +23,7 @@ class Bullet extends FlxGroup implements IHurtable
 	public var x(get, set):Float;
 	public var y(get, set):Float;
 	
-	public function new(state:PlayState, startX:Float, startY:Float, movementAngle:Float, damageMask:Int, radius:Float, lifespan:Float, speed:Float, color:Int)
+	public function new(state:PlayState, startX:Float, startY:Float, movementAngle:Float, damageMask:Int, radius:Float, lifespan:Float, speed:Float, amount:Int, color:Int)
 	{
 		super();
 		
@@ -31,7 +31,7 @@ class Bullet extends FlxGroup implements IHurtable
 		
 		this.lifespan = lifespan;
 		this.damageMask = damageMask;
-		this.damageAmount = 5;
+		this.damageAmount = amount;
 		
 		this.sprite = new DamagerSprite(startX, startY);
 		this.sprite.setProxy(this);

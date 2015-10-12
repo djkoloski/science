@@ -40,6 +40,7 @@ class Gun extends Weapon
 	public var bulletLifespan:Float;
 	public var bulletSpeed:Float;
 	public var bulletColor:Int;
+	public var damageAmount:Int;
 	
 	public function new(
 		state:PlayState,
@@ -48,6 +49,7 @@ class Gun extends Weapon
 		bulletRadius:Float,
 		bulletLifespan:Float,
 		bulletSpeed:Float,
+		amount:Int,
 		bulletColor:Int
 		) 
 	{
@@ -59,6 +61,7 @@ class Gun extends Weapon
 		this.bulletLifespan = bulletLifespan;
 		this.bulletSpeed = bulletSpeed;
 		this.bulletColor = bulletColor;
+		this.damageAmount = amount;
 	}
 	
 	public override function fire(startX:Float, startY:Float, angle:Float)
@@ -79,6 +82,7 @@ class Gun extends Weapon
 				bulletRadius,
 				bulletLifespan,
 				bulletSpeed,
+				damageAmount,
 				bulletColor
 			)
 		);

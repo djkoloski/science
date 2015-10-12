@@ -30,10 +30,11 @@ class BlobEnemy extends Testenemy
 		this.sprite.updateHitbox();
 		
 		speed = 300;
-		
+		weapon = new weapon.BlobGun(playstate);
 		
 		idleAction = function() {
 			if (getTarget()) {
+				lastFramePos = null;
 				action = jumpAction;
 			}
 		};
@@ -115,5 +116,13 @@ class BlobEnemy extends Testenemy
 		super.destroy();
 	}
 	
+	public override function receiveDamage(amount:Int):Void
+	{
+		super.receiveDamage(amount);
+		getTarget();
+		sit();		
+		//action = attackAction;
+		//destination = null;
+	}
 	
 }

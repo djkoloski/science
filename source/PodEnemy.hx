@@ -1,6 +1,7 @@
 package;
 import flixel.util.FlxPoint;
 import collision.DamageMask;
+import weapon.PodGun;
 
 /**
  * ...
@@ -20,6 +21,7 @@ class PodEnemy extends Testenemy
 	public function new(playstate:PlayState, startX:Float=200, startY:Float=200, hive, damageMask:Int=DamageMask.ENEMY, spritePath:String=null) 
 	{
 		super(playstate, startX, startY, damageMask, spritePath);
+		weapon = new PodGun(playstate);
 		speed = 150;
 		this.hive = hive;
 		hive.addPod(this);
@@ -27,14 +29,17 @@ class PodEnemy extends Testenemy
 			//The pod will go to the hive and defend it.
 			if (hive == null) {
 				//..unless there is no hive.
-				target = null;
-				action = exploreAction;
+				//target = null;
+				//action = exploreAction;
+				explore();
 				return;
 			}
 			if (target == null) {
 				if (!getTarget()) {
 					//keeps getting new targets until there are none around, then goes back to exploring.
-					action = exploreAction;
+					//action = exploreAction;
+					explore();
+					hive.calm();
 					return;
 				}
 			}
@@ -50,13 +55,13 @@ class PodEnemy extends Testenemy
 		
 		exploreAction = function() {
 			//The pod will wander randomly. It might attack someone nearby but it has a very low chance of doing so. 
-			if (Math.random() > .995) {
+			if (Math.random() > .9999) {
 				if (getTarget()) {
 					trace("attacking from explore");
-					action = attackAction;
+					attack();
+					//action = attackAction;
 					return;
 				}
-				
 			}
 			if (destination == null || pathTo(destination)) {
 				destination = new FlxPoint(x + 500 - Math.random() * 1000, y + 500 - Math.random() * 1000);
@@ -64,14 +69,18 @@ class PodEnemy extends Testenemy
 		};
 		
 		assistAction = function() {
+			
 			if (target == null) {
 				//If the target is null that means the ally that it is assisting is dead. It will be hostile to anyone nearby.
 				if (destination == null) {
-					action = exploreAction;
+					explore();
+//					action = exploreAction;
 					return;
 				}
 				if (getTarget()) {
-					action = attackAction;
+					attack();
+					return;
+//					action = attackAction;
 				}
 			}
 			if (destination == null) {
@@ -79,29 +88,64 @@ class PodEnemy extends Testenemy
 			}
 			if (pathTo(destination)) {
 				if (getTarget()) {
-					action = attackAction;
+					attack();
+					//action = attackAction;
 					return;
 				}else {
-					action = exploreAction;
+					explore();
+//					action = exploreAction;
 					return;
 				}
 			}
 		};
 		
+		idleAction = function() {
+			
+			trace("idle");
+			lastFramePos = null;
+			explore();
+		}
+		
 		attackAction = function() {
+			if (target == null) {
+				if (!getTarget()) {
+					explore();
+//					action = exploreAction;
+				}
+			}
 			chaseAction();
 		};
-		action = exploreAction;
+		explore();
+		//action = exploreAction;
 	}
 	
 	public function assist(target:PodEnemy) {
+		
+			trace("assisting");
 		this.target = target;
 		destination = null;
 		action = assistAction;
 	}
 	
 	public function defend() {
+		
+			trace("defending");
 		action = protectAction;
+		destination = null;
+	}
+	
+	public function attack() {
+		
+		trace("exploring");
+		action = attackAction;
+		target = null;	
+	}
+	
+	public function explore() {
+		
+		trace("exploring");
+		action = exploreAction;
+		target = null;
 		destination = null;
 	}
 	
@@ -114,7 +158,8 @@ class PodEnemy extends Testenemy
 	{
 		super.receiveDamage(amount);
 		hive.alert(this);
-		action = attackAction;
-		destination = null;
+		attack();
+		//action = attackAction;
+		//destination = null;
 	}
 }

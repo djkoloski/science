@@ -21,7 +21,8 @@ class Collision
 	
 	public static function performDamage(damager:IDamager, damageable:IDamageable):Void
 	{
-		if ((damager.getDamagerMask() & damageable.getDamageableMask()) != 0)
+		//if ((damager.getDamagerMask() & damageable.getDamageableMask()) != 0)
+		if(damager.getDamagerMask() != damageable.getDamageableMask())
 		{
 			damageable.receiveDamage(damager.dealDamage());
 		}

@@ -46,7 +46,11 @@ class Mob extends FlxGroup implements IHittable
 	public var maxHearts:Int;
 	public var followDistance:Int;
 	
-	public var idleAction = function() { };
+	
+	public var damageMask:Int;
+	public var idleAction:Dynamic;
+	
+	private var lastFramePos:FlxPoint;
 	
 	//public var hud:MobHUD;
 	//public var stats:Stats;
@@ -57,7 +61,7 @@ class Mob extends FlxGroup implements IHittable
 		super();
 		sightRadius = 1000;
 		followDistance = 100;
-
+		this.damageMask = damageMask;
 		this.playstate = playstate;
 		if (maxHearts == null) {
 			this.stats = new Stats();
@@ -68,15 +72,7 @@ class Mob extends FlxGroup implements IHittable
 		//this.target = new FlxPoint(startX, startY);
 		this.maximumDistance = 1000.0;
 		this.minimumDistance = 100.0;
-		this.weapon = new weapon.Gun(
-			playstate,
-			damageMask,
-			0.2,
-			4,
-			.5,
-			600,
-			FlxColor.RED
-		);
+		//this.weapon = new weapon.PodGun(playstate);
 		
 		this.sprite = new DamageableSprite(startX, startY);
 		this.sprite.setProxy(this);
@@ -96,10 +92,14 @@ class Mob extends FlxGroup implements IHittable
 		add(sightCollider);
 		this.playstate.collision.add(sightCollider);
 		
-		add(this.weapon);
+		//add(this.weapon);
 		add(this.sprite);
 		this.playstate.collision.add(this.sprite);
 		add(this.hud);
+		
+		idleAction= function() {
+			this.velocity = new FlxPoint(0, 0);
+		};
 		//sprite.immovable = true;
 	}
 	
@@ -109,7 +109,7 @@ class Mob extends FlxGroup implements IHittable
 		Assert.info(point.x > 0 && point.y > 0, "Something is moving to a point offscreen.");
 		//trace("going to");
 		moveTowards(point);
-		if (distanceTo(point) < speed * FlxG.elapsed) {
+		if (distanceTo(point) < speed * FlxG.elapsed || distanceTo(point) < sprite.width) {
 			return true;
 		}
 		return false;
@@ -121,18 +121,19 @@ class Mob extends FlxGroup implements IHittable
 		//Paths towards the given point, returning true if it has arrived, false otherwise. CALLED EVERY FRAME.
 		
 		if (path == null ||  path[path.length - 1].x != point.x || path[path.length - 1].y != point.y) {
+			//If we need to make a new path (no path or new destination is different from the old one)...
 			//trace("path is not valid");
 			//var other =  new FlxPoint(point.x, point.y);
 			//trace("going from: " + x + "," + y + " to: " + point.x + "," + point.y);
 			if (!playstate.level.foreground.getBounds().containsFlxPoint(point)) {
-				trace("path outside of level");
+				//If the path end is outside of the level this path is over. 
+				//trace("path outside of level");
 				return true;
 			}
 			path = playstate.level.foreground.findPath(new FlxPoint(x, y), point);
 			
-			/*for (point in path) {
-				trace(point.toString());
-			}*/
+			
+			
 			//trace("reaches here");
 			//path = playstate.level.foreground.findPath(new FlxPoint(128, 128), new FlxPoint(256, 128));
 			if (path == null) {
@@ -143,6 +144,17 @@ class Mob extends FlxGroup implements IHittable
 				path = null;
 				return true;
 			}
+			/*trace("From");
+			for (point in path) {
+				trace(point.toString());
+			}
+			trace("to"); 
+			for (i in 0...path.length) {
+				path[i] = new FlxPoint(path[i].x - sprite.width / 2, path[i].y - sprite.height / 2);
+			}
+			for (point in path) {
+				trace(point.toString());
+			}*/
 		}
 		//trace("reaches 2");
 		if (path.length == 0) {
@@ -151,7 +163,7 @@ class Mob extends FlxGroup implements IHittable
 			return true;
 		}
 		if (goTo(path[0])) {
-			
+			//If we've reached the current node of the path...
 			path.reverse();
 			path.pop();
 			path.reverse();
@@ -165,7 +177,12 @@ class Mob extends FlxGroup implements IHittable
 	
 	public function fire() {
 		//fires at the target
+		if (!target.exists) {
+			target = null;
+			return;
+		}
 		Assert.info(target != null);
+		//trace(target);
 		//trace("firing");
 		var velocities:FlxPoint = towardsSprite(target);
 		var angle:Float = Math.atan2(velocities.y, velocities.x);
@@ -215,11 +232,24 @@ class Mob extends FlxGroup implements IHittable
 	}
 	
 	public function moveTowards(point:FlxPoint):Void {
+		//To keep the AI from getting stuck on walls so much, movetowards converts the destination so that the middle of the AI will aim for it, not the top left corner.
 		Assert.info(!Math.isNaN(point.x) && !Math.isNaN(point.y));
 		Assert.info(!Math.isNaN(x) && !Math.isNaN(y));
-		
-		var dir = towards(point);
-		this.velocity = new FlxPoint(dir.x * speed /* FlxG.elapsed*/, dir.y * speed /* FlxG.elapsed*/);
+		if (point.x == x && point.y == y) {
+			this.velocity = new FlxPoint(0, 0);
+		}
+		if (lastFramePos != null && lastFramePos.x - x < speed/10000 && lastFramePos.y - y < speed/10000) {
+			stuck();
+		}
+		/*if ( new FlxPoint(x, y) == new FlxPoint(x, y)) {
+			trace("equals works as expected");
+		}*/
+		lastFramePos = new FlxPoint(x, y);
+		trace(lastFramePos.toString());
+		//var dir = towards(point);
+		var dir = towards(new FlxPoint(point.x - sprite.width / 2, point.y - sprite.height / 2));
+		//dir = new FlxPoint(dir - sprite.width / 2, dir - sprite.height / 2);
+		this.velocity = new FlxPoint(dir.x * speed, dir.y * speed);
 		//x += dir.x * speed * FlxG.elapsed;
 		//y += dir.y * speed * FlxG.elapsed;
 		Assert.info(!Math.isNaN(this.velocity.x) && !Math.isNaN(this.velocity.y));
@@ -231,7 +261,10 @@ class Mob extends FlxGroup implements IHittable
 		
 		hud.draw();
 	}
-	
+	public function stuck() {
+		trace("stuck.");
+		action = idleAction;
+	}
 	
 
 	public override function update()
@@ -248,7 +281,7 @@ class Mob extends FlxGroup implements IHittable
 	
 	public function getCollisionFlags():Int
 	{
-		return CollisionFlags.SOLID;
+		return CollisionFlags.NONE;
 	}
 	
 	public function onCollision(other:ICollidable):Void
@@ -265,7 +298,7 @@ class Mob extends FlxGroup implements IHittable
 	
 	public function getDamageableMask():Int
 	{
-		return DamageMask.PLAYER;
+		return damageMask;
 	}
 	
 	public function receiveDamage(amount:Int):Void
