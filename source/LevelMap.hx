@@ -96,7 +96,7 @@ class LevelMap extends TiledMap
 				}
 				else if (o.name == "dialogue")
 				{
-					dialogueGroup.add(new InteractableDialogueBox(playState, "dialogue box test", o.x, o.y));
+					dialogueGroup.add(new InteractableDialogueBox(playState, o.custom.get("text"), o.x, o.y));
 				}
 			}
 		}
