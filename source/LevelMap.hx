@@ -23,6 +23,7 @@ class LevelMap extends TiledMap
 	public var spawnPoints:Map<String, FlxPoint>;
 	
 	public var enemyGroup:FlxGroup;
+	public var dialogueGroup:FlxGroup;
 	
 	public var startX:Float;
 	public var startY:Float;
@@ -41,6 +42,7 @@ class LevelMap extends TiledMap
 		spawnPoints = new Map<String, FlxPoint>();
 		
 		enemyGroup = new FlxGroup();
+		dialogueGroup = new FlxGroup();
 		
 		var tileset:TiledTileSet = null;
 		for (ts in tilesets)
@@ -91,6 +93,10 @@ class LevelMap extends TiledMap
 					Assert.info(o.custom.contains("level"), "Teleporter at (" + o.x + "," + o.y + ") missing level property");
 					Assert.info(o.custom.contains("spawn"), "Teleporter at (" + o.x + "," + o.y + ") missing spawn property");
 					state.teleporters.push(new Teleporter(state, o.x, o.y, o.width, o.height, o.custom.get("level"), o.custom.get("spawn")));
+				}
+				else if (o.name == "dialogue")
+				{
+					dialogueGroup.add(new InteractableDialogueBox(playState, o.custom.get("text"), o.x, o.y));
 				}
 			}
 		}

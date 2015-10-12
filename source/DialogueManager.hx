@@ -89,13 +89,13 @@ class DialogueManager extends FlxGroup
 		boxBackground.visible = true;
 		dialogueBox.visible = true;
 	}
-	public function addDialogue(id:String)
+	public function addDialogue(text:String)
 	{
-		var text:String = state.dialogue.getString(id);
 		
-		dialogueBox = new FlxText(X+(width/16), Y+(height/16), width - (width/8));
+		dialogueBox = new FlxText(X+(width/16), Y+(height/16) , width - (width/8), text, 20, true);
 		dialogueBox.color = FlxColor.BLACK;
-		dialogueBox.text = text;
+		dialogueBox.scrollFactor.x = dialogueBox.scrollFactor.y = 0;
 		dialogueBox.visible = false;
+		add(dialogueBox);
 	}
 }
