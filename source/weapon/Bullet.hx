@@ -1,4 +1,4 @@
-package;
+package weapon;
 
 import flixel.FlxG;
 import flixel.FlxSprite;

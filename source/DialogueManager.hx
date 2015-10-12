@@ -72,6 +72,14 @@ class DialogueManager extends FlxGroup
 		setYOffset(0);
 	}
 	
+	public function onLevelLoad():Void
+	{}
+	
+	public function onLevelUnload():Void
+	{
+		transitionState(DialogueManagerState_Closed);
+	}
+	
 	public function transitionState(newState:DialogueManagerState)
 	{
 		currentState = newState;
@@ -122,6 +130,7 @@ class DialogueManager extends FlxGroup
 	
 	public function setText(newText:String):Void
 	{
+		Assert.info(newText != null, "Dialogue to display is null");
 		this.text.text = newText;
 	}
 	
