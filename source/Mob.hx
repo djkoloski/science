@@ -1,37 +1,110 @@
 package;
 
-import flixel.FlxSprite;
-//import lime.math.Vector2;
+import collision.IDamageable;
 import flixel.FlxG;
+import flixel.FlxObject;
+import flixel.FlxSprite;
+import flixel.group.FlxGroup;
 import flixel.util.FlxColor;
 import flixel.util.FlxPoint;
+import weapon.Weapon;
 
-class Mob extends FlxSprite implements Damageable
+import collision.DamageMask;
+import collision.ICollidable;
+import collision.IHittable;
+import collision.DamageableSprite;
+import collision.Collision;
+import collision.CollisionFlags;
+
+class Mob extends FlxGroup implements IHittable
 {
-//	var collider:Collider;
-	
-	public var speed:Int;
-	public var target:FlxSprite;
-	public var action:Dynamic;
-	public var destination:FlxPoint;
 	public var playstate:PlayState;
 	
-	public var side:Int = 1; //the default side for enemies is 1, but this is not always the case. 
+	public var stats:Stats;
+	public var speed:Float;
+	public var target:Dynamic;
+	public var maximumDistance:Float;
+	public var minimumDistance:Float;
+	public var weapon:weapon.Weapon;
+	public var action:Dynamic;
 	
-	public var weapon:WeaponManager;
-	//public var weaponType:WeaponType = WeaponType_Bullet1;
+	public var destination: FlxPoint;
+	
+	
+	public var sightRadius:Int;
+	public var sightCollider:OverlapSquare;
+	
+	public var sprite:DamageableSprite;
+	public var hud:MobHUD;
+	
+	public var x(get, set):Float;
+	public var y(get, set):Float;
+	public var width(get, set):Float;
+	public var height(get, set):Float;
+	public var velocity(get, never):FlxPoint;
 	
 	
 	public var followDistance:Int;
 	
 	public var idleAction = function() { };
 	
-	public var hud:MobHUD;
-	public var stats:Stats;
+	//public var hud:MobHUD;
+	//public var stats:Stats;
+	
+	
+		public function new(playstate:PlayState, startX:Float, startY:Float, damageMask:Int, spritePath:String = null)
+	{
+		super();
+		sightRadius = 500;
+		followDistance = 100;
+
+		this.playstate = playstate;
+		
+		this.stats = new Stats();
+		this.speed = 50.0;
+		//this.target = new FlxPoint(startX, startY);
+		this.maximumDistance = 1000.0;
+		this.minimumDistance = 100.0;
+		this.weapon = new weapon.Gun(
+			playstate,
+			damageMask,
+			0.2,
+			4,
+			.5,
+			600,
+			FlxColor.RED
+		);
+		
+		this.sprite = new DamageableSprite(startX, startY);
+		this.sprite.setProxy(this);
+		if (spritePath == null)
+		{
+			this.sprite.makeGraphic(32, 32, FlxColor.GREEN);
+		}
+		else
+		{
+			this.sprite.loadGraphic(spritePath, true, 16, 16);
+			this.sprite.animation.add("idle", [0]);
+			this.sprite.animation.play("idle");
+		}
+		
+		this.hud = new MobHUD(this);
+		sightCollider = new OverlapSquare(x - (sightRadius / 2), y - (sightRadius / 2), sightRadius, sightRadius);
+		add(sightCollider);
+		this.playstate.collision.add(sightCollider);
+		
+		add(this.weapon);
+		add(this.sprite);
+		this.playstate.collision.add(this.sprite);
+		add(this.hud);
+		sprite.immovable = true;
+	}
+	
 	
 	public function goTo(point:FlxPoint): Bool {
 		//Moves towards target point, returning true if it has arrived. 
-		Assert.info(point.x > 0 && point.y > 0,"Something is moving to a point offscreen.");
+		Assert.info(point.x > 0 && point.y > 0, "Something is moving to a point offscreen.");
+		//trace("going to");
 		moveTowards(point);
 		if (distanceTo(point) < speed * FlxG.elapsed) {
 			return true;
@@ -48,24 +121,27 @@ class Mob extends FlxSprite implements Damageable
 			//trace("path is not valid");
 			
 			//trace("going from: " + x + "," + y + " to: " + point.x + "," + point.y);
-			path = playstate.level.foregroundTiles.findPath(new FlxPoint(x, y), new FlxPoint(point.x, point.y));
+			path = playstate.level.foreground.findPath(new FlxPoint(x, y), new FlxPoint(point.x, point.y));
+			/*for (point in path) {
+				trace(point.toString());
+			}*/
+			//trace("reaches here");
+			//path = playstate.level.foreground.findPath(new FlxPoint(128, 128), new FlxPoint(256, 128));
 			if (path == null) {
-			//	trace("there is no path.");
+				//trace("there is no path.");
 			}
 			if (path == null || path.length == 0) {
+				//trace("path length 0");
 				path = null;
 				return true;
 			}
 		}
+		//trace("reaches 2");
 		if (path.length == 0) {
+			trace("path length 0");
 			path = null;
 			return true;
 		}
-		//for (point in path) {
-		//	trace(point.toString());
-		//}
-		//trace("path is valid");
-		//trace(path[0].toString() + " isthe destination and we are at " + x + "," + y);
 		if (goTo(path[0])) {
 			
 			path.reverse();
@@ -89,76 +165,27 @@ class Mob extends FlxSprite implements Damageable
 	}
 	
 	public function getTarget() {
-		target = playstate.player;
-	}
-	
-	
-	public function new(playstate:PlayState, X:Float = 200, Y:Float = 200,spritefilename:String=null) {
-		//loadGraphic(spritefile,
-		super(X, Y);
-		this.playstate = playstate;
-		playstate.damagables.add(this);
-		if (spritefilename == null) {
-			spritefilename = "assets/images/linda.png";
+		for (obj in sightCollider.getCollisionList()) {
+			if (obj.getDamageableMask() != this.getDamageableMask()) {
+				target = obj;
+				return true;
+			}
 		}
-		//loadGraphic("assets/images/linda.png", true, 16, 16);
-		//animation.add("idle", [0]);
-		//animation.play("idle");
-		
-		this.makeGraphic(32, 32, FlxColor.GREEN);
-		updateHitbox();
-	//	collider = new Collider(x,y);
-		//this.addChild(collider);
-		action = idleAction;
-		
-		weapon = new WeaponManager(playstate, side, WeaponType_Bullet2);
-		followDistance = 100;
-		speed = 50;
-		
-		stats = new Stats();
-		hud = new MobHUD(this);
+		return false;	
 	}
 	
-	public function takeDamage(damage:Int) {
-		// TODO: make the mob actually take damage
-		//trace("taking " + damage + " damage");
-		stats.damage(damage);
-		if (stats.isDead()) {
-			var hc:HeartCollectible = new HeartCollectible(this.x, this.y, 2);
-			playstate.add(hc);
-			playstate.collectibles.add(hc);
-			this.destroy();
-		}
-	}
-	
-	public function mobReset():Void {
-		action = idleAction;
-	}
-	
+
 	public function stopShort(point:FlxPoint):FlxPoint {
 		//returns a point that is followdistance away from point. If closer than followdistance, it will return the current position.
 		var temp :FlxPoint = towards(point);
 		var dist :Float = distanceTo(point);
 		return new FlxPoint(x + temp.x * (dist - followDistance), y + temp.y * (dist - followDistance));
 	}
-	
+
 	public function distanceTo(point:FlxPoint):Float {
 		return Math.max(Math.sqrt(  (x - point.x)  * (x - point.x)  + (y - point.y) * (y - point.y)),0);
 	}
-	
-	public override function update():Void {
-		super.update();
-		action();
-		//}else {
-		//	reset();
-		//}
-		
-		stats.update();
-		hud.update();
-		weapon.update();
-	}
-	
-	
+
 	public function towardsSprite(sprite:FlxSprite):FlxPoint {
 		//towards for a sprite..
 		return towards(new FlxPoint(sprite.x, sprite.y));
@@ -194,5 +221,95 @@ class Mob extends FlxSprite implements Damageable
 		super.draw();
 		
 		hud.draw();
+	}
+	
+	
+
+	public override function update()
+	{
+		super.update();
+		
+		//updatePathing();
+		action();
+		sightCollider.clear();
+		sightCollider.updateXY(x, y);
+		stats.update();
+	}
+	
+	public function getCollisionFlags():Int
+	{
+		return CollisionFlags.SOLID;
+	}
+	
+	public function onCollision(other:ICollidable):Void
+	{
+		Collision.switchFlags(
+			this,
+			other,
+			Collision.separate.bind(this.sprite, cast other),
+			// Let damagers assign damage
+			null,
+			null
+		);
+	}
+	
+	public function getDamageableMask():Int
+	{
+		return DamageMask.PLAYER;
+	}
+	
+	public function receiveDamage(amount:Int):Void
+	{
+		stats.damage(amount);
+		if (stats.isDead())
+		{
+			destroy();
+			playstate.add(new HeartCollectible(playstate, x, y));
+		}
+	}
+	
+	public function get_x():Float
+	{
+		return sprite.x;
+	}
+	
+	public function set_x(value:Float):Float
+	{
+		return sprite.x = value;
+	}
+	
+	public function get_y():Float
+	{
+		return sprite.y;
+	}
+	
+	public function set_y(value:Float):Float
+	{
+		return sprite.y = value;
+	}
+	
+	public function get_width():Float
+	{
+		return sprite.width;
+	}
+	
+	public function set_width(value:Float):Float
+	{
+		return sprite.width = value;
+	}
+	
+	public function get_height():Float
+	{
+		return sprite.height;
+	}
+	
+	public function set_height(value:Float):Float
+	{
+		return sprite.height = value;
+	}
+	
+	public function get_velocity():FlxPoint
+	{
+		return sprite.velocity;
 	}
 }

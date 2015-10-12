@@ -7,24 +7,29 @@ class DialogueDictionary
 {
 	private static var PATH:String = "assets/dialogue/testdialogue.json";
 	
-	private var stringMap:Map<String, String>;
+	private var map:Map<String, Dialogue>;
 	
 	public function new() 
 	{
-		stringMap = new Map<String, String>();
+		map = new Map<String, Dialogue>();
 		
 		var dialogueFile:String = File.getContent(PATH);
 		var dialogueJSON:Dynamic = Json.parse(dialogueFile);
 		
 		for (key in Reflect.fields(dialogueJSON))
 		{
-			var value:String = Reflect.field(dialogueJSON, key);
-			stringMap[key] = value;
+			var lines:Array<String> = Reflect.field(dialogueJSON, key);
+			var dialogue = new Dialogue();
+			for (line in lines)
+			{
+				dialogue.addFrame(new DialogueFrame(line));
+			}
+			map[key] = dialogue;
 		}
 	}
 	
-	public function getString(key:String):String
+	public function get(key:String):Dialogue
 	{
-		return stringMap[key];
+		return map[key];
 	}
 }

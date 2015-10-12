@@ -1,17 +1,22 @@
 package;
-import flixel.FlxSprite;
-import flixel.util.FlxColor;
+import flixel.FlxG;
 import flixel.group.FlxGroup;
+import flixel.FlxSprite;
+import flixel.FlxState;
+import flixel.text.FlxText;
+import flixel.ui.FlxButton;
+import flixel.util.FlxMath;
+import flixel.util.FlxColor;
+import flixel.util.FlxAngle;
 
 import collision.ICollidable;
 import collision.CollidableSprite;
 import collision.Collision;
 import collision.CollisionFlags;
 
-class Collectible extends FlxGroup implements ICollidable
+class Interactive extends FlxGroup implements ICollidable
 {
 	public var state:PlayState;
-	public var type:String;
 	
 	public var sprite:CollidableSprite;
 	
@@ -29,6 +34,9 @@ class Collectible extends FlxGroup implements ICollidable
 		this.state.collision.add(this.sprite);
 	}
 	
+	public function onInteraction():Void
+	{}
+	
 	public function getCollisionFlags():Int
 	{
 		return CollisionFlags.NONE;
@@ -36,13 +44,9 @@ class Collectible extends FlxGroup implements ICollidable
 	
 	public function onCollision(other:ICollidable):Void
 	{
-		if (Collision.resolve(other) == state.player)
+		if (Collision.resolve(other) == state.player && FlxG.keys.justPressed.SPACE)
 		{
-			state.player.stats.addHearts(1);
-			destroy();
+			onInteraction();
 		}
 	}
-	
-	public function onCollect():Void
-	{}
 }

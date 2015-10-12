@@ -10,38 +10,40 @@ import flixel.util.FlxPoint;
  */
 class Testenemy extends Mob
 {
-	var wanderAction:Dynamic; 
+	//var idleAction:Dynamic; 
 	var chaseAction:Dynamic;
-	
-	public function new(playstate:PlayState, X:Float=200, Y:Float=200,spritefilename:String=null) 
+	public function new(playstate:PlayState, startX:Float=200, startY:Float=200, damageMask:Int=2, spritePath:String = null)
 	{
-		super(playstate, X, Y, spritefilename);
+		super(playstate, startX, startY,damageMask, spritePath);
 		
-		target = playstate.player;
+		//target = playstate.player;
 		
-		wanderAction = function() {
-			if (destination == null) {
-				destination = new FlxPoint(Math.random() * 70 - 35 + x, Math.random() * 70 - 35 + y);
-			}
-			if (goTo(destination)) {
-				destination = null;
+		idleAction = function() {
+			if (getTarget()) {
+				action = chaseAction;
 			}
 		};
 		
+		
+		
 		chaseAction = function() {
 			if (target == null) {
-				trace("getting target");
-				getTarget();
+				action = idleAction;
 				return;
 			}
-			if (destination == null) {
-				destination = stopShort(new FlxPoint(target.x, target.y));
+			if (destination == null || Math.random() > .95)  {
+			//	trace("dest is null");
+				//trace(target);
+				//trace(target.get_x() + ", " + target.get_y());
+				//trace(target);
+				destination = stopShort(new FlxPoint(target.get_x(), target.get_y()));
 				//as is, the path is recalculated every frame the player moves.
 			}
 			if (pathTo(destination)) {
+			//	trace("successful path");
 				destination = null;
 			};
-			//fire();
+			fire();
 		};
 		
 		action = chaseAction;

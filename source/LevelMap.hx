@@ -2,6 +2,7 @@ package;
 
 import haxe.io.Path;
 import flixel.FlxG;
+import flixel.FlxBasic;
 import flixel.FlxObject;
 import flixel.util.FlxPoint;
 import flixel.group.FlxGroup;
@@ -11,18 +12,17 @@ import flixel.addons.editors.tiled.TiledObject;
 import flixel.addons.editors.tiled.TiledObjectGroup;
 import flixel.addons.editors.tiled.TiledTileSet;
 
+import collision.CollidableTilemap;
+
 class LevelMap extends TiledMap
 {
 	public var state:PlayState;
 	
-	public var foregroundTiles:FlxTilemap;
-	public var foregroundGroup:FlxGroup;
+	public var foreground:CollidableTilemap;
 	public var backgroundTiles:Array<FlxTilemap>;
-	public var backgroundGroup:FlxGroup;
+	public var background:FlxGroup;
 	
 	public var spawnPoints:Map<String, FlxPoint>;
-	
-	public var enemyGroup:FlxGroup;
 	
 	public var startX:Float;
 	public var startY:Float;
@@ -33,14 +33,11 @@ class LevelMap extends TiledMap
 		
 		state = playState;
 		
-		foregroundTiles = null;
-		foregroundGroup = new FlxGroup();
+		foreground = null;
 		backgroundTiles = new Array<FlxTilemap>();
-		backgroundGroup = new FlxGroup();
+		background = new FlxGroup();
 		
 		spawnPoints = new Map<String, FlxPoint>();
-		
-		enemyGroup = new FlxGroup();
 		
 		var tileset:TiledTileSet = null;
 		for (ts in tilesets)
@@ -53,26 +50,30 @@ class LevelMap extends TiledMap
 		
 		for (tileLayer in layers)
 		{
-			var tilemap = new FlxTilemap();
-			tilemap.widthInTiles = width;
-			tilemap.heightInTiles = height;
-			tilemap.loadMap(tileLayer.tileArray, tilesetPath, tileset.tileWidth, tileset.tileHeight, FlxTilemap.OFF, 1, 1, 1);
-			
 			if (tileLayer.name == "foreground")
 			{
-				Assert.info(foregroundTiles == null, "Foreground layer added while there is already a foreground layer. Only one foreground layer is allowed.");
-				foregroundTiles = tilemap;
-				foregroundGroup.add(foregroundTiles);
+				Assert.info(foreground == null, "Second foreground layer found in tile map");
+				foreground = new CollidableTilemap();
+				foreground.widthInTiles = width;
+				foreground.heightInTiles = height;
+				foreground.loadMap(tileLayer.tileArray, tilesetPath, tileset.tileWidth, tileset.tileHeight, FlxTilemap.OFF, 1, 1, 1);
 			}
 			else
 			{
+				var tilemap = new FlxTilemap();
+				tilemap.widthInTiles = width;
+				tilemap.heightInTiles = height;
+				tilemap.loadMap(tileLayer.tileArray, tilesetPath, tileset.tileWidth, tileset.tileHeight, FlxTilemap.OFF, 1, 1, 1);
 				backgroundTiles.push(tilemap);
-				backgroundGroup.add(tilemap);
+				background.add(tilemap);
 			}
 		}
 		
-		Assert.info(foregroundTiles != null, "No foreground layer found in tilemap");
-		
+		Assert.info(foreground != null, "No foreground layer found in tilemap");
+	}
+	
+	public function loadObjects():Void
+	{
 		for (group in objectGroups)
 		{
 			for (o in group.objects)
@@ -84,25 +85,20 @@ class LevelMap extends TiledMap
 				}
 				else if (o.name == "test")
 				{
-					enemyGroup.add(new Testenemy(state, o.x, o.y));
+					state.add(new Testenemy(state, o.x, o.y));
 				}
 				else if (o.name == "teleporter")
 				{
 					Assert.info(o.custom.contains("level"), "Teleporter at (" + o.x + "," + o.y + ") missing level property");
 					Assert.info(o.custom.contains("spawn"), "Teleporter at (" + o.x + "," + o.y + ") missing spawn property");
-					state.teleporters.push(new Teleporter(state, o.x, o.y, o.width, o.height, o.custom.get("level"), o.custom.get("spawn")));
+					state.add(new Teleporter(state, o.x, o.y, o.width, o.height, o.custom.get("level"), o.custom.get("spawn")));
+				}
+				else if (o.name == "dialogue")
+				{
+					Assert.info(o.custom.contains("id"), "Dialog at (" + o.x + "," + o.y + ") missing id property");
+					state.add(new InteractiveDialogue(state, o.x, o.y, o.custom.get("id")));
 				}
 			}
 		}
-	}
-	
-	public function collideWith(obj:FlxObject, ?notifyCallback:FlxObject->FlxObject->Void, ?processCallback:FlxObject->FlxObject->Bool):Bool
-	{
-		if (processCallback == null)
-		{
-			processCallback = FlxObject.separate;
-		}
-		
-		return FlxG.overlap(foregroundTiles, obj, notifyCallback, processCallback);
 	}
 }
