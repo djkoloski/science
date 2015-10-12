@@ -2,6 +2,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.system.FlxSound;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
@@ -19,6 +20,8 @@ class Player extends FlxSprite
 	public var weaponManager:WeaponManager;
 	static public var firing:Bool = false;
 	
+	private var soundEffect:FlxSound;
+	
 	public function new(playState:PlayState)
 	{
 		super();
@@ -35,6 +38,8 @@ class Player extends FlxSprite
 		weaponManager = new WeaponManager(playState, side, WeaponType_Bullet1);
 		
 		drag.x = drag.y = 1600.0;
+		
+		soundEffect = FlxG.sound.load(AssetPaths.soundEffect__ogg);
 	}
 	
 	public function takeDamage(damage:Int) {
@@ -110,18 +115,22 @@ class Player extends FlxSprite
 		if (FlxG.keys.pressed.RIGHT)
 		{
 			dx += 1.0;
+			soundEffect.play();
 		}
 		if (FlxG.keys.pressed.LEFT)
 		{
 			dx -= 1.0;
+			soundEffect.play();
 		}
 		if (FlxG.keys.pressed.DOWN)
 		{
 			dy += 1.0;
+			soundEffect.play();
 		}
 		if (FlxG.keys.pressed.UP)
 		{
 			dy -= 1.0;
+			soundEffect.play();
 		}
 		
 		var len:Float = Math.sqrt(dx * dx + dy * dy);
