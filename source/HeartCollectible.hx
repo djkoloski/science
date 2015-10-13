@@ -6,7 +6,7 @@ class HeartCollectible extends Collectible
 	
 	public function new(state:PlayState, x:Float, y:Float, h:Int = 1) 
 	{
-		super(state, x, y, "assets/images/heartpickup.png");
+		super(state, x, y, AssetPaths.heartpickup__png);
 		heal = h;
 	}
 	

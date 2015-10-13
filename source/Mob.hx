@@ -175,10 +175,8 @@ class Mob extends FlxGroup implements IHittable
 		Assert.info(target != null);
 		//trace(target);
 		//trace("firing");
-		var velocities:FlxPoint = towardsSprite(target);
-		var angle:Float = Math.atan2(velocities.y, velocities.x);
 		//trace(angle);
-		weapon.fire(x, y, angle);
+		weapon.fire();
 	}
 	
 	public function getTarget() {
@@ -262,6 +260,13 @@ class Mob extends FlxGroup implements IHittable
 	{
 		Assert.info(action != null);
 		super.update();
+		
+		if (target != null)
+		{
+			var velocities:FlxPoint = towardsSprite(target);
+			var weaponRadius:Float = Math.sqrt(Math.pow(sprite.width / 2, 2) + Math.pow(sprite.height / 2, 2));
+			weapon.setTransform(x + sprite.width / 2, y + sprite.width / 2, velocities.x, velocities.y, weaponRadius);
+		}
 		
 		//updatePathing();
 		action();

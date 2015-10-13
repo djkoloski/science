@@ -1,22 +1,50 @@
 package weapon;
 
 import flixel.util.FlxPoint;
+import flixel.FlxG;
+
+import flixel.FlxObject;
+
+enum LaserState
+{
+	LaserState_Firing;
+	LaserState_Cooldown;
+}
 
 class Laser extends Weapon
 {
-	public static inline var FRAME_LIMIT:Int = 5;
-	
+	public var currentState:LaserState;
 	public var dps:Float;
 	public var laserBeam:LaserBeam;
-	public var framesSinceFire:Int;
+	public var timer:Float;
+	public var shotLength:Float;
+	public var cooldownPerShot:Float;
 	
-	public function new(state:PlayState, damageMask:Int, dps:Float)
+	public function new(state:PlayState, damageMask:Int, dps:Float, shotLength:Float, cooldownPerShot:Float)
 	{
 		super(state, damageMask);
 		
+		this.currentState = LaserState_Cooldown;
 		this.dps = dps;
+		this.timer = 0;
+		this.shotLength = shotLength;
+		this.cooldownPerShot = cooldownPerShot;
 		this.laserBeam = null;
-		this.framesSinceFire = 0;
+	}
+	
+	public function transitionState(newState:LaserState):Void
+	{
+		currentState = newState;
+		switch (newState)
+		{
+			case LaserState_Firing:
+				timer = shotLength;
+			case LaserState_Cooldown:
+				destroyLaserBeam();
+				timer = cooldownPerShot;
+			default:
+				throw "Invalid state";
+		}
 	}
 	
 	public function destroyLaserBeam()
@@ -35,15 +63,13 @@ class Laser extends Weapon
 		add(laserBeam);
 	}
 	
-	public override function fire(startX:Float, startY:Float, angle:Float)
+	public function updateLaserBeam()
 	{
-		framesSinceFire = 0;
-		
 		destroyLaserBeam();
 		createLaserBeam();
 		
-		var start:FlxPoint = new FlxPoint(startX, startY);
-		var direction:FlxPoint = new FlxPoint(Math.cos(angle), Math.sin(angle));
+		var start:FlxPoint = new FlxPoint(posX, posY);
+		var direction:FlxPoint = new FlxPoint(dirX, dirY);
 		var end:FlxPoint = new FlxPoint();
 		
 		state.level.foreground.raycast(start, direction, end);
@@ -51,19 +77,58 @@ class Laser extends Weapon
 		laserBeam.setEndpoints(start.x, start.y, end.x, end.y);
 	}
 	
+	public override function fire()
+	{
+		if (getCooldown() > 0)
+		{
+			return;
+		}
+		
+		if (currentState != LaserState_Firing)
+		{
+			transitionState(LaserState_Firing);
+		}
+	}
+	
 	public override function update()
 	{
 		super.update();
 		
-		if (framesSinceFire < FRAME_LIMIT)
-		{
-			++framesSinceFire;
-		}
+		timer -= FlxG.elapsed;
 		
-		if (laserBeam != null && framesSinceFire == FRAME_LIMIT)
+		if (timer <= 0)
 		{
-			destroyLaserBeam();
-			framesSinceFire = FRAME_LIMIT + 1;
+			switch (currentState)
+			{
+				case LaserState_Firing:
+					transitionState(LaserState_Cooldown);
+				case LaserState_Cooldown:
+				default:
+					throw "Invalid state";
+			}
+		}
+		else
+		{
+			switch (currentState)
+			{
+				case LaserState_Firing:
+					updateLaserBeam();
+				case LaserState_Cooldown:
+				default:
+					throw "Invalid state";
+			}
+		}
+	}
+	
+	public override function getCooldown():Float
+	{
+		if (currentState == LaserState_Cooldown)
+		{
+			return timer / cooldownPerShot;
+		}
+		else
+		{
+			return 0;
 		}
 	}
 }

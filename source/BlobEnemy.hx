@@ -26,7 +26,7 @@ class BlobEnemy extends Testenemy
 		super(playstate, startX, startY,  DamageMask.ENEMY);
 		this.scaleFactor = scaleFactor;
 		
-		this.sprite.loadGraphic("assets/images/blob_walk.png", true, 32, 32);
+		this.sprite.loadGraphic(AssetPaths.blob_walk__png, true, 32, 32);
 		this.sprite.animation.add("right", [0, 1], 10, false);
 		this.sprite.animation.add("up", [2, 3], 10, false);
 		this.sprite.animation.add("left", [4, 5], 10, false);

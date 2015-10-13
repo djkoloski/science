@@ -56,7 +56,7 @@ class PlayState extends FlxState
 		
 		changeLevel("assets/tiled/Level1.tmx");
 		
-		FlxG.sound.playMusic(AssetPaths.Varoeldur__ogg, 1, true);
+		FlxG.sound.playMusic(AssetPaths.BackgroundMusic__wav, 1, true);
 	}
 	
 	/**

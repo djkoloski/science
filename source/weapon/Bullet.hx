@@ -23,7 +23,7 @@ class Bullet extends FlxGroup implements IHurtable
 	public var x(get, set):Float;
 	public var y(get, set):Float;
 	
-	public function new(state:PlayState, startX:Float, startY:Float, movementAngle:Float, damageMask:Int, radius:Float, lifespan:Float, speed:Float, amount:Int, color:Int)
+	public function new(state:PlayState, startX:Float, startY:Float, velocityX:Float, velocityY:Float, damageMask:Int, radius:Float, lifespan:Float, amount:Int, color:Int)
 	{
 		super();
 		
@@ -37,8 +37,8 @@ class Bullet extends FlxGroup implements IHurtable
 		this.sprite.setProxy(this);
 		this.sprite.makeGraphic(Math.floor(radius * 2), Math.floor(radius * 2), color);
 		this.sprite.centerOrigin();
-		this.sprite.velocity.x = Math.cos(movementAngle) * speed;
-		this.sprite.velocity.y = Math.sin(movementAngle) * speed;
+		this.sprite.velocity.x = velocityX;
+		this.sprite.velocity.y = velocityY;
 		this.sprite.drag.x = this.sprite.drag.y = 0;
 		
 		add(this.sprite);
