@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="72" height="90" tilewidth="32" tileheight="32" nextobjectid="70">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="72" height="90" tilewidth="32" tileheight="32" nextobjectid="71">
  <tileset firstgid="1" name="SchoolTileSet" tilewidth="32" tileheight="32" tilecount="240">
   <image source="tileset.png" width="640" height="384"/>
  </tileset>
@@ -32,7 +32,7 @@
   </object>
   <object id="7" name="dialogue" x="1794" y="385.5" width="42" height="43">
    <properties>
-    <property name="id" value="DIALOGUE_Classroom"/>
+    <property name="id" value="DIALOGUE_Classrooms"/>
    </properties>
   </object>
   <object id="8" name="spawn" x="415" y="1923" width="64" height="64">
@@ -179,5 +179,10 @@
   <object id="67" name="tank" x="716" y="2510" width="64" height="64"/>
   <object id="68" name="tank" x="903" y="2510" width="64" height="64"/>
   <object id="69" name="blob" x="957" y="2395" width="64" height="64"/>
+  <object id="70" name="dialogue" x="773" y="719.5" width="42" height="43">
+   <properties>
+    <property name="id" value="DIALOGUE_Blob"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

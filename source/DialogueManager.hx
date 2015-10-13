@@ -21,11 +21,11 @@ enum DialogueManagerState
 
 class DialogueManager extends FlxGroup
 {
-	public static var OPENING_TIME:Float = 0.5;
-	public static var NEXT_CHAR_TIME:Float = 0.02;
+	public static var OPENING_TIME:Float = 0.3;
+	public static var NEXT_CHAR_TIME:Float = 0.01;
 	public static var PAUSE_TIME:Float = 1.0;
-	public static var CLOSING_TIME:Float = 0.5;
-	public static var LINE_LENGTH:Int = 50;
+	public static var CLOSING_TIME:Float = 0.1;
+	public static var LINE_LENGTH:Int = 10;
 	public static var LINES_PER_DIALOG:Int = 4;
 	
 	public var state:PlayState;
@@ -39,7 +39,6 @@ class DialogueManager extends FlxGroup
 	public var callback:Void->Void;
 	
 	public var foreground:FlxSprite;
-	public var background:FlxSprite;
 	public var text:FlxText;
 	
 	public function new(state:PlayState)
@@ -57,15 +56,13 @@ class DialogueManager extends FlxGroup
 		this.callback = null;
 		
 		foreground = new FlxSprite();
-		foreground.makeGraphic(Math.round(FlxG.width / 3), Math.round(FlxG.height / 4), FlxColor.BLACK);
+		foreground.loadGraphic("assets/images/textbox.png", false);
 		foreground.scrollFactor.x = foreground.scrollFactor.y = 0;
-		background = new FlxSprite();
-		background.makeGraphic(Math.round(FlxG.width / 3), Math.round(FlxG.height / 4), FlxColor.WHITE);
-		background.scrollFactor.x = background.scrollFactor.y = 0;
+		
 		text = new FlxText();
+		text.setFormat(null,12,FlxColor.BLACK);
 		text.scrollFactor.x = text.scrollFactor.y = 0;
 		
-		add(background);
 		add(foreground);
 		add(text);
 		
@@ -141,10 +138,8 @@ class DialogueManager extends FlxGroup
 		
 		this.foreground.x = newX;
 		this.foreground.y = newY;
-		this.background.x = newX;
-		this.background.y = newY;
-		this.text.x = newX;
-		this.text.y = newY;
+		this.text.x = newX+ 12;
+		this.text.y = newY+ 16;
 	}
 	
 	public override function update()
