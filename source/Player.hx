@@ -208,7 +208,7 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 	
 	public function getDamageableMask():Int
 	{
-		return DamageMask.ENEMY;
+		return DamageMask.PLAYER;
 	}
 	
 	public function receiveDamage(amount:Int):Void

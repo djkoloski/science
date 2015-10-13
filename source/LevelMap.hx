@@ -87,6 +87,14 @@ class LevelMap extends TiledMap
 				{
 					state.add(new Testenemy(state, o.x, o.y));
 				}
+				else if (o.name == "blob")
+				{
+					state.add(new BlobEnemy(state, o.x, o.y));
+				}
+				else if (o.name == "hive")
+				{
+					state.add(new HiveEnemy(state, o.x, o.y));
+				}
 				else if (o.name == "teleporter")
 				{
 					Assert.info(o.custom.contains("level"), "Teleporter at (" + o.x + "," + o.y + ") missing level property");

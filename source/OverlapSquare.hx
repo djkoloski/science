@@ -11,14 +11,14 @@ import collision.CollisionFlags;
  * ...
  * @author ...
  */
-class OverlapSquare extends FlxSprite implements ICollidable
+class OverlapSquare extends FlxObject implements ICollidable
 {
 	var inRange: Array<IDamageable>;
 	public function new(X:Float=0, Y:Float=0, Width:Float=0, Height:Float=0) 
 	{
-		//super(X, Y, Width, Height);
-		super(X, Y);
-		makeGraphic(Math.floor(Width), Math.floor(Height), FlxColor.TRANSPARENT);
+		super(X, Y, Width, Height);
+		//super(X, Y);
+		//makeGraphic(Math.floor(Width), Math.floor(Height), FlxColor.YELLOW);
 		inRange = new Array<IDamageable>();
 	}
 	public function getCollisionFlags():Int {

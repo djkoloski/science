@@ -3,6 +3,8 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxPoint;
+import collision.DamageMask;
+import weapon.TankGun;
 
 /**
  * ...
@@ -12,10 +14,10 @@ class Testenemy extends Mob
 {
 	//var idleAction:Dynamic; 
 	var chaseAction:Dynamic;
-	public function new(playstate:PlayState, startX:Float=200, startY:Float=200, damageMask:Int=2, spritePath:String = null)
+	public function new(playstate:PlayState, startX:Float=200, startY:Float=200, damageMask:Int = DamageMask.ENEMY, spritePath:String = null)
 	{
 		super(playstate, startX, startY,damageMask, spritePath);
-		
+		weapon = new TankGun(playstate);
 		//target = playstate.player;
 		
 		idleAction = function() {
@@ -48,5 +50,13 @@ class Testenemy extends Mob
 		
 		action = chaseAction;
 	}
-	
+	public override function receiveDamage(amount:Int):Void
+	{
+		super.receiveDamage(amount);
+		getTarget();
+		action = chaseAction;
+		
+		//action = attackAction;
+		//destination = null;
+	}
 }
