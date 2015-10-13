@@ -83,7 +83,7 @@ class LevelMap extends TiledMap
 					Assert.info(o.custom.contains("id"), "Spawn at (" + o.x + "," + o.y + ") missing id property");
 					spawnPoints[o.custom.get("id")] = new FlxPoint(o.x + o.width / 2, o.y + o.height / 2);
 				}
-				else if (o.name == "test")
+				else if (o.name == "tank")
 				{
 					state.add(new Testenemy(state, o.x, o.y));
 				}

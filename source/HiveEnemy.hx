@@ -15,9 +15,9 @@ class HiveEnemy extends Mob
 	
 	public var manage:Dynamic;
 	
-	public function new(playstate:PlayState, startX:Float, startY:Float, damageMask:Int=DamageMask.POD, spritePath:String=null) 
+	public function new(playstate:PlayState, startX:Float, startY:Float, damageMask:Int=DamageMask.POD) 
 	{
-		super(playstate, startX, startY, damageMask, spritePath);
+		super(playstate, startX, startY, damageMask);
 		pods = new Array<PodEnemy>();
 		
 		manage = function() {

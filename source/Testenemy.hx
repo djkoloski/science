@@ -14,9 +14,9 @@ class Testenemy extends Mob
 {
 	//var idleAction:Dynamic; 
 	var chaseAction:Dynamic;
-	public function new(playstate:PlayState, startX:Float=200, startY:Float=200, damageMask:Int = DamageMask.ENEMY, spritePath:String = null)
+	public function new(playstate:PlayState, startX:Float=200, startY:Float=200, damageMask:Int = DamageMask.ENEMY)
 	{
-		super(playstate, startX, startY,damageMask, spritePath);
+		super(playstate, startX, startY,damageMask);
 		weapon = new TankGun(playstate);
 		//target = playstate.player;
 		
@@ -27,7 +27,11 @@ class Testenemy extends Mob
 			}
 		};
 		
-		
+		this.sprite.loadGraphic(AssetPaths.tank_walk__png, true, 64, 64);
+		this.sprite.animation.add("right", [0, 1], 10, false);
+		this.sprite.animation.add("up", [2, 3], 10, false);
+		this.sprite.animation.add("left", [4, 5], 10, false);
+		this.sprite.animation.add("down", [6, 7], 10, false);
 		
 		chaseAction = function() {
 			if (target == null || !target.exists) {
@@ -60,4 +64,38 @@ class Testenemy extends Mob
 		//action = attackAction;
 		//destination = null;
 	}
+	
+	/*
+	public override function update():Void
+	{
+		super.update();
+		updateAnimation();
+	}
+	
+	public function updateAnimation():Void
+	{
+		if (Math.abs(velocity.x) >= Math.abs(velocity.y))
+		{
+			if (velocity.x > 0)
+			{
+				sprite.animation.play("right");
+			}
+			else
+			{
+				sprite.animation.play("left");
+			}
+		}
+		else
+		{
+			if (velocity.y > 0)
+			{
+				sprite.animation.play("down");
+			}
+			else
+			{
+				sprite.animation.play("up");
+			}
+		}
+	}
+	*/
 }

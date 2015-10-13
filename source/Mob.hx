@@ -56,7 +56,7 @@ class Mob extends FlxGroup implements IHittable
 	//public var stats:Stats;
 	
 	
-	public function new(playstate:PlayState, startX:Float, startY:Float, damageMask:Int, spritePath:String = null)
+	public function new(playstate:PlayState, startX:Float, startY:Float, damageMask:Int)
 	{
 		super();
 		sightRadius = 1000;
@@ -76,16 +76,7 @@ class Mob extends FlxGroup implements IHittable
 		
 		this.sprite = new DamageableSprite(startX, startY);
 		this.sprite.setProxy(this);
-		if (spritePath == null)
-		{
-			this.sprite.makeGraphic(32, 32, FlxColor.GREEN);
-		}
-		else
-		{
-			this.sprite.loadGraphic(spritePath, true, 16, 16);
-			this.sprite.animation.add("idle", [0]);
-			this.sprite.animation.play("idle");
-		}
+		this.sprite.makeGraphic(32, 32, FlxColor.GREEN);
 		
 		this.hud = new MobHUD(this);
 		sightCollider = new OverlapSquare(x - (sightRadius / 2), y - (sightRadius / 2), sightRadius, sightRadius);
@@ -107,7 +98,7 @@ class Mob extends FlxGroup implements IHittable
 	public function goTo(point:FlxPoint): Bool {
 		//Moves towards target point, returning true if it has arrived. 
 		Assert.info(point.x > 0 && point.y > 0, "Something is moving to a point offscreen.");
-		//trace("going to");
+		//Trace.info("going to");
 		moveTowards(point);
 		if (distanceTo(point) < speed * FlxG.elapsed || distanceTo(point) < sprite.width) {
 			return true;
@@ -122,43 +113,43 @@ class Mob extends FlxGroup implements IHittable
 		
 		if (path == null ||  path[path.length - 1].x != point.x || path[path.length - 1].y != point.y) {
 			//If we need to make a new path (no path or new destination is different from the old one)...
-			//trace("path is not valid");
+			//Trace.info("path is not valid");
 			//var other =  new FlxPoint(point.x, point.y);
-			//trace("going from: " + x + "," + y + " to: " + point.x + "," + point.y);
+			//Trace.info("going from: " + x + "," + y + " to: " + point.x + "," + point.y);
 			if (!playstate.level.foreground.getBounds().containsFlxPoint(point)) {
 				//If the path end is outside of the level this path is over. 
-				//trace("path outside of level");
+				//Trace.info("path outside of level");
 				return true;
 			}
 			path = playstate.level.foreground.findPath(new FlxPoint(x, y), point);
 			
 			
 			
-			//trace("reaches here");
+			//Trace.info("reaches here");
 			//path = playstate.level.foreground.findPath(new FlxPoint(128, 128), new FlxPoint(256, 128));
 			if (path == null) {
-				//trace("there is no path.");
+				//Trace.info("there is no path.");
 			}
 			if (path == null || path.length == 0) {
-				//trace("path length 0");
+				//Trace.info("path length 0");
 				path = null;
 				return true;
 			}
-			/*trace("From");
+			/*Trace.info("From");
 			for (point in path) {
-				trace(point.toString());
+				Trace.info(point.toString());
 			}
-			trace("to"); 
+			Trace.info("to"); 
 			for (i in 0...path.length) {
 				path[i] = new FlxPoint(path[i].x - sprite.width / 2, path[i].y - sprite.height / 2);
 			}
 			for (point in path) {
-				trace(point.toString());
+				Trace.info(point.toString());
 			}*/
 		}
-		//trace("reaches 2");
+		//Trace.info("reaches 2");
 		if (path.length == 0) {
-			trace("path length 0");
+			Trace.info("path length 0");
 			path = null;
 			return true;
 		}
@@ -182,6 +173,7 @@ class Mob extends FlxGroup implements IHittable
 		//	return;
 		//}
 		Assert.info(target != null);
+<<<<<<< HEAD
 		Assert.info(target.exists);
 		//trace(target);
 		//trace("firing");
@@ -189,6 +181,12 @@ class Mob extends FlxGroup implements IHittable
 		var angle:Float = Math.atan2(velocities.y, velocities.x);
 		//trace(angle);
 		weapon.fire(x, y, angle);
+=======
+		//Trace.info(target);
+		//Trace.info("firing");
+		//Trace.info(angle);
+		weapon.fire();
+>>>>>>> 0654c8c8a86190f9268a22e89a638d6ae8be3bfd
 	}
 	
 	public function getTarget(source:Int=null) {
@@ -243,7 +241,7 @@ class Mob extends FlxGroup implements IHittable
 		if (len == 0) {
 			return new FlxPoint(0, 0);
 		}
-		//trace("direction: " + (tempx / len) + "," + (tempy / len));
+		//Trace.info("direction: " + (tempx / len) + "," + (tempy / len));
 		return new FlxPoint(tempx / len, tempy / len);
 	}
 	
@@ -260,12 +258,17 @@ class Mob extends FlxGroup implements IHittable
 			return;
 		}
 		/*if ( new FlxPoint(x, y) == new FlxPoint(x, y)) {
-			trace("equals works as expected");
+			Trace.info("equals works as expected");
 		}*/
+<<<<<<< HEAD
 		if(Math.random() > .95){
 			lastFramePos = new FlxPoint(x, y);
 		}
 		//trace(lastFramePos.toString());
+=======
+		lastFramePos = new FlxPoint(x, y);
+		Trace.info(lastFramePos.toString());
+>>>>>>> 0654c8c8a86190f9268a22e89a638d6ae8be3bfd
 		//var dir = towards(point);
 		var dir = towards(new FlxPoint(point.x - sprite.width / 2, point.y - sprite.height / 2));
 		//dir = new FlxPoint(dir - sprite.width / 2, dir - sprite.height / 2);
@@ -273,7 +276,7 @@ class Mob extends FlxGroup implements IHittable
 		//x += dir.x * speed * FlxG.elapsed;
 		//y += dir.y * speed * FlxG.elapsed;
 		Assert.info(!Math.isNaN(this.velocity.x) && !Math.isNaN(this.velocity.y));
-		//trace("moving towards " + point.x + "," + point.y);
+		//Trace.info("moving towards " + point.x + "," + point.y);
 	}
 	
 	public override function draw():Void {
@@ -282,7 +285,11 @@ class Mob extends FlxGroup implements IHittable
 		hud.draw();
 	}
 	public function stuck() {
+<<<<<<< HEAD
 		//trace("stuck.");
+=======
+		Trace.info("stuck.");
+>>>>>>> 0654c8c8a86190f9268a22e89a638d6ae8be3bfd
 		action = idleAction;
 	}
 	
@@ -291,6 +298,13 @@ class Mob extends FlxGroup implements IHittable
 	{
 		Assert.info(action != null);
 		super.update();
+		
+		if (target != null)
+		{
+			var velocities:FlxPoint = towardsSprite(target);
+			var weaponRadius:Float = Math.sqrt(Math.pow(sprite.width / 2, 2) + Math.pow(sprite.height / 2, 2));
+			weapon.setTransform(x + sprite.width / 2, y + sprite.width / 2, velocities.x, velocities.y, weaponRadius);
+		}
 		
 		//updatePathing();
 		action();
