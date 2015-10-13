@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="74" height="94" tilewidth="32" tileheight="32" nextobjectid="4">
  <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32" tilecount="240">
-  <image source="tileset.png" width="640" height="384"/>
+  <image source="../science/assets/tiled/tileset.png" width="640" height="384"/>
  </tileset>
  <layer name="background" width="74" height="94">
   <data encoding="base64" compression="zlib">
@@ -10,19 +10,13 @@
  </layer>
  <layer name="foreground" width="74" height="94">
   <data encoding="base64" compression="zlib">
-   eJztnFtywyAMRZ1mDYnX0Gb/+2s9U6auRoCEJB7xvTP8JH7AMSCQZD+3bXt2KLef8lEp9+1P3PH77zE96juqPASsXidOnxmO+wRtieb02GzawQmcwAmcwMmtSOw8tWVX5LQrWd0X56TtF+f+sSvauPq4k6z/cv3japxa6p/qLNVVOWnPA6f/OsbwnfkdnGy/awROMoGTTFfhdPiUvjKFm9Nu5JjXxvulLEXq9+vFqcQoMZCc481oNk4zSjOOwQmcagInmd6ZU6t/g8a9DvXgdNgizkZFc7L4N2i9enAqtSOak1f/ByfZeeAkOw+cZOdpObXumaL8TCWN5GSJJXi1QyqMu9jrg5NM3HoPnGQCJ5k8OFnm9ppPzlJa8xS4OJAHJ6t/NYpTa54CF5cdOe6i1VpfcJIJnGTy4JSbi7h9yWiN4lRi1LOflezr+Xm17EeTnbRwah2P2ly6mkr7zFr+vYbVWT04aerL7ZepRsyTPTh5C5xkAieZwEmmlTlJ5+pcTo7GHq3KScOIa5/WnxyR2yS5Z6+8s1w/SL/3bHfpWXLPrOd7jzVOM+ioB8ejZx4jOIETOM3LyZK3pJ2zubpwtlRqYz2+BSDlZInNSxnn1igprtF6/0dHTq1K17HUpdf9wSmWk0ceTLpOZGyvpGhOlj0I9V+W2EjmJ4uiOY2QpQ+XbOU7ctLYRnpsKZ/r3Th5z/ngNAcn+u5ca9HO/6tx8sztiVg7z8JphLTj7hwfzvV/TR+9AqdkK3OswEl/bisnSb6L1/tgue9IzM5Jmu+iid+U1n+l/qtpK83ziebkPR5r54FTnUPt/1U5tcSTKQc6Bks+Ac09ad7YKE4aRuf60vcrznvbxCjHia5tNf6bUZw0/a70va1z/fcKJ4tW4FSbj1I/eQmOb9UKnEpjlP5Hfbte67LZOWn9j3Qe1/jmateZmZN1nHqtP8CJV7IJ4FTnNMP6CZzAaYUCTuAETnNw4mI7NV/qLP6CXpxy8S/Ju2gr+QusnLwETjK9I6eI70h4xTNnKdHf2sjd9xtmokK4
+   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
   </data>
  </layer>
  <objectgroup name="objects">
-  <object id="2" name="spawn" x="1154.33" y="64.6665" width="64" height="64">
+  <object id="2" name="spawn" x="1153.33" y="49.6665" width="64" height="64">
    <properties>
-    <property name="id" value="start2"/>
-   </properties>
-  </object>
-  <object id="3" name="teleporter" x="1155" y="1" width="64" height="64">
-   <properties>
-    <property name="level" value="Level1"/>
-    <property name="spawn" value="exit1"/>
+    <property name="id" value="start"/>
    </properties>
   </object>
  </objectgroup>
