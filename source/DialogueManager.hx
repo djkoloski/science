@@ -21,11 +21,7 @@ enum DialogueManagerState
 
 class DialogueManager extends FlxGroup
 {
-<<<<<<< HEAD
-	public static var OPENING_TIME:Float = 0.3;
-=======
 	public static var OPENING_TIME:Float = 0.5;
->>>>>>> 89c42719a16f30e7b11cdd0585b63b66d2b3b49c
 	public static var NEXT_CHAR_TIME:Float = 0.01;
 	public static var PAUSE_TIME:Float = 1.0;
 	public static var CLOSING_TIME:Float = 0.1;
@@ -113,6 +109,7 @@ class DialogueManager extends FlxGroup
 	public function startDialogue(id:String, ?callback:Void->Void):Void
 	{
 		this.dialogue = state.dialogue.get(id);
+		Assert.info(dialogue != null, "Dialogue with id \"" + id + "\" not found");
 		this.callback = callback;
 		this.currentFrame = 0;
 		this.currentIndex = 0;
