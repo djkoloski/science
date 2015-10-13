@@ -36,6 +36,10 @@ class PlayState extends FlxState
 	public var dialogueManager:DialogueManager;
 	public var player:Player;
 	
+	public var aStarStart:FlxPoint;
+	public var aStarEnd:FlxPoint;
+	public var aStarTest:AStarTest;
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -57,6 +61,8 @@ class PlayState extends FlxState
 		changeLevel("assets/tiled/Level1.tmx");
 		
 		FlxG.sound.playMusic(AssetPaths.BackgroundMusic__wav, 1, true);
+		
+		aStarTest = null;
 	}
 	
 	/**
@@ -85,6 +91,28 @@ class PlayState extends FlxState
 		if (FlxG.keys.justPressed.R)
 		{
 			dialogueManager.startDialogue("DIALOGUE_OTHER");
+		}
+		
+		if (FlxG.mouse.justPressed)
+		{
+			aStarStart = FlxG.mouse.getWorldPosition();
+		}
+		
+		if (FlxG.mouse.justPressedRight)
+		{
+			aStarEnd = FlxG.mouse.getWorldPosition();
+		}
+		
+		if (FlxG.keys.justPressed.P)
+		{
+			if (aStarTest != null)
+			{
+				remove(aStarTest);
+				aStarTest.destroy();
+			}
+			aStarTest = new AStarTest();
+			aStarTest.renderPath(aStarStart, aStarEnd, level.foreground.findPath(aStarStart, aStarEnd), Math.round(level.foreground.width), Math.round(level.foreground.height));
+			add(aStarTest);
 		}
 	}
 	
