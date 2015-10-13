@@ -59,7 +59,7 @@ class Mob extends FlxGroup implements IHittable
 	public function new(playstate:PlayState, startX:Float, startY:Float, damageMask:Int)
 	{
 		super();
-		sightRadius = 5;
+		sightRadius = 1000;
 		followDistance = 100;
 		this.damageMask = damageMask;
 		this.playstate = playstate;
