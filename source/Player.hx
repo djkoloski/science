@@ -11,6 +11,7 @@ import flixel.util.FlxAngle;
 import flixel.group.FlxGroup;
 import flixel.util.FlxPoint;
 import weapon.Laser;
+import weapon.MachineGun;
 import weapon.RocketLauncher;
 import weapon.Shotgun;
 import weapon.Sniper;
@@ -39,10 +40,11 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 	public var y(get, set):Float;
 	public var velocity(get, never):FlxPoint;
 	
-	public var shotgun: Shotgun;
-	public var sniper: Sniper;
-	public var rocketLauncher: RocketLauncher;
-	public var laser: Laser;
+	public var shotgun:Shotgun;
+	public var sniper:Sniper;
+	public var rocketLauncher:RocketLauncher;
+	public var laser:Laser;
+	public var machinegun:MachineGun;
 	
 	public function new(state:PlayState)
 	{
@@ -56,7 +58,9 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		shotgun = new Shotgun(this.state);
 		sniper = new Sniper(this.state);
 		rocketLauncher = new RocketLauncher(this.state);
+		machinegun = new MachineGun(this.state);
 		laser = new Laser(this.state, DamageMask.PLAYER, 60.0, 1.0, 1.0);
+		//laser.locked = false;
 		this.weapon = laser;
 		this.sprite = new DamageableSprite();
 		this.sprite.setProxy(this);
@@ -145,24 +149,29 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 	
 	private function switchWeapons():Void 
 	{
-		if (FlxG.keys.pressed.ONE)
+		if (FlxG.keys.pressed.ONE && !rocketLauncher.locked)
 		{
 			weapon = rocketLauncher;
 		}
 		
-		if (FlxG.keys.pressed.TWO)
+		if (FlxG.keys.pressed.TWO && !sniper.locked)
 		{
 			weapon = sniper;
 		}
 		
-		if (FlxG.keys.pressed.THREE)
+		if (FlxG.keys.pressed.THREE && !shotgun.locked)
 		{
 			weapon = shotgun;
 		}
 		
-		if (FlxG.keys.pressed.FOUR)
+		if (FlxG.keys.pressed.FOUR && !laser.locked)
 		{
 			weapon = laser;
+		}
+		
+		if (FlxG.keys.pressed.FIVE && !machinegun.locked)
+		{
+			weapon = machinegun;
 		}
 	}
 	

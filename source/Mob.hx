@@ -52,6 +52,8 @@ class Mob extends FlxGroup implements IHittable
 	
 	private var lastFramePos:FlxPoint;
 	
+	public var necessary:Bool;
+	
 	//public var hud:MobHUD;
 	//public var stats:Stats;
 	
@@ -92,6 +94,8 @@ class Mob extends FlxGroup implements IHittable
 			this.velocity = new FlxPoint(0, 0);
 		};
 		//sprite.immovable = true;
+		
+		necessary = false;
 	}
 	
 	
@@ -357,5 +361,11 @@ class Mob extends FlxGroup implements IHittable
 		sprite.velocity.x = value.x;
 		sprite.velocity.y = value.y;
 		return value;
+	}
+	
+	override public function destroy():Void 
+	{
+		playstate.necessaryMobs.remove(this);
+		super.destroy();
 	}
 }

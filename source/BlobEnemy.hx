@@ -116,9 +116,12 @@ class BlobEnemy extends Testenemy
 	public override function destroy():Void {
 		if (maxHearts > 0) {
 			for ( i in 0...2) {
-				playstate.add(new BlobEnemy(playstate, x + Math.random() * splitRadius * 2 - splitRadius, y + Math.random() * splitRadius * 2 - splitRadius,maxHearts-1, scaleFactor * .6));
+				var m:Mob = new BlobEnemy(playstate, x + Math.random() * splitRadius * 2 - splitRadius, y + Math.random() * splitRadius * 2 - splitRadius, maxHearts - 1, scaleFactor * .6);
+				playstate.add(m);
+				playstate.necessaryMobs.push(m);
 			}
 		}
+		playstate.necessaryMobs.remove(this);
 		super.destroy();
 	}
 	
