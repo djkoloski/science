@@ -64,7 +64,7 @@ class Gun extends Weapon
 		this.damageAmount = amount;
 	}
 	
-	public override function fire(startX:Float, startY:Float, angle:Float)
+	public override function fire()
 	{
 		if (cooldownTimer > 0)
 		{
@@ -75,13 +75,13 @@ class Gun extends Weapon
 		state.add(
 			new Bullet(
 				state,
-				startX,
-				startY,
-				angle,
+				posX,
+				posY,
+				dirX * bulletSpeed,
+				dirY * bulletSpeed,
 				damageMask,
 				bulletRadius,
 				bulletLifespan,
-				bulletSpeed,
 				damageAmount,
 				bulletColor
 			)
@@ -96,5 +96,10 @@ class Gun extends Weapon
 		{
 			cooldownTimer -= FlxG.elapsed;
 		}
+	}
+	
+	public override function getCooldown():Float
+	{
+		return cooldownTimer / cooldownPerShot;
 	}
 }

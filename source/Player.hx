@@ -44,7 +44,7 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		this.stats = new Stats();
 		this.speed = 500.0;
 		
-		this.weapon = new weapon.Laser(this.state, DamageMask.PLAYER, 60.0);
+		this.weapon = new weapon.Laser(this.state, DamageMask.PLAYER, 60.0, 1.0, 1.0);
 		this.sprite = new DamageableSprite();
 		this.sprite.setProxy(this);
 		this.sprite.loadGraphic(AssetPaths.player_walk__png, true, 32, 32);
@@ -68,50 +68,75 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 	public function onLevelUnload():Void
 	{}
 	
-	private function updateMovement():Void
+	private function getMovementInput(output:FlxPoint):Bool
 	{
-		var dx:Float = 0;
-		var dy:Float = 0;
-		
+		output.set(0, 0);
 		if (FlxG.keys.pressed.D)
 		{
-			dx += 1.0;
+			output.x = 1.0;
 		}
 		if (FlxG.keys.pressed.A)
 		{
-			dx -= 1.0;
+			output.x = -1.0;
 		}
 		if (FlxG.keys.pressed.S)
 		{
-			dy += 1.0;
+			output.y = 1.0;
 		}
 		if (FlxG.keys.pressed.W)
 		{
-			dy -= 1.0;
+			output.y = -1.0;
 		}
 		
-		if (dx != 0 || dy != 0)
+		if (output.x != 0 || output.y != 0)
 		{
-			var len = Math.sqrt(dx * dx + dy * dy);
-			velocity.x = dx * speed / len;
-			velocity.y = dy * speed / len;
-		}
-		else
-		{
-			velocity.x = 0;
-			velocity.y = 0;
+			var len = Math.sqrt(output.x * output.x + output.y * output.y);
+			output.x /= len;
+			output.y /= len;
+			return true;
 		}
 		
-		animatePlayer(dx, dy);
+		return false;
 	}
 	
-	public function animatePlayer(dx:Float, dy:Float):Void
+	private function getWeaponInput(output:FlxPoint):Bool
 	{
-		if (dx != 0 || dy != 0)
+		output.set(0, 0);
+		if (FlxG.keys.pressed.RIGHT)
 		{
-			if (Math.abs(dx) >= Math.abs(dy))
+			output.x = 1.0;
+		}
+		if (FlxG.keys.pressed.LEFT)
+		{
+			output.x = -1.0;
+		}
+		if (FlxG.keys.pressed.DOWN)
+		{
+			output.y = 1.0;
+		}
+		if (FlxG.keys.pressed.UP)
+		{
+			output.y = -1.0;
+		}
+		
+		if (output.x != 0 || output.y != 0)
+		{
+			var len = Math.sqrt(output.x * output.x + output.y * output.y);
+			output.x /= len;
+			output.y /= len;
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public function animatePlayer(dir:FlxPoint):Void
+	{
+		if (dir.x != 0 || dir.y != 0)
+		{
+			if (Math.abs(dir.x) >= Math.abs(dir.y))
 			{
-				if (dx > 0)
+				if (dir.x > 0)
 				{
 					sprite.animation.play("right");
 				}
@@ -122,7 +147,7 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 			}
 			else
 			{
-				if (dy > 0)
+				if (dir.y > 0)
 				{
 					sprite.animation.play("down");
 				}
@@ -134,46 +159,20 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		}
 	}
 	
-	public function updateWeapon():Void
+	public override function update():Void
 	{
-		var dx:Float = 0.0;
-		var dy:Float = 0.0;
+		super.update();
 		
-		if (FlxG.keys.pressed.RIGHT)
-		{
-			dx += 1.0;
-			soundEffect.play();
-		}
-		if (FlxG.keys.pressed.LEFT)
-		{
-			dx -= 1.0;
-			soundEffect.play();
-		}
-		if (FlxG.keys.pressed.DOWN)
-		{
-			dy += 1.0;
-			soundEffect.play();
-		}
-		if (FlxG.keys.pressed.UP)
-		{
-			dy -= 1.0;
-			soundEffect.play();
-		}
+		var moveVector = new FlxPoint();
+		var weaponVector = new FlxPoint();
 		
-		var len:Float = Math.sqrt(dx * dx + dy * dy);
-		if (len != 0)
-		{
-			dx /= len;
-			dy /= len;
-		}
-		var fireAngle:Float = Math.atan2(dy, dx);
-		
+		var moving = getMovementInput(moveVector);
+		var firing = getWeaponInput(weaponVector);
 		var weaponSwap: Bool = FlxG.keys.justPressed.Q;
 		var meleeSwap:Bool = FlxG.keys.justPressed.SHIFT;
 		
-		// TODO: Increase this so that bullets stop hitting the player immediately and dying
-		var weaponX:Float = x + sprite.width / 2.0 + dx * sprite.width;
-		var weaponY:Float = y + sprite.height / 2.0 + dy * sprite.height;
+		var weaponX:Float = x + sprite.width / 2.0;
+		var weaponY:Float = y + sprite.height / 2.0;
 		
 		if (weaponSwap)
 		{
@@ -185,23 +184,21 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 			// TODO: change to melee
 		}
 		
-		if (dx != 0 || dy != 0)
+		var weaponRadius:Float = Math.sqrt(Math.pow(sprite.width / 2, 2) + Math.pow(sprite.height / 2, 2));
+		weapon.setTransform(weaponX, weaponY, weaponVector.x, weaponVector.y, weaponRadius);
+		
+		if (firing)
 		{
-			weapon.fire(
-				weaponX,
-				weaponY,
-				fireAngle
-			);
-			
-			animatePlayer(dx, dy);
+			animatePlayer(weaponVector);
+			weapon.fire();
 		}
-	}
-	
-	public override function update():Void
-	{
-		super.update();
-		updateMovement();
-		updateWeapon();
+		else
+		{
+			animatePlayer(moveVector);
+		}
+		
+		velocity.x = moveVector.x * speed;
+		velocity.y = moveVector.y * speed;
 		
 		stats.update();
 	}
