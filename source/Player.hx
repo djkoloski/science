@@ -50,8 +50,8 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		this.sprite.loadGraphic("assets/images/player.png", true, 32, 32);
 		this.sprite.animation.add("up", [0, 1], 4, false);
 		this.sprite.animation.add("down", [2,3], 4, false);
-		this.sprite.animation.add("right", [4, 5], 4,false);
-		this.sprite.animation.add("left", [6, 7], 4, false);
+		this.sprite.animation.add("left", [4, 5], 4,false);
+		this.sprite.animation.add("right", [6, 7], 4, false);
 		this.sprite.drag.x = this.sprite.drag.y = 1600.0;
 		
 		soundEffect = FlxG.sound.load(AssetPaths.soundEffect__ogg);
@@ -102,26 +102,35 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 			velocity.y = 0;
 		}
 		
-		animationPlayer(dx, dy);
+		animatePlayer(dx, dy);
 	}
 	
-	public function animationPlayer(dx:Float, dy:Float):Void
+	public function animatePlayer(dx:Float, dy:Float):Void
 	{
-		if (dy == 1.0)
+		if (dx != 0 || dy != 0)
 		{
-			sprite.animation.play("up");
-		} 
-		else if (dy == -1.0)
-		{
-			sprite.animation.play("down");
-		}
-		else if (dx == 1.0)
-		{
-			sprite.animation.play("right");
-		}
-		else if (dx == -1.0)
-		{
-			sprite.animation.play("left");
+			if (Math.abs(dx) >= Math.abs(dy))
+			{
+				if (dx > 0)
+				{
+					sprite.animation.play("right");
+				}
+				else
+				{
+					sprite.animation.play("left");
+				}
+			}
+			else
+			{
+				if (dy > 0)
+				{
+					sprite.animation.play("down");
+				}
+				else
+				{
+					sprite.animation.play("up");
+				}
+			}
 		}
 	}
 	
@@ -183,6 +192,8 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 				weaponY,
 				fireAngle
 			);
+			
+			animatePlayer(dx, dy);
 		}
 	}
 	
