@@ -8,8 +8,8 @@ class DamagerProxy<T:IProxy> extends T implements IDamager
 		return getProxy().getDamagerMask();
 	}
 	
-	public function dealDamage():Int
+	public function dealDamage(target:IDamageable):Int
 	{
-		return getProxy().dealDamage();
+		return getProxy().dealDamage(target);
 	}
 }

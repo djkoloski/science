@@ -54,7 +54,7 @@ class PlayState extends FlxState
 		dialogueManager = null;
 		player = null;
 		
-		changeLevel("assets/tiled/leveltest.tmx");
+		changeLevel("assets/tiled/Level1.tmx");
 		
 		FlxG.sound.playMusic(AssetPaths.BackgroundMusic__wav, 1, true);
 	}

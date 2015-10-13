@@ -34,15 +34,7 @@ class OverlapSquare extends FlxObject implements ICollidable
 			null,
 			function() {
 				this.inRange.push(cast Collision.resolve(other));
-<<<<<<< HEAD
-				/*if (this.inRange.length > 10) {
-					trace(other);
-				}*/
-=======
-				//if (this.inRange.length > 10) {
-					//Trace.info(other);
-				//}
->>>>>>> 0654c8c8a86190f9268a22e89a638d6ae8be3bfd
+				//trace(this.inRange.length);
 			}
 		);
 	}

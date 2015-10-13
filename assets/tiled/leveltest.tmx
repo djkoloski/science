@@ -42,7 +42,7 @@
     <property name="id" value="player_start"/>
    </properties>
   </object>
-  <object id="2" name="test" x="1265" y="233" width="70" height="109"/>
+  <object id="2" name="tank" x="1265" y="233" width="70" height="109"/>
   <object id="3" name="teleporter" x="1538.66" y="491" width="59" height="228">
    <properties>
     <property name="level" value="leveltest2"/>
@@ -59,7 +59,7 @@
     <property name="id" value="DIALOG_HELLO"/>
    </properties>
   </object>
-  <object id="6" name="test" x="1078" y="374.5" width="70" height="109"/>
+  <object id="6" name="tank" x="1078" y="374.5" width="70" height="109"/>
   <object id="7" name="blob" x="246" y="1091.5" width="70" height="109"/>
   <object id="8" name="blob" x="116" y="1049.5" width="70" height="109"/>
   <object id="9" name="hive" x="1402" y="1288.5" width="70" height="109"/>

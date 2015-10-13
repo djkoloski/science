@@ -140,12 +140,12 @@ class BlobEnemy extends Testenemy
 		//destination = null;
 	}*/
 	
-	public override function update():Void
+	/*public override function update():Void
 	{
 		super.update();
 		updateAnimation();
-	}
-	
+	}*/
+	/*
 	public function updateAnimation():Void
 	{
 		if (Math.abs(velocity.x) >= Math.abs(velocity.y))
@@ -170,5 +170,5 @@ class BlobEnemy extends Testenemy
 				sprite.animation.play("up");
 			}
 		}
-	}
+	}*/
 }

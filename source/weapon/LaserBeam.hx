@@ -1,5 +1,6 @@
 package weapon;
 
+import collision.IDamageable;
 import flixel.FlxG;
 import flixel.group.FlxGroup;
 import flixel.FlxSprite;
@@ -115,7 +116,7 @@ class LaserBeam extends FlxGroup implements IHurtable
 		return damagerMask;
 	}
 	
-	public function dealDamage():Int
+	public function dealDamage(target:IDamageable):Int
 	{
 		return Math.ceil(dps * FlxG.elapsed);
 	}

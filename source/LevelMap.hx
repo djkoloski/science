@@ -85,7 +85,7 @@ class LevelMap extends TiledMap
 				}
 				else if (o.name == "tank")
 				{
-					state.add(new Testenemy(state, o.x, o.y));
+					state.add(new TankEnemy(state, o.x, o.y));
 				}
 				else if (o.name == "blob")
 				{
