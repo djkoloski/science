@@ -1,41 +1,31 @@
 {
 	"DIALOGUE_Hallways": [
-		"Alien: The hallways don't really have a lot",
-		"students, but they take a long time to get",
-		"through."
+		"Alien: The hallways don't really have\n a lot of students, but they take\n a long time to get through."
 	],
 	"DIALOGUE_Classrooms": [
-		"Alien: Classrooms are really crowded, but they",
-		"are a lot quicker than hallways."
+		"Alien: Classrooms are really crowded,\n but they are a lot quicker than\n hallways."
 	],
 	"DIALOGUE_Distortion": [
-		"Alien: Don't come in here. My project has messed",
-		"up this room. Stupid Saturn teleporters!! I know",
-		"the correct teleporter is in here"
+		"Alien: Don't come in here. My project\n has messed up this room. Stupid\n Saturn teleporters!! I know the correct\n teleporter is in here"
 			
 	],
 	"DIALOGUE_NotAttacking":[
 		"Alien:You!",
 		"Player: Ah",
-		"Alien: Woah, I'm not going to attack you.",
-		"you are Earth club's. Attacking you helps",
-		"them and I hate them."
+		"Alien: Woah, I'm not going to attack \n you. Earth club wants you, but I hate them. \n I don't want th help them."
 	],	
 	"DIALOGUE_Helping":[
-		"Alien: Earth Club is not popular. I think",
-		"they are the ones trying to catch you. Don't",
-		"be surprised if people offer you advice. We",
-		"all wan them to fail."
+		"Alien: Earth Club is not popular. \n Don't be surprised if people offer\n you advice. We all want them to fail."
 	
 
 	],	
 	"DIALOGUE_DontTouch":[
-		"Alien: If you see a project, don't touch it!",
-		"It is not yours, even if it is a laser!"
+		"Alien: If you see a project, don't \n touch it! It is not yours, even if\n it is a laser!"
 	],
 	"DIALOGUE_NextLevel":[
-		"Alien: Earth club has the door controls since",
-		"it is Earth day. Jerks locked the doors. Might",
-		"have to beat them up for them to unlock them."
+		"Alien: Earth club has the door\n controls since  it is Earth day.\n Jerks locked the doors. Might have\n to beat them up for them to\n unlock them."
+	],
+	"DIALOGUE_Blob":[
+		"Alien: The Earth Club keeps a nasty \n blob as a pet. These are parts of it."
 	]
 }	
