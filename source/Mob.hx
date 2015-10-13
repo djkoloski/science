@@ -56,7 +56,7 @@ class Mob extends FlxGroup implements IHittable
 	//public var stats:Stats;
 	
 	
-	public function new(playstate:PlayState, startX:Float, startY:Float, damageMask:Int, spritePath:String = null)
+	public function new(playstate:PlayState, startX:Float, startY:Float, damageMask:Int)
 	{
 		super();
 		sightRadius = 1000;
@@ -76,16 +76,7 @@ class Mob extends FlxGroup implements IHittable
 		
 		this.sprite = new DamageableSprite(startX, startY);
 		this.sprite.setProxy(this);
-		if (spritePath == null)
-		{
-			this.sprite.makeGraphic(32, 32, FlxColor.GREEN);
-		}
-		else
-		{
-			this.sprite.loadGraphic(spritePath, true, 16, 16);
-			this.sprite.animation.add("idle", [0]);
-			this.sprite.animation.play("idle");
-		}
+		this.sprite.makeGraphic(32, 32, FlxColor.GREEN);
 		
 		this.hud = new MobHUD(this);
 		sightCollider = new OverlapSquare(x - (sightRadius / 2), y - (sightRadius / 2), sightRadius, sightRadius);

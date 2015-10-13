@@ -47,10 +47,10 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		this.weapon = new weapon.Laser(this.state, DamageMask.PLAYER, 60.0);
 		this.sprite = new DamageableSprite();
 		this.sprite.setProxy(this);
-		this.sprite.loadGraphic("assets/images/player.png", true, 32, 32);
+		this.sprite.loadGraphic("assets/images/player_walk.png", true, 32, 32);
 		this.sprite.animation.add("up", [0, 1], 4, false);
 		this.sprite.animation.add("down", [2,3], 4, false);
-		this.sprite.animation.add("left", [4, 5], 4,false);
+		this.sprite.animation.add("left", [4, 5], 4, false);
 		this.sprite.animation.add("right", [6, 7], 4, false);
 		this.sprite.drag.x = this.sprite.drag.y = 1600.0;
 		

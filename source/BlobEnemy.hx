@@ -23,8 +23,14 @@ class BlobEnemy extends Testenemy
 	{
 		
 		this.maxHearts = maxHearts;
-		super(playstate, startX, startY,  DamageMask.ENEMY, null);
+		super(playstate, startX, startY,  DamageMask.ENEMY);
 		this.scaleFactor = scaleFactor;
+		
+		this.sprite.loadGraphic("assets/images/blob_walk.png", true, 32, 32);
+		this.sprite.animation.add("right", [0, 1], 10, false);
+		this.sprite.animation.add("up", [2, 3], 10, false);
+		this.sprite.animation.add("left", [4, 5], 10, false);
+		this.sprite.animation.add("down", [6, 7], 10, false);
 		this.sprite.scale.x = scaleFactor;
 		this.sprite.scale.y = scaleFactor;//(new FlxPoint(scaleFactor, scaleFactor));
 		this.sprite.updateHitbox();
@@ -125,4 +131,35 @@ class BlobEnemy extends Testenemy
 		//destination = null;
 	}
 	
+	public override function update():Void
+	{
+		super.update();
+		updateAnimation();
+	}
+	
+	public function updateAnimation():Void
+	{
+		if (Math.abs(velocity.x) >= Math.abs(velocity.y))
+		{
+			if (velocity.x > 0)
+			{
+				sprite.animation.play("right");
+			}
+			else
+			{
+				sprite.animation.play("left");
+			}
+		}
+		else
+		{
+			if (velocity.y > 0)
+			{
+				sprite.animation.play("down");
+			}
+			else
+			{
+				sprite.animation.play("up");
+			}
+		}
+	}
 }

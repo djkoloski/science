@@ -19,10 +19,10 @@
   </data>
  </layer>
  <objectgroup name="objects">
-  <object name="test" x="361" y="66" width="64" height="64"/>
-  <object name="test" x="123" y="199" width="64" height="64"/>
-  <object name="test" x="306" y="791" width="64" height="64"/>
-  <object name="test" x="1821" y="555" width="64" height="64"/>
+  <object name="tank" x="361" y="66" width="64" height="64"/>
+  <object name="blob" x="123" y="199" width="64" height="64"/>
+  <object name="pod" x="306" y="791" width="64" height="64"/>
+  <object name="hive" x="1821" y="555" width="64" height="64"/>
   <object name="spawn" x="1704" y="141" width="82" height="82">
    <properties>
     <property name="id" value="player_start"/>

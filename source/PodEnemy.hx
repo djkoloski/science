@@ -18,9 +18,9 @@ class PodEnemy extends Testenemy
 	
 	var hive:HiveEnemy;
 	
-	public function new(playstate:PlayState, startX:Float=200, startY:Float=200, hive, damageMask:Int=DamageMask.ENEMY, spritePath:String=null) 
+	public function new(playstate:PlayState, startX:Float=200, startY:Float=200, hive, damageMask:Int=DamageMask.ENEMY) 
 	{
-		super(playstate, startX, startY, damageMask, spritePath);
+		super(playstate, startX, startY, damageMask);
 		weapon = new PodGun(playstate);
 		speed = 150;
 		this.hive = hive;
