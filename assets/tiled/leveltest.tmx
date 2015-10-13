@@ -56,7 +56,7 @@
   </object>
   <object name="dialogue" x="199" y="529" width="121.333" height="111.333">
    <properties>
-    <property name="id" value="DIALOG_HELLO"/>
+    <property name="id" value="DIALOGUE_HELLO"/>
    </properties>
   </object>
  </objectgroup>

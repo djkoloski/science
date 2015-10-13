@@ -18,6 +18,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxAngle;
 import sys.io.File;
 import openfl.Vector.VectorDataIterator;
+import flixel.system.FlxSound;
 
 import collision.CollisionManager;
 
@@ -53,7 +54,9 @@ class PlayState extends FlxState
 		dialogueManager = null;
 		player = null;
 		
-		changeLevel("assets/tiled/leveltest.tmx");
+		changeLevel("assets/tiled/Level1.tmx");
+		
+		FlxG.sound.playMusic(AssetPaths.Varoeldur__ogg, 1, true);
 	}
 	
 	/**

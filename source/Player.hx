@@ -2,6 +2,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.system.FlxSound;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
@@ -28,6 +29,8 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 	public var weapon:weapon.Weapon;
 	public var sprite:DamageableSprite;
 	
+	private var soundEffect:FlxSound;
+	
 	public var x(get, set):Float;
 	public var y(get, set):Float;
 	public var velocity(get, never):FlxPoint;
@@ -49,6 +52,9 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		this.sprite.animation.add("down", [2,3], 4, false);
 		this.sprite.animation.add("right", [4, 5], 4,false);
 		this.sprite.animation.add("left", [6, 7], 4, false);
+		this.sprite.drag.x = this.sprite.drag.y = 1600.0;
+		
+		soundEffect = FlxG.sound.load(AssetPaths.soundEffect__ogg);
 		
 		add(this.weapon);
 		add(this.sprite);
@@ -127,18 +133,22 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		if (FlxG.keys.pressed.RIGHT)
 		{
 			dx += 1.0;
+			soundEffect.play();
 		}
 		if (FlxG.keys.pressed.LEFT)
 		{
 			dx -= 1.0;
+			soundEffect.play();
 		}
 		if (FlxG.keys.pressed.DOWN)
 		{
 			dy += 1.0;
+			soundEffect.play();
 		}
 		if (FlxG.keys.pressed.UP)
 		{
 			dy -= 1.0;
+			soundEffect.play();
 		}
 		
 		var len:Float = Math.sqrt(dx * dx + dy * dy);

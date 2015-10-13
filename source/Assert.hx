@@ -39,7 +39,7 @@ class Assert
 				var message = "******** Assertion Failed ********\n";
 				message += "Location:\t" + $v{pos.file} + ":" + $v{line} + "\n";
 				message += "Expression:\t" + ($v{ExprTools.toString(condition)}) + "\n";
-				if ($v{message == null})
+				if ($v{message != null})
 					message += "Message:\t" + ($e{message}) + "\n";
 				message += "Variables:\n";
 				for (i in 0...names.length)

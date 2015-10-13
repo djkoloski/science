@@ -1,11 +1,11 @@
 {
-	"DIALOG_HELLO": [
+	"DIALOGUE_HELLO": [
 		"Hello world! How's it going?",
 		"I'm pretty good, nothing much going on",
 		"Anyway, this is the end of the dialogue",
 		"Goodbye!"
 	],
-	"DIALOG_OTHER": [
+	"DIALOGUE_OTHER": [
 		"Other world! ?gniog ti s'woH"
 	]
 }
