@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="72" height="90" tilewidth="32" tileheight="32" nextobjectid="70">
+=======
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="72" height="90" tilewidth="32" tileheight="32" nextobjectid="22">
+>>>>>>> 1a6dd7ee4ac0ce97b7a4eaf6bda221280e5d8431
  <tileset firstgid="1" name="SchoolTileSet" tilewidth="32" tileheight="32" tilecount="240">
   <image source="tileset.png" width="640" height="384"/>
  </tileset>
@@ -25,9 +29,81 @@
     <property name="id" value="player_start"/>
    </properties>
   </object>
+<<<<<<< HEAD
   <object id="6" name="dialogue" x="1240" y="67" width="42" height="43">
    <properties>
     <property name="id" value="DIALOGUE_Hallways"/>
+=======
+  <object id="8" name="dialogue" x="1112" y="65" width="42" height="43">
+   <properties>
+    <property name="text" value="The hallways are longer, but don't have a lot of students"/>
+   </properties>
+  </object>
+  <object id="10" name="teleporter" x="68" y="1986" width="64" height="64">
+   <properties>
+    <property name="level" value="Level1"/>
+    <property name="spawn" value="maze1"/>
+   </properties>
+  </object>
+  <object id="11" name="teleporter" x="68" y="2305" width="64" height="64">
+   <properties>
+    <property name="level" value="Level1"/>
+    <property name="spawn" value="maze2"/>
+   </properties>
+  </object>
+  <object id="12" name="spawn" x="162" y="2109" width="64" height="64">
+   <properties>
+    <property name="id" value="maze2"/>
+   </properties>
+  </object>
+  <object id="13" name="teleporter" x="351" y="1988" width="64" height="64">
+   <properties>
+    <property name="level" value="Level1"/>
+    <property name="spawn" value="maze5"/>
+   </properties>
+  </object>
+  <object id="14" name="spawn" x="416" y="1923" width="64" height="64">
+   <properties>
+    <property name="id" value="maze5"/>
+   </properties>
+  </object>
+  <object id="15" name="spawn" x="70" y="2238" width="64" height="64">
+   <properties>
+    <property name="id" value="maze1"/>
+   </properties>
+  </object>
+  <object id="16" name="teleporter" x="231" y="2108" width="64" height="64">
+   <properties>
+    <property name="level" value="Level1"/>
+    <property name="spawn" value="maze4"/>
+   </properties>
+  </object>
+  <object id="17" name="spawn" x="135" y="1988" width="64" height="64">
+   <properties>
+    <property name="id" value="maze4"/>
+   </properties>
+  </object>
+  <object id="18" name="teleporter" x="357" y="2305" width="64" height="64">
+   <properties>
+    <property name="level" value="Level1"/>
+    <property name="spawn" value="maze3"/>
+   </properties>
+  </object>
+  <object id="19" name="spawn" x="227" y="2244" width="64" height="64">
+   <properties>
+    <property name="id" value="maze3"/>
+   </properties>
+  </object>
+  <object id="20" name="teleporter" x="415" y="2164" width="64" height="64">
+   <properties>
+    <property name="level" value="Level1"/>
+    <property name="spawn" value="maze6"/>
+   </properties>
+  </object>
+  <object id="21" name="spawn" x="283" y="1988" width="64" height="64">
+   <properties>
+    <property name="id" value="maze6"/>
+>>>>>>> 1a6dd7ee4ac0ce97b7a4eaf6bda221280e5d8431
    </properties>
   </object>
   <object id="7" name="dialogue" x="1794" y="385.5" width="42" height="43">
