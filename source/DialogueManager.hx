@@ -109,6 +109,7 @@ class DialogueManager extends FlxGroup
 	public function startDialogue(id:String, ?callback:Void->Void):Void
 	{
 		this.dialogue = state.dialogue.get(id);
+		Assert.info(dialogue != null, "Dialogue with id \"" + id + "\" not found");
 		this.callback = callback;
 		this.currentFrame = 0;
 		this.currentIndex = 0;

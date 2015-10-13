@@ -69,10 +69,10 @@ class Laser extends Weapon
 		createLaserBeam();
 		
 		var start:FlxPoint = new FlxPoint(posX, posY);
-		var direction:FlxPoint = new FlxPoint(dirX, dirY);
+		var tryEnd:FlxPoint = new FlxPoint(posX + dirX * 2000, posY + dirY * 2000);
 		var end:FlxPoint = new FlxPoint();
 		
-		state.level.foreground.raycast(start, direction, end);
+		state.level.foreground.ray(start, tryEnd, end);
 		
 		laserBeam.setEndpoints(start.x, start.y, end.x, end.y);
 	}
