@@ -10,92 +10,201 @@ import flixel.util.FlxAngle;
 import flixel.group.FlxGroup;
 import flixel.util.FlxTimer;
 
+enum DialogueManagerState
+{
+	DialogueManagerState_Opening;
+	DialogueManagerState_Open;
+	DialogueManagerState_Paused;
+	DialogueManagerState_Closing;
+	DialogueManagerState_Closed;
+}
+
 class DialogueManager extends FlxGroup
 {
-	public var width: Int = Std.int(FlxG.width/2);
-	public var height: Int =Std.int(FlxG.height / 4);
+	public static var OPENING_TIME:Float = 0.5;
+	public static var NEXT_CHAR_TIME:Float = 0.02;
+	public static var PAUSE_TIME:Float = 1.0;
+	public static var CLOSING_TIME:Float = 0.5;
+	public static var LINE_LENGTH:Int = 50;
+	public static var LINES_PER_DIALOG:Int = 4;
 	
-	public var boxForeground: FlxSprite;
-	public var boxBackground: FlxSprite;
-	public var dialogueBox:FlxText;
-	public var dialogueOpener: FlxSprite;
-	public var state: PlayState;
-	public var X:Float;
-	public var Y:Float;
-	public var timer:FlxTimer;
+	public var state:PlayState;
 	
-	public function new(playState:PlayState)
+	public var currentState:DialogueManagerState;
+	
+	public var dialogue:Dialogue;
+	public var currentFrame:Int;
+	public var currentIndex:Int;
+	public var timer:Float;
+	public var callback:Void->Void;
+	
+	public var foreground:FlxSprite;
+	public var background:FlxSprite;
+	public var text:FlxText;
+	
+	public function new(state:PlayState)
 	{
-		
 		super();
-		state = playState;
-		createDialogueBox();
+		
+		this.state = state;
+		
+		this.currentState = DialogueManagerState_Closed;
+		
+		this.dialogue = null;
+		this.currentFrame = 0;
+		this.currentIndex = 0;
+		this.timer = 0.0;
+		this.callback = null;
+		
+		foreground = new FlxSprite();
+		foreground.makeGraphic(Math.round(FlxG.width / 3), Math.round(FlxG.height / 4), FlxColor.BLACK);
+		foreground.scrollFactor.x = foreground.scrollFactor.y = 0;
+		background = new FlxSprite();
+		background.makeGraphic(Math.round(FlxG.width / 3), Math.round(FlxG.height / 4), FlxColor.WHITE);
+		background.scrollFactor.x = background.scrollFactor.y = 0;
+		text = new FlxText();
+		text.scrollFactor.x = text.scrollFactor.y = 0;
+		
+		add(background);
+		add(foreground);
+		add(text);
+		
+		setYOffset(0);
 	}
-	public function createDialogueBox()
-	{
-		var foregroundWidth:Int = Std.int(width - (width / 8));
-		var foregroundHeight:Int = Std.int(height - (height / 8));
-		X = FlxG.width/4;
-		Y = FlxG.height * 3 / 4;
-		
-		boxForeground = new FlxSprite(X+ (width/16),Y +(height/16));
-		boxForeground.makeGraphic(foregroundWidth,foregroundHeight,FlxColor.WHITE);
-		boxForeground.scrollFactor.x = boxForeground.scrollFactor.y = 0; 
-		
-		boxBackground = new FlxSprite(X, Y);
-		boxBackground.makeGraphic(width,height, FlxColor.BLACK);
-		boxBackground.scrollFactor.x = boxBackground.scrollFactor.y = 0; 
-		
-		add(boxBackground);
-		add(boxForeground);
 	
-		boxBackground.visible = false;
-		boxForeground.visible = false;
-		
-
-	}
-
-	public function closeDialogue()
+	public function onLevelLoad():Void
+	{}
+	
+	public function onLevelUnload():Void
 	{
-		
-		boxForeground.visible = false;
-		boxBackground.visible = false;
-		dialogueBox.visible = false;
+		transitionState(DialogueManagerState_Closed);
 	}
-	public function transitionOntoScreen()
+	
+	public function transitionState(newState:DialogueManagerState)
 	{
-		openDialogue();
-		timer = new FlxTimer(3, null, 1);
-		while (timer.finished != true)
+		currentState = newState;
+		switch (currentState)
 		{
-			Y += 1;
+			case DialogueManagerState_Opening:
+				setText("");
+				timer = OPENING_TIME;
+				setYOffset(0);
+			case DialogueManagerState_Open:
+				setText("");
+				timer = 0.0;
+				currentIndex = 0;
+				setYOffset(-1);
+			case DialogueManagerState_Paused:
+				timer = PAUSE_TIME;
+			case DialogueManagerState_Closing:
+				timer = CLOSING_TIME;
+			case DialogueManagerState_Closed:
+				setText("");
+				timer = 0.0;
+				setYOffset(0);
+				if (callback != null)
+					callback();
+			default:
+				throw "Invalid transition state";
 		}
 	}
-	public function transitionOffScreen()
+	
+	public function startDialogue(id:String, ?callback:Void->Void):Void
 	{
-		timer = new FlxTimer(3, null, 1);
-		while (timer.finished != true)
-		{
-			Y -= 1;
-		}
-		if (timer.finished == true)
-		{
-			closeDialogue();
-		}
+		this.dialogue = state.dialogue.get(id);
+		this.callback = callback;
+		this.currentFrame = 0;
+		this.currentIndex = 0;
+		this.transitionState(DialogueManagerState_Opening);
 	}
-	public function openDialogue()
+	
+	public function closeDialogue():Void
 	{
-		boxForeground.visible = true;
-		boxBackground.visible = true;
-		dialogueBox.visible = true;
+		this.transitionState(DialogueManagerState_Closing);
 	}
-	public function addDialogue(text:String)
+	
+	public function getCurrentFrame():DialogueFrame
 	{
+		return dialogue.frames[currentFrame];
+	}
+	
+	public function setText(newText:String):Void
+	{
+		Assert.info(newText != null, "Dialogue to display is null");
+		this.text.text = newText;
+	}
+	
+	public function setYOffset(offset:Float):Void
+	{
+		var newX = (FlxG.width - this.foreground.width) / 2;
+		var newY = FlxG.height + offset * this.foreground.height;
 		
-		dialogueBox = new FlxText(X+(width/16), Y+(height/16) , width - (width/8), text, 20, true);
-		dialogueBox.color = FlxColor.BLACK;
-		dialogueBox.scrollFactor.x = dialogueBox.scrollFactor.y = 0;
-		dialogueBox.visible = false;
-		add(dialogueBox);
+		this.foreground.x = newX;
+		this.foreground.y = newY;
+		this.background.x = newX;
+		this.background.y = newY;
+		this.text.x = newX;
+		this.text.y = newY;
+	}
+	
+	public override function update()
+	{
+		timer -= FlxG.elapsed;
+		
+		if (timer < 0)
+		{
+			switch (currentState)
+			{
+				case DialogueManagerState_Opening:
+					transitionState(DialogueManagerState_Open);
+				case DialogueManagerState_Open:
+					if (currentIndex >= getCurrentFrame().message.length)
+					{
+						transitionState(DialogueManagerState_Paused);
+					}
+					else
+					{
+						++currentIndex;
+						setText(getCurrentFrame().message.substr(0, currentIndex));
+						timer = NEXT_CHAR_TIME;
+					}
+				case DialogueManagerState_Paused:
+					if (currentFrame >= dialogue.frames.length)
+					{
+						transitionState(DialogueManagerState_Closing);
+					}
+					else
+					{
+						if (currentFrame < dialogue.frames.length - 1)
+						{
+							++currentFrame;
+							currentIndex = 0;
+							transitionState(DialogueManagerState_Open);
+						}
+						else
+						{
+							transitionState(DialogueManagerState_Closing);
+						}
+					}
+				case DialogueManagerState_Closing:
+					transitionState(DialogueManagerState_Closed);
+				case DialogueManagerState_Closed:
+				default:
+					throw "Invalid state";
+			}
+		}
+		else
+		{
+			switch (currentState)
+			{
+				case DialogueManagerState_Opening:
+					var t:Float = (OPENING_TIME - timer) / OPENING_TIME;
+					setYOffset(-t);
+				case DialogueManagerState_Closing:
+					var t:Float = (CLOSING_TIME - timer) / CLOSING_TIME;
+					setYOffset(t - 1.0);
+				default:
+			}
+		}
 	}
 }

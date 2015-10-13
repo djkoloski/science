@@ -2,6 +2,7 @@ package;
 
 import flash.system.System;
 import flixel.FlxG;
+import flixel.FlxBasic;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.FlxObject;
@@ -19,25 +20,21 @@ import sys.io.File;
 import openfl.Vector.VectorDataIterator;
 import flixel.system.FlxSound;
 
+import collision.CollisionManager;
+
 /**
  * A FlxState which can be used for the actual gameplay.
  */
 class PlayState extends FlxState
 {
+	public var collision:CollisionManager;
+	public var group:FlxGroup;
+	
 	public var level:LevelMap;
 	public var dialogue:DialogueDictionary;
+	
 	public var dialogueManager:DialogueManager;
-	
 	public var player:Player;
-	public var interactanble: InteractableDialogueBox;
-	public var bullets:Array<Bullet>;
-	
-	public var teleporters:Array<Teleporter>;
-	public var hud:PlayerHUD;
-	
-	public var damagers:FlxGroup;
-	public var damagables:FlxGroup;
-	public var collectibles:FlxGroup;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -48,29 +45,18 @@ class PlayState extends FlxState
 		
 		bgColor = 0xffaaaaaa;
 		
-		damagers = new FlxGroup();
-		damagables = new FlxGroup();
-		collectibles = new FlxGroup();
+		collision = null;
+		group = null;
 		
 		level = null;
 		dialogue = new DialogueDictionary();
-		dialogueManager = new DialogueManager(this);
 		
-		player = new Player(this);
-		damagables.add(player);
-		
-		bullets = new Array<Bullet>();
-		teleporters = new Array<Teleporter>();
-		hud = new PlayerHUD(player);
-		
-		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
+		dialogueManager = null;
+		player = null;
 		
 		changeLevel("assets/tiled/Level1.tmx");
 		
-		FlxG.sound.playMusic(AssetPaths.Varoeldur__ogg, 1, true);
-		
-		//var test:FlxText = new FlxText(500, 500, 500, "test asdfhksdlajhfsjadlfhsld", 20, true);
-		//add(test);
+		FlxG.sound.playMusic(AssetPaths.BackgroundMusic__wav, 1, true);
 	}
 	
 	/**
@@ -89,32 +75,28 @@ class PlayState extends FlxState
 	{
 		super.update();
 		
-		FlxG.overlap(damagers, damagables, function(damager:Damager, damagable:Damageable) {
-			damager.damage(damagable);
-		});
-		
-		FlxG.overlap(player, collectibles, function(player:Player, collectible:Collectible) {
-			if (collectible.getType() == "health") {
-				player.stats.addHearts(cast(collectible, HeartCollectible).getHeal());
-				collectible.destroy();
-			}
-		});
+		collision.update();
 		
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
 			System.exit(0);
 		}
 		
-		updateBullets();
-		
-		level.collideWith(player);
-		
 		if (FlxG.keys.justPressed.R)
 		{
-			trace("opening");
-			dialogueManager.addDialogue("DIALOGUE_OTHER");
-			dialogueManager.openDialogue();
+			dialogueManager.startDialogue("DIALOGUE_OTHER");
 		}
+	}
+	
+	public override function add(object:FlxBasic):FlxBasic
+	{
+		group.add(object);
+		return object;
+	}
+	
+	public override function remove(object:FlxBasic, splice:Bool = false):FlxBasic
+	{
+		return group.remove(object, splice);
 	}
 	
 	public function changeLevel(path:String, ?spawn:String):Void
@@ -138,61 +120,60 @@ class PlayState extends FlxState
 	
 	public function unloadLevel():Void
 	{
-		clear();
+		player.onLevelUnload();
+		remove(player);
+		dialogueManager.onLevelUnload();
+		remove(dialogueManager);
+		
+		if (collision != null)
+		{
+			collision.clear();
+			collision = null;
+		}
+		
+		if (group != null)
+		{
+			group.destroy();
+			group = null;
+		}
 		
 		level = null;
-		bullets = new Array<Bullet>();
-		teleporters = new Array<Teleporter>();
 	}
 	
 	public function loadLevel(path:String):Void
 	{
+		collision = new CollisionManager();
+		group = new FlxGroup();
+		super.add(group);
+		
+		if (player == null)
+		{
+			player = new Player(this);
+		}
+		player.onLevelLoad();
+		
+		if (dialogueManager == null)
+		{
+			dialogueManager = new DialogueManager(this);
+		}
+		dialogueManager.onLevelLoad();
+		
 		level = new LevelMap(this, path);
 		
+		FlxG.camera.follow(player.sprite, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
 		
-		add(level.backgroundGroup);
+		//add(level.background);
 		
-		for (teleporter in teleporters)
-		{
-			add(teleporter);
-		}
+		level.loadObjects();
 		
 		add(player);
-		add(level.foregroundGroup);
-		add(level.enemyGroup);
-		add(hud);
-		add(dialogueManager);
-		add(level.dialogueGroup);
 		
-		//add(new InteractableDialogueBox(this, "dialogue box test", 150, 150));
-	}
-	
-	public function addBullet(bullet:Bullet):Void
-	{
-		bullets.push(bullet);
-		damagers.add(bullet);
-		add(bullet);
-	}
-	
-	public function removeBullet(bullet:Bullet):Void
-	{
-		remove(bullet);
-		bullets.splice(bullets.indexOf(bullet), 1);
-	}
-	
-	public function updateBullets():Void
-	{
-		var i:Int = 0;
-		while (i < bullets.length)
-		{
-			if (bullets[i].expired() || level.collideWith(bullets[i]))
-			{
-				bullets[i].destroy();
-				removeBullet(bullets[i]);
-				--i;
-			}
-			++i;
-		}
+		add(level.foreground);
+		collision.add(level.foreground);
+		
+		add(dialogueManager);
+		
+		add(new PlayerHUD(player));
 	}
 }

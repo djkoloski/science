@@ -1,28 +1,18 @@
 package;
 
-/**
- * ...
- * @author ...
- */
 class HeartCollectible extends Collectible
 {
-	
 	private var heal:Int;
-
-	public function new(x:Float, y:Float, h:Int = 10) 
+	
+	public function new(state:PlayState, x:Float, y:Float, h:Int = 1) 
 	{
-		super(x, y, "health");
+		super(state, x, y, AssetPaths.heartpickup__png);
 		heal = h;
 	}
 	
-	public function getHeal():Int 
+	public override function onCollect():Void
 	{
-		return heal;
+		state.player.stats.addHearts(heal);
+		destroy();
 	}
-	
-	public function setHeal(h:Int):Void
-	{
-		heal = h;
-	}
-	
 }

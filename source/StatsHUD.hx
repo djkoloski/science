@@ -4,7 +4,7 @@ import flixel.group.FlxGroup;
 import flixel.FlxSprite;
 import flixel.FlxBasic;
 
-class StatsHUD extends FlxBasic
+class StatsHUD extends FlxGroup
 {
 	var stats:Stats;
 	var hearts:Array<FlxSprite>;
@@ -34,10 +34,10 @@ class StatsHUD extends FlxBasic
 		barBackground = null;
 		barForeground = null;
 		
-		rebuildGUI();
+		updateGUI();
 	}
 	
-	public function rebuildGUI():Void
+	public function updateGUI():Void
 	{
 		var barMaxSize = Math.floor(stats.getMaxResidual() * barScaleX / 2.0) * 2;
 		var barCurrentSize = Math.floor(stats.getCurrentResidual() * barScaleX / 2.0) * 2;
@@ -46,10 +46,18 @@ class StatsHUD extends FlxBasic
 		
 		if (hearts == null || stats.getHearts() != hearts.length)
 		{
+			if (hearts != null)
+			{
+				for (heart in hearts)
+				{
+					heart.destroy();
+				}
+			}
 			hearts = new Array<FlxSprite>();
 			for (i in 0...stats.getHearts())
 			{
 				var heart = new FlxSprite();
+				add(heart);
 				heart.makeGraphic(heartSizeX, heartSizeY, 0xffff0000);
 				if (fixed)
 				{
@@ -67,6 +75,7 @@ class StatsHUD extends FlxBasic
 		if (barFrame == null)
 		{
 			barFrame = new FlxSprite();
+			add(barFrame);
 			barFrame.makeGraphic(1, barSizeY + barBorder * 2, 0xff000000);
 			if (fixed)
 			{
@@ -81,6 +90,7 @@ class StatsHUD extends FlxBasic
 		if (barBackground == null)
 		{
 			barBackground = new FlxSprite();
+			add(barBackground);
 			barBackground.makeGraphic(1, barSizeY, 0xff666666);
 			if (fixed)
 			{
@@ -95,6 +105,7 @@ class StatsHUD extends FlxBasic
 		if (barForeground == null)
 		{
 			barForeground = new FlxSprite();
+			add(barForeground);
 			barForeground.makeGraphic(1, barSizeY, 0xffff0000);
 			if (fixed)
 			{
@@ -110,30 +121,6 @@ class StatsHUD extends FlxBasic
 	public override function update()
 	{
 		super.update();
-		
-		rebuildGUI();
-		
-		for (heart in hearts)
-		{
-			heart.update();
-		}
-		
-		barFrame.update();
-		barBackground.update();
-		barForeground.update();
-	}
-	
-	public override function draw()
-	{
-		super.draw();
-		
-		for (heart in hearts)
-		{
-			heart.draw();
-		}
-		
-		barFrame.draw();
-		barBackground.draw();
-		barForeground.draw();
+		updateGUI();
 	}
 }

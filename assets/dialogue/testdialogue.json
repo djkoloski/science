@@ -1,4 +1,41 @@
 {
-	"DIALOGUE_HELLO": "Hello world! How's it going?",
-	"DIALOGUE_OTHER": "Other world! ?gniog ti s'woH"
-}
+	"DIALOGUE_Hallways": [
+		"Alien: The hallways don't really have a lot",
+		"students, but they take a long time to get",
+		"through."
+	],
+	"DIALOGUE_Classrooms": [
+		"Alien: Classrooms are really crowded, but they",
+		"are a lot quicker than hallways."
+	],
+	"DIALOGUE_Distortion": [
+		"Alien: Don't come in here. My project has messed",
+		"up this room. Stupid Saturn teleporters!! I know",
+		"the correct teleporter is in here"
+			
+	],
+	"DIALOGUE_NotAttacking":[
+		"Alien:You!",
+		"Player: Ah",
+		"Alien: Woah, I'm not going to attack you.",
+		"you are Earth club's. Attacking you helps",
+		"them and I hate them."
+	],	
+	"DIALOGUE_Helping":[
+		"Alien: Earth Club is not popular. I think",
+		"they are the ones trying to catch you. Don't",
+		"be surprised if people offer you advice. We",
+		"all wan them to fail."
+	
+
+	],	
+	"DIALOGUE_DontTouch":[
+		"Alien: If you see a project, don't touch it!",
+		"It is not yours, even if it is a laser!"
+	],
+	"DIALOGUE_NextLevel":[
+		"Alien: Earth club has the door controls since",
+		"it is Earth day. Jerks locked the doors. Might",
+		"have to beat them up for them to unlock them."
+	]
+}	
