@@ -26,7 +26,7 @@ class Testenemy extends Mob
 			}
 		};
 		
-		this.sprite.loadGraphic("assets/images/tank_walk.png", true, 64, 64);
+		this.sprite.loadGraphic(AssetPaths.tank_walk__png, true, 64, 64);
 		this.sprite.animation.add("right", [0, 1], 10, false);
 		this.sprite.animation.add("up", [2, 3], 10, false);
 		this.sprite.animation.add("left", [4, 5], 10, false);
