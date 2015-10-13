@@ -19,6 +19,7 @@ import flixel.util.FlxAngle;
 import sys.io.File;
 import openfl.Vector.VectorDataIterator;
 import flixel.system.FlxSound;
+import collision.IDamageable;
 
 import collision.CollisionManager;
 
@@ -36,12 +37,17 @@ class PlayState extends FlxState
 	public var dialogueManager:DialogueManager;
 	public var player:Player;
 	
+	public var enemies:Array<IDamageable>;
+	
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
 	override public function create():Void
 	{
 		super.create();
+		
+		enemies = new Array<IDamageable>();
 		
 		bgColor = 0xffaaaaaa;
 		

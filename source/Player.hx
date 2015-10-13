@@ -70,6 +70,8 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		
 		soundEffect = FlxG.sound.load(AssetPaths.soundEffect__ogg);
 		
+		state.enemies.push(this);
+		
 		add(this.weapon);
 		add(this.sprite);
 	}

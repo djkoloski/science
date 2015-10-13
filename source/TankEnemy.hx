@@ -32,10 +32,9 @@ class TankEnemy extends Testenemy
 			}
 			//trace("fightaction");
 			chaseAction();
-			if(Math.random() > .99){
+			if (Math.random() > .99) {
 				var temp = new FlxPoint();
-				playstate.level.foreground.raycast(new FlxPoint(x, y), towards(new FlxPoint(target.get_x(), target.get_y())), temp);
-				if (distanceTo(temp) > distanceTo(new FlxPoint(target.get_x(), target.get_y()))) {
+				if(lineOfSight(target,temp)){
 					charge(temp);
 				}
 			}

@@ -36,7 +36,7 @@ class Mob extends FlxGroup implements IHittable
 	
 	
 	public var sightRadius:Int;
-	public var sightCollider:OverlapSquare;
+	//public var sightCollider:OverlapSquare;
 	
 	public var sprite:DamageableSprite;
 	public var hud:MobHUD;
@@ -63,7 +63,7 @@ class Mob extends FlxGroup implements IHittable
 	public function new(playstate:PlayState, startX:Float, startY:Float, damageMask:Int)
 	{
 		super();
-		sightRadius = 10;
+		sightRadius = 1000;
 		followDistance = 100;
 		this.damageMask = damageMask;
 		this.playstate = playstate;
@@ -83,14 +83,16 @@ class Mob extends FlxGroup implements IHittable
 		this.sprite.makeGraphic(32, 32, FlxColor.GREEN);
 		
 		this.hud = new MobHUD(this);
-		sightCollider = new OverlapSquare(x - (sightRadius / 2), y - (sightRadius / 2), sightRadius, sightRadius);
-		add(sightCollider);
-		this.playstate.collision.add(sightCollider);
+		//sightCollider = new OverlapSquare(x - (sightRadius / 2), y - (sightRadius / 2), sightRadius, sightRadius);
+		//add(sightCollider);
+		//this.playstate.collision.add(sightCollider);
 		
 		//add(this.weapon);
 		add(this.sprite);
 		this.playstate.collision.add(this.sprite);
 		add(this.hud);
+		
+		playstate.enemies.push(this);
 		
 		idleAction= function() {
 			this.velocity = new FlxPoint(0, 0);
@@ -198,7 +200,7 @@ class Mob extends FlxGroup implements IHittable
 	
 	
 	public function getTarget(source:Int=null) {
-		for (obj in sightCollider.getCollisionList()) {
+		/*for (obj in sightCollider.getCollisionList()) {
 			if (obj.getDamageableMask() != this.getDamageableMask()) {
 				if (!(cast obj).exists) {
 					//Assert.info(false);
@@ -219,17 +221,49 @@ class Mob extends FlxGroup implements IHittable
 		if (source != null) {
 			return getTarget();
 		}
-		return false;	
+		return false;*/
+		var temp = new FlxPoint();
+		for (enemy in playstate.enemies) {
+			if (source != null && enemy.getDamageableMask() != source) {
+				continue;
+			}
+			if (enemy.getDamageableMask() == getDamageableMask()) {
+				continue;
+			}
+			if (lineOfSight(enemy, temp) ) {
+				if (getCenter().distanceTo(new FlxPoint((cast enemy).get_x(),(cast enemy).get_y())) < sightRadius) {
+					target = enemy;
+					trace("detection");
+					return true;
+				}
+				trace("line of sight");
+			}
+		}
+		if (source != null) {
+			return getTarget(null);
+		}
+		return false;
 	}
 	
-
+	
 	public function stopShort(point:FlxPoint):FlxPoint {
 		//returns a point that is followdistance away from point. If closer than followdistance, it will return the current position.
 		var temp :FlxPoint = towards(point);
 		var dist :Float = distanceTo(point);
 		return new FlxPoint(x + temp.x * (dist - followDistance), y + temp.y * (dist - followDistance));
 	}
-
+	
+	public function lineOfSight(enemy:Dynamic,point:FlxPoint):Bool {
+		var temp = new FlxPoint();
+		playstate.level.foreground.raycast(new FlxPoint(x, y), towards(new FlxPoint(enemy.get_x(), enemy.get_y())), temp);
+		if (distanceTo(temp) > distanceTo(new FlxPoint(enemy.get_x(), enemy.get_y()))) {
+			point.x = temp.x;
+			point.y = temp.y;
+			return true;
+		}	
+		return false;
+	}
+	
 	public function distanceTo(point:FlxPoint):Float {
 		return Math.max(Math.sqrt(  (x - point.x)  * (x - point.x)  + (y - point.y) * (y - point.y)),0);
 	}
@@ -327,8 +361,8 @@ class Mob extends FlxGroup implements IHittable
 		
 		//updatePathing();
 		action();
-		sightCollider.clear();
-		sightCollider.updateXY(x, y);
+		//sightCollider.clear();
+		//sightCollider.updateXY(x, y);
 		stats.update();
 	}
 	
@@ -359,6 +393,7 @@ class Mob extends FlxGroup implements IHittable
 		stats.damage(amount);
 		if (stats.isDead())
 		{
+			playstate.enemies.remove(this);
 			destroy();
 			playstate.add(new HeartCollectible(playstate, x, y));
 		}
