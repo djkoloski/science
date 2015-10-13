@@ -177,11 +177,12 @@ class Mob extends FlxGroup implements IHittable
 	
 	public function fire() {
 		//fires at the target
-		if (!target.exists) {
-			target = null;
-			return;
-		}
+		//if (!target.exists) {
+		//	target = null;
+		//	return;
+		//}
 		Assert.info(target != null);
+		Assert.info(target.exists);
 		//trace(target);
 		//trace("firing");
 		var velocities:FlxPoint = towardsSprite(target);
@@ -190,12 +191,27 @@ class Mob extends FlxGroup implements IHittable
 		weapon.fire(x, y, angle);
 	}
 	
-	public function getTarget() {
+	public function getTarget(source:Int=null) {
 		for (obj in sightCollider.getCollisionList()) {
 			if (obj.getDamageableMask() != this.getDamageableMask()) {
-				target = obj;
-				return true;
+				if (!(cast obj).exists) {
+					//Assert.info(false);
+					
+					continue;
+				}
+				if (source != null) {
+					if(obj.getDamageableMask() == source){
+						target = obj;
+						return true;
+					}
+				}else {
+					target = obj;
+					return true;
+				}
 			}
+		}
+		if (source != null) {
+			return getTarget();
 		}
 		return false;	
 	}
@@ -237,15 +253,19 @@ class Mob extends FlxGroup implements IHittable
 		Assert.info(!Math.isNaN(x) && !Math.isNaN(y));
 		if (point.x == x && point.y == y) {
 			this.velocity = new FlxPoint(0, 0);
+			return;
 		}
 		if (lastFramePos != null && lastFramePos.x - x < speed/10000 && lastFramePos.y - y < speed/10000) {
 			stuck();
+			return;
 		}
 		/*if ( new FlxPoint(x, y) == new FlxPoint(x, y)) {
 			trace("equals works as expected");
 		}*/
-		lastFramePos = new FlxPoint(x, y);
-		trace(lastFramePos.toString());
+		if(Math.random() > .95){
+			lastFramePos = new FlxPoint(x, y);
+		}
+		//trace(lastFramePos.toString());
 		//var dir = towards(point);
 		var dir = towards(new FlxPoint(point.x - sprite.width / 2, point.y - sprite.height / 2));
 		//dir = new FlxPoint(dir - sprite.width / 2, dir - sprite.height / 2);
@@ -262,7 +282,7 @@ class Mob extends FlxGroup implements IHittable
 		hud.draw();
 	}
 	public function stuck() {
-		trace("stuck.");
+		//trace("stuck.");
 		action = idleAction;
 	}
 	
@@ -301,7 +321,7 @@ class Mob extends FlxGroup implements IHittable
 		return damageMask;
 	}
 	
-	public function receiveDamage(amount:Int):Void
+	public function receiveDamage(amount:Int,source:Int):Void
 	{
 		stats.damage(amount);
 		if (stats.isDead())
@@ -358,6 +378,7 @@ class Mob extends FlxGroup implements IHittable
 	
 	public function set_velocity(value:FlxPoint):FlxPoint
 	{
+		//sprite.velocity = value;
 		sprite.velocity.x = value.x;
 		sprite.velocity.y = value.y;
 		return value;

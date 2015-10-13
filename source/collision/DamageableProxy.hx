@@ -8,8 +8,8 @@ class DamageableProxy<T:IProxy> extends T implements IDamageable
 		return getProxy().getDamageableMask();
 	}
 	
-	public function receiveDamage(damage:Int):Void
+	public function receiveDamage(damage:Int,source:Int):Void
 	{
-		getProxy().receiveDamage(damage);
+		getProxy().receiveDamage(damage,source);
 	}
 }

@@ -71,9 +71,9 @@ class HiveEnemy extends Mob
 		angry = false;
 	}
 	
-	public override function receiveDamage(amount:Int):Void
+	public override function receiveDamage(amount:Int,source:Int):Void
 	{
-		super.receiveDamage(amount);
+		super.receiveDamage(amount,source);
 		angry = true;
 		for (pod in pods) {
 			pod.defend();
