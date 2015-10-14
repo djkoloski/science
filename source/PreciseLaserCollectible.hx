@@ -6,7 +6,7 @@ class PreciseLaserCollectible extends Collectible
 	
 	public function new(state:PlayState, x:Float, y:Float, dialogue:String)
 	{
-		super(state, x, y, AssetPaths.heartpickup__png);
+		super(state, x, y, AssetPaths.PreciseLaser__png);
 		this.dialogue = dialogue;
 	}
 	
