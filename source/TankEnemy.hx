@@ -74,6 +74,11 @@ class TankEnemy extends Testenemy
 			}
 			
 			speed *= 5;
+			if (distanceTo(destination) < sprite.width) {
+				speed /= 5;
+				attack();
+				return;
+			}
 			if (goTo(destination)) {
 				speed /= 5;
 				attack();

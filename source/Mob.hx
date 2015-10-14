@@ -114,7 +114,7 @@ class Mob extends FlxGroup implements IHittable
 		Assert.info(point.x > 0 && point.y > 0, "Something is moving to a point offscreen.");
 		//Trace.info("going to");
 		moveTowards(point);
-		if (distanceTo(point) < speed * FlxG.elapsed || distanceTo(point) < sprite.width * 2) {
+		if (distanceTo(point) < speed * FlxG.elapsed/* || distanceTo(point) < sprite.width * 2*/) {
 			return true;
 		}
 		return false;
@@ -135,7 +135,7 @@ class Mob extends FlxGroup implements IHittable
 				//Trace.info("path outside of level");
 				return true;
 			}
-			path = playstate.level.foreground.findPath(new FlxPoint(x, y), point,false,false);
+			path = playstate.level.foreground.findPath(new FlxPoint(get_x(), get_y()), point,false,false);
 			
 			
 			
