@@ -10,6 +10,10 @@ import flixel.util.FlxColor;
 import flixel.util.FlxAngle;
 import flixel.group.FlxGroup;
 import flixel.util.FlxPoint;
+import weapon.Laser;
+import weapon.RocketLauncher;
+import weapon.Shotgun;
+import weapon.Sniper;
 import weapon.Weapon;
 
 import collision.DamageableSprite;
@@ -49,6 +53,11 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 	}
 	
 	
+	public var shotgun: Shotgun;
+	public var sniper: Sniper;
+	public var rocketLauncher: RocketLauncher;
+	public var laser: Laser;
+	
 	public function new(state:PlayState)
 	{
 		super();
@@ -58,7 +67,11 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		this.stats = new Stats();
 		this.speed = 500.0;
 		
-		this.weapon = new weapon.Laser(this.state, DamageMask.PLAYER, 60.0, 1.0, 1.0);
+		shotgun = new Shotgun(this.state);
+		sniper = new Sniper(this.state);
+		rocketLauncher = new RocketLauncher(this.state);
+		laser = new Laser(this.state, DamageMask.PLAYER, 60.0, 1.0, 1.0);
+		this.weapon = laser;
 		this.sprite = new DamageableSprite();
 		this.sprite.setProxy(this);
 		this.sprite.loadGraphic(AssetPaths.player_walk__png, true, 32, 32);
@@ -147,6 +160,29 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		return false;
 	}
 	
+	private function switchWeapons():Void 
+	{
+		if (FlxG.keys.pressed.ONE)
+		{
+			weapon = rocketLauncher;
+		}
+		
+		if (FlxG.keys.pressed.TWO)
+		{
+			weapon = sniper;
+		}
+		
+		if (FlxG.keys.pressed.THREE)
+		{
+			weapon = shotgun;
+		}
+		
+		if (FlxG.keys.pressed.FOUR)
+		{
+			weapon = laser;
+		}
+	}
+	
 	public function animatePlayer(dir:FlxPoint):Void
 	{
 		if (dir.x != 0 || dir.y != 0)
@@ -195,6 +231,8 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		{
 			// TODO: change weapons
 		}
+		
+		switchWeapons();
 		
 		if (meleeSwap)
 		{

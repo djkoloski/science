@@ -1,5 +1,7 @@
 package collision;
 
+import haxe.ds.Vector;
+
 import flixel.FlxObject;
 import flixel.tile.FlxTilemap;
 import flixel.util.FlxPoint;
@@ -9,9 +11,21 @@ import collision.CollisionFlags;
 
 class CollidableTilemap extends FlxTilemap implements ICustomCollidable
 {
+	private var _distance:Vector<Float>;
+	private var _parents:Vector<Int>;
+	public override function loadMap(MapData:Dynamic, TileGraphic:Dynamic, TileWidth:Int = 0, TileHeight:Int = 0, AutoTile:Int = 0, StartingIndex:Int = 0, DrawIndex:Int = 1, CollideIndex:Int = 1):FlxTilemap
+	{
+		var tilemap = super.loadMap(MapData, TileGraphic, TileWidth, TileHeight, AutoTile, StartingIndex, DrawIndex, CollideIndex);
+		
+		_distance = new Vector<Float>(widthInTiles * heightInTiles);
+		_parents = new Vector<Int>(widthInTiles * heightInTiles);
+		
+		return tilemap;
+	}
+	
 	public function getCollisionFlags():Int
 	{
-		return CollisionFlags.SOLID;
+		return CollisionFlags.SOLID | CollisionFlags.NOCUSTOM;
 	}
 	
 	public function onCollision(other:ICollidable):Void
@@ -22,7 +36,7 @@ class CollidableTilemap extends FlxTilemap implements ICustomCollidable
 		return overlaps(other);
 	}
 	
-	public function raycast(start:FlxPoint, direction:FlxPoint, result:FlxPoint = null, resultInTiles:FlxPoint = null, maxTilesToCheck:Int = -1):Bool
+	public function _raycast(start:FlxPoint, direction:FlxPoint, result:FlxPoint = null, resultInTiles:FlxPoint = null, maxTilesToCheck:Int = -1):Bool
 	{
 		var cx:Int;
 		var cy:Int;
@@ -217,5 +231,239 @@ class CollidableTilemap extends FlxTilemap implements ICustomCollidable
 	public function indexToCoordY(index:Float):Float
 	{
 		return Math.floor(index / widthInTiles) * _tileHeight + _tileHeight / 2;
+	}
+	
+	private function _heuristic(index:Int, endIndex:Int):Float
+	{
+		return Math.sqrt(Math.pow(index % widthInTiles - endIndex % widthInTiles, 2) + Math.pow(Math.floor(index / widthInTiles) - Math.floor(endIndex / widthInTiles), 2));
+	}
+	
+	private static function _popPriorityQueue(queue:Array<Int>, distance:Vector<Float>):Int
+	{
+		var value:Int = queue[0];
+		queue[0] = queue[queue.length - 1];
+		queue.pop();
+		
+		// percolate down
+		var pos:Int = 0;
+		var current:Int = -1;
+		var leftIndex:Int = -1;
+		var left:Int = -1;
+		var rightIndex:Int = -2;
+		var right:Int = -1;
+		while (pos < queue.length)
+		{
+			current = queue[pos];
+			leftIndex = 2 * pos + 1;
+			rightIndex = 2 * pos + 2;
+			
+			if (leftIndex < queue.length)
+			{
+				left = queue[leftIndex];
+			}
+			else
+			{
+				left = -1;
+			}
+			
+			if (rightIndex < queue.length)
+			{
+				right = queue[rightIndex];
+			}
+			else
+			{
+				right = -1;
+			}
+			
+			if (left != -1 && (right == -1 || distance[left] <= distance[right]) && distance[left] < distance[current])
+			{
+				queue[leftIndex] = current;
+				queue[pos] = left;
+				pos = leftIndex;
+			}
+			else if (right != -1 && (left == -1 || distance[right] < distance[left]) && distance[right] < distance[current])
+			{
+				queue[rightIndex] = current;
+				queue[pos] = right;
+				pos = rightIndex;
+			}
+			else
+			{
+				break;
+			}
+		}
+		
+		return value;
+	}
+	
+	private static function _pushPriorityQueue(queue:Array<Int>, index:Int, distance:Vector<Float>):Void
+	{
+		var pos = queue.length;
+		queue.push(index);
+		
+		// percolate up
+		var current:Int = -1;
+		var parentIndex:Int = -1;
+		var parent:Int = -1;
+		while (pos > 0)
+		{
+			current = queue[pos];
+			parentIndex = Math.floor((pos - 1) / 2);
+			parent = queue[parentIndex];
+			if (distance[current] < distance[parent])
+			{
+				queue[parentIndex] = current;
+				queue[pos] = parent;
+				pos = parentIndex;
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+	
+	public function _aStarInternal(startIndex:Int, endIndex:Int):Array<FlxPoint>
+	{
+		var tileCount:Int = widthInTiles * heightInTiles;
+		for (i in 0...tileCount)
+		{
+			if (_tileObjects[_data[i]].allowCollisions == FlxObject.NONE)
+			{
+				_distance[i] = widthInTiles + heightInTiles;
+			}
+			else
+			{
+				_distance[i] = -1;
+			}
+			_parents[i] = -1;
+		}
+		_distance[startIndex] = _heuristic(startIndex, endIndex);
+		
+		var queue:Array<Int> = new Array<Int>();
+		queue.push(startIndex);
+		
+		while (queue.length > 0 && _parents[endIndex] == -1)
+		{
+			var current = _popPriorityQueue(queue, _distance);
+			var cx = current % widthInTiles;
+			var cy = Math.floor(current / widthInTiles);
+			var totalDist = _distance[current];
+			var g = totalDist - _heuristic(current, endIndex);
+			
+			var rightIndex = cy * widthInTiles + (cx + 1);
+			var leftIndex = cy * widthInTiles + (cx - 1);
+			var downIndex = (cy + 1) * widthInTiles + cx;
+			var upIndex = (cy - 1) * widthInTiles + cx;
+			
+			var rightDist = 1 + g + _heuristic(rightIndex, endIndex);
+			var leftDist = 1 + g + _heuristic(leftIndex, endIndex);
+			var downDist = 1 + g + _heuristic(downIndex, endIndex);
+			var upDist = 1 + g + _heuristic(upIndex, endIndex);
+			
+			if (rightDist < _distance[rightIndex])
+			{
+				_distance[rightIndex] = rightDist;
+				_pushPriorityQueue(queue, rightIndex, _distance);
+				_parents[rightIndex] = current;
+			}
+			if (leftDist < _distance[leftIndex])
+			{
+				_distance[leftIndex] = leftDist;
+				_pushPriorityQueue(queue, leftIndex, _distance);
+				_parents[leftIndex] = current;
+			}
+			if (downDist < _distance[downIndex])
+			{
+				_distance[downIndex] = downDist;
+				_pushPriorityQueue(queue, downIndex, _distance);
+				_parents[downIndex] = current;
+			}
+			if (upDist < _distance[upIndex])
+			{
+				_distance[upIndex] = upDist;
+				_pushPriorityQueue(queue, upIndex, _distance);
+				_parents[upIndex] = current;
+			}
+		}
+		
+		if (_parents[endIndex] == -1)
+		{
+			return null;
+		}
+		
+		var path = new Array<Int>();
+		var current = endIndex;
+		while (current != -1)
+		{
+			path.push(current);
+			current = _parents[current];
+		}
+		
+		var points = new Array<FlxPoint>();
+		for (tile in path)
+		{
+			var tx = tile % widthInTiles;
+			var ty = Math.floor(tile / widthInTiles);
+			
+			var left = ty * widthInTiles + (tx - 1);
+			var right = ty * widthInTiles + (tx + 1);
+			var down = (ty + 1) * widthInTiles + tx;
+			var up = (ty - 1) * widthInTiles + tx;
+			
+			points.unshift(
+				new FlxPoint(
+					x + (tx + 0.5 + (_distance[left] < 0 ? 0.5 : 0) - (_distance[right] < 0 ? 0.5 : 0)) * _scaledTileWidth,
+					y + (ty + 0.5 + (_distance[up] < 0 ? 0.5 : 0) - (_distance[down] < 0 ? 0.5 : 0)) * _scaledTileHeight
+				)
+			);
+		}
+		
+		return points;
+	}
+	
+	public override function findPath(start:FlxPoint, end:FlxPoint, simplify:Bool = true, raySimplify:Bool = false, wideDiagonal:Bool = true):Array<FlxPoint>
+	{
+		// Ignores wide diagonal
+		var startIndex:Int = Std.int((start.y - y) / _scaledTileHeight) * widthInTiles + Std.int((start.x - x) / _scaledTileWidth);
+		var endIndex:Int = Std.int((end.y - y) / _scaledTileHeight) * widthInTiles + Std.int((end.x - x) / _scaledTileWidth);
+		
+		if ((_tileObjects[_data[startIndex]].allowCollisions > 0) || (_tileObjects[_data[endIndex]].allowCollisions > 0))
+		{
+			return null;
+		}
+		
+		var points:Array<FlxPoint> = _aStarInternal(startIndex, endIndex);
+		
+		if (points == null)
+		{
+			return null;
+		}
+		
+		points[0].x = start.x;
+		points[0].y = start.y;
+		points[points.length - 1].x = end.x;
+		points[points.length - 1].y = end.y;
+		
+		if (simplify)
+		{
+			simplifyPath(points);
+		}
+		if (raySimplify)
+		{
+			raySimplifyPath(points);
+		}
+		
+		var path = new Array<FlxPoint>();
+		
+		for (point in points)
+		{
+			if (point != null)
+			{
+				path.push(point);
+			}
+		}
+		
+		return path;
 	}
 }

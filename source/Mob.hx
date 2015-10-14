@@ -255,7 +255,7 @@ class Mob extends FlxGroup implements IHittable
 	
 	public function lineOfSight(enemy:Dynamic,point:FlxPoint):Bool {
 		var temp = new FlxPoint();
-		playstate.level.foreground.raycast(new FlxPoint(x, y), towards(new FlxPoint(enemy.get_x(), enemy.get_y())), temp);
+		playstate.level.foreground.ray(new FlxPoint(x, y), towards(new FlxPoint(enemy.get_x(), enemy.get_y())), temp);
 		if (distanceTo(temp) > distanceTo(new FlxPoint(enemy.get_x(), enemy.get_y()))) {
 			point.x = temp.x;
 			point.y = temp.y;
