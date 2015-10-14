@@ -208,11 +208,13 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		{
 			weapon = startingGun;
 		}
-		if (FlxG.keys.pressed.SEVEN)
+		
+		if (FlxG.keys.pressed.SEVEN && !crowdLaser.locked)
 		{
 			weapon = crowdLaser;
 		}
-		if (FlxG.keys.pressed.EIGHT)
+		
+		if (FlxG.keys.pressed.EIGHT && !preciseLaser.locked)
 		{
 			weapon = preciseLaser;
 		}
