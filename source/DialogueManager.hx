@@ -28,10 +28,9 @@ class DialogueManager extends FlxGroup
 	public static var LINE_LENGTH:Int = 10;
 	public static var LINES_PER_DIALOG:Int = 4;
 	
-	public var state:PlayState;
-	
 	public var currentState:DialogueManagerState;
 	
+	public var dictionary:DialogueDictionary;
 	public var dialogue:Dialogue;
 	public var currentFrame:Int;
 	public var currentIndex:Int;
@@ -41,14 +40,13 @@ class DialogueManager extends FlxGroup
 	public var foreground:FlxSprite;
 	public var text:FlxText;
 	
-	public function new(state:PlayState)
+	public function new(dictionary:DialogueDictionary)
 	{
 		super();
 		
-		this.state = state;
-		
 		this.currentState = DialogueManagerState_Closed;
 		
+		this.dictionary = dictionary;
 		this.dialogue = null;
 		this.currentFrame = 0;
 		this.currentIndex = 0;
@@ -67,14 +65,6 @@ class DialogueManager extends FlxGroup
 		add(text);
 		
 		setYOffset(0);
-	}
-	
-	public function onLevelLoad():Void
-	{}
-	
-	public function onLevelUnload():Void
-	{
-		transitionState(DialogueManagerState_Closed);
 	}
 	
 	public function transitionState(newState:DialogueManagerState)
@@ -108,7 +98,7 @@ class DialogueManager extends FlxGroup
 	
 	public function startDialogue(id:String, ?callback:Void->Void):Void
 	{
-		this.dialogue = state.dialogue.get(id);
+		this.dialogue = dictionary.get(id);
 		Assert.info(dialogue != null, "Dialogue with id \"" + id + "\" not found");
 		this.callback = callback;
 		this.currentFrame = 0;
@@ -139,8 +129,8 @@ class DialogueManager extends FlxGroup
 		
 		this.foreground.x = newX;
 		this.foreground.y = newY;
-		this.text.x = newX+ 12;
-		this.text.y = newY+ 16;
+		this.text.x = newX+ 14;
+		this.text.y = newY+ 32;
 	}
 	
 	public override function update()

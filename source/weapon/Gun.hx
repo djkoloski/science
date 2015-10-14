@@ -1,6 +1,7 @@
 package weapon;
 
 import flixel.FlxG;
+import flixel.system.FlxSound;
 
 /*
 case WeaponType_Melee:
@@ -43,6 +44,7 @@ class Gun extends Weapon
 	public var damageAmount:Int;
 	
 	public var effect:String;
+	public var soundEffect:FlxSound;
 	
 	public function new(
 		state:PlayState,
@@ -66,6 +68,7 @@ class Gun extends Weapon
 		this.bulletColor = bulletColor;
 		this.damageAmount = amount;
 		this.effect = effect;
+		this.soundEffect = FlxG.sound.load(AssetPaths.gunshot__wav);
 	}
 	
 	public override function fire()
@@ -91,6 +94,8 @@ class Gun extends Weapon
 				effect
 			)
 		);
+		
+		soundEffect.play();
 	}
 	
 	public override function update()
@@ -103,8 +108,13 @@ class Gun extends Weapon
 		}
 	}
 	
+	public override function getMaxCooldown():Float
+	{
+		return cooldownPerShot;
+	}
+	
 	public override function getCooldown():Float
 	{
-		return cooldownTimer / cooldownPerShot;
+		return cooldownTimer;
 	}
 }

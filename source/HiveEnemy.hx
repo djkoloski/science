@@ -19,6 +19,10 @@ class HiveEnemy extends Mob
 	{
 		super(playstate, startX, startY, damageMask);
 		pods = new Array<PodEnemy>();
+		this.sprite.loadGraphic(AssetPaths.hive__png);
+		stats.hearts = 15;
+		stats.residualMax = 45;
+		stats.regen = 10;
 		
 		manage = function() {
 			if (angry && currentPods > 0 && Math.random() > .95) {
@@ -27,13 +31,17 @@ class HiveEnemy extends Mob
 			if (deployedPods < currentPods) {
 				deploy();
 			}
+			if (deployedPods + currentPods < totalPods && Math.random() > .9999) {
+				Trace.info("making new pod");
+				currentPods++;
+			}
 		}
 		sprite.immovable = true;
 		action = manage;
 	}
 	
 	public function deathNotice(pod:PodEnemy) {
-		trace(pod);
+		Trace.info(pod);
 		Assert.info(pods.remove(pod));
 		deployedPods--;
 		Assert.info(deployedPods == pods.length);

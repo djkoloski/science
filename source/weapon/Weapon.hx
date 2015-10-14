@@ -16,6 +16,8 @@ class Weapon extends FlxGroup
 	public var dirX:Float;
 	public var dirY:Float;
 	
+	public var locked:Bool;
+	
 	public function new(state:PlayState, damageMask:Int)
 	{
 		super();
@@ -27,6 +29,8 @@ class Weapon extends FlxGroup
 		this.posY = 0;
 		this.dirX = 0;
 		this.dirY = 0;
+		
+		locked = true;
 	}
 	
 	public function setTransform(posX:Float, posY:Float, dirX:Float, dirY:Float, radius:Float):Void
@@ -43,6 +47,11 @@ class Weapon extends FlxGroup
 	
 	public function fire()
 	{
+	}
+	
+	public function getMaxCooldown():Float
+	{
+		return 0;
 	}
 	
 	public function getCooldown():Float

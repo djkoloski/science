@@ -35,15 +35,14 @@ class Testenemy extends Mob
 				return;
 			}
 			if (destination == null || Math.random() > .95)  {
-			//	trace("dest is null");
-				//trace(target);
-				//trace(target.get_x() + ", " + target.get_y());
-				//trace(target);
+			//	Trace.info("dest is null");
+				//Trace.info(target);
+				//Trace.info(target.get_x() + ", " + target.get_y());
+				//Trace.info(target);
 				destination = stopShort(new FlxPoint(target.get_x(), target.get_y()));
 				//as is, the path is recalculated every frame the player moves.
 			}
-			if (pathTo(destination)) {
-				trace("successful path");
+			if (pathTo(destination)) { 
 				destination = null;
 			};
 			fire();

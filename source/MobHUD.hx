@@ -1,8 +1,11 @@
 package;
+import flixel.FlxSprite;
+import flixel.util.FlxColor;
 
 class MobHUD extends StatsHUD
 {
 	var mob:Mob;
+	var key:FlxSprite;
 	
 	public function new(targetMob:Mob)
 	{
@@ -20,6 +23,8 @@ class MobHUD extends StatsHUD
 		barSizeY = 3;
 		barScaleX = 1.0;
 		
+		key = new FlxSprite();
+		
 		super(mob.stats);
 	}
 	
@@ -29,5 +34,13 @@ class MobHUD extends StatsHUD
 		y = Math.round(mob.y - 20);
 		
 		super.update();
+		
+		key.x = x;
+		key.y = y + 20;
+		if (mob.necessary)
+		{
+			add(key);
+			key.makeGraphic(5, 5, FlxColor.YELLOW);
+		}
 	}
 }

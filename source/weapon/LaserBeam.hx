@@ -83,7 +83,7 @@ class LaserBeam extends FlxGroup implements IHurtable
 	
 	public function getCollisionFlags():Int
 	{
-		return CollisionFlags.NONE;
+		return CollisionFlags.NOCUSTOM;
 	}
 	
 	public function onCollision(other:ICollidable):Void

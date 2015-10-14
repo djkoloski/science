@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="74" height="94" tilewidth="32" tileheight="32" nextobjectid="60">
+ <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32" tilecount="240">
+  <image source="tileset.png" width="640" height="384"/>
+ </tileset>
+ <layer name="background" width="74" height="94">
+  <data encoding="base64" compression="zlib">
+   eJzt0KERACAMBMGvLEXQfzFYZByBWbH+5ipJAQAAAAAc1oCGF/jU/+RV79PtBgAAAAAAAAAAAAAAAAAAAAAAAAAA4E8b7Y6VZw==
+  </data>
+ </layer>
+ <layer name="foreground" width="74" height="94">
+  <data encoding="base64" compression="zlib">
+   eJztnG1uwyAMhtP1DG3PsOX+99sqDS2zwNhgG0jeV+JPGxJ4wqdt8ty27RmQbj/pwyDdg8o7Kj0ErPbtT58FRq8J6uLN6bH16QVO4ARO4AROZkk7z+8X5fRSsrovzql1/bf/llmq1fudZP1Xah9X49RS/lRmqa7KSZsPnP7r3Yfvius1OhMn7e8agZNM4CTTVTi9bUpfhZQb027kmn3L26Ui7H5RnDhGiYEkjzWj2TjNKE0/BidwqgmcZDozpx7/Fp1TIzi956LcHOXNqce+QcsVwYmrhzcnq/YPTrJ84CTLB06yfFpOrXsmLzsTp5GcenwJVvWQCv3O9/7gJFNuvQdOMoGTTBacesb2mk2uJ7XGKeT8QBaceu2rXpxa4xRyftmR/c5breUFJ5nASSYLTqWxKLcvGa1RnDhGke2Mm1+P76tlP5rmyR5Orf1RG0tXE7fPrMXfa1gdFcFJU97cfplqxDgZwcla4CQTOMkETjKtzEk6VpdicjTz0aqcNIxy9dPakz1imyTPjIo7K7WD9Htkvbl3mXtnkecea5xm0LscOR6RcYzgBE7gNC8nq3P5LWuU0hpHOsdafAtAyqnHNy9lXFqjJL9G6/MfgZxale7TU5ao54OTLyeLOJh0H0/fHidvTj17EGq/5NhIxqceeXMaoZ42zM2VZ+SkmRvptVw819k4WY/54DQHJ3p2rjVpx//VOFnG9nisnWfhNELafnf0D5fav6aNXoFTmitLrMBJn7eVkyTexeo8WOk7ErNzksa7aPw33PqPa7+autI4H29O1v2xlg+c6hxq/6/KqcWfTDnQPsjZBDTPpHFjozhpGB3LS89XHPe2iVGJE13bauw3ozhp2h33va1j+V8VTj1agVNtPErtZBdc36oVOHF9lP5HbbtW67LZOWntj3Qc19jmaveZmVNvP7Vaf4BTXmlOAKc6pxnWT+AETiskcAIncJqDU863U7OlzmIviOJU8n9JzqKtZC/o5WQlcJLpjJw8viNh5c+cJXl/a6P03G86UUKn
+  </data>
+ </layer>
+ <objectgroup name="objects">
+  <object id="1" name="spawn" x="1153.33" y="49.6665" width="64" height="64">
+   <properties>
+    <property name="id" value="start"/>
+   </properties>
+  </object>
+  <object id="2" name="blob" x="984" y="728" width="64" height="64"/>
+  <object id="3" name="blob" x="1193" y="863" width="64" height="64"/>
+  <object id="4" name="blob" x="945" y="903" width="64" height="64"/>
+  <object id="5" name="blob" x="1239" y="739" width="64" height="64"/>
+  <object id="6" name="blob" x="824" y="740" width="64" height="64"/>
+  <object id="7" name="tank" x="1657" y="673" width="64" height="64"/>
+  <object id="8" name="tank" x="1658" y="618" width="64" height="64"/>
+  <object id="9" name="tank" x="1935" y="974" width="64" height="64"/>
+  <object id="10" name="tank" x="1525" y="836" width="64" height="64"/>
+  <object id="11" name="tank" x="1757" y="838" width="64" height="64"/>
+  <object id="12" name="tank" x="1649" y="959" width="64" height="64"/>
+  <object id="13" name="blob" x="1541" y="1127" width="64" height="64"/>
+  <object id="14" name="blob" x="1758" y="1152" width="64" height="64"/>
+  <object id="15" name="blob" x="1652" y="1235" width="64" height="64"/>
+  <object id="16" name="weapon" x="1504.33" y="950" width="61.3333" height="62">
+   <properties>
+    <property name="dialogue" value="DIALOGUE_LASER"/>
+    <property name="type" value="laser"/>
+   </properties>
+  </object>
+  <object id="17" name="weapon" x="202.333" y="360" width="61.3333" height="62">
+   <properties>
+    <property name="dialogue" value="DIALOGUE_ROCKETLAUNCHER"/>
+    <property name="type" value="rocket launcher"/>
+   </properties>
+  </object>
+  <object id="18" name="tank" x="545" y="428" width="64" height="64"/>
+  <object id="19" name="tank" x="545" y="595" width="64" height="64"/>
+  <object id="21" name="tank" x="161" y="1027" width="64" height="64"/>
+  <object id="23" name="tank" x="93" y="496" width="64" height="64"/>
+  <object id="24" name="blob" x="351" y="498" width="64" height="64"/>
+  <object id="25" name="blob" x="242" y="636" width="64" height="64"/>
+  <object id="26" name="blob" x="78" y="671" width="64" height="64"/>
+  <object id="27" name="blob" x="219" y="492" width="64" height="64"/>
+  <object id="28" name="blob" x="215" y="805" width="64" height="64"/>
+  <object id="29" name="tank" x="602" y="1541" width="64" height="64"/>
+  <object id="30" name="tank" x="606" y="1745" width="64" height="64"/>
+  <object id="31" name="tank" x="611" y="1978" width="64" height="64"/>
+  <object id="32" name="tank" x="1087" y="2321" width="64" height="64"/>
+  <object id="33" name="blob" x="1138" y="2164" width="64" height="64"/>
+  <object id="34" name="blob" x="774" y="1824" width="64" height="64"/>
+  <object id="35" name="blob" x="886" y="1648" width="64" height="64"/>
+  <object id="36" name="blob" x="1184" y="1669" width="64" height="64"/>
+  <object id="37" name="blob" x="1479" y="1685" width="64" height="64"/>
+  <object id="38" name="blob" x="1791" y="1849" width="64" height="64"/>
+  <object id="39" name="blob" x="1683" y="1677" width="64" height="64"/>
+  <object id="40" name="blob" x="2168" y="2072" width="64" height="64"/>
+  <object id="41" name="blob" x="1506" y="2345" width="64" height="64"/>
+  <object id="42" name="blob" x="1469" y="2150" width="64" height="64"/>
+  <object id="43" name="blob" x="1766" y="1458" width="64" height="64"/>
+  <object id="44" name="blob" x="1549" y="1450" width="64" height="64"/>
+  <object id="45" name="blob" x="956" y="1242" width="64" height="64"/>
+  <object id="46" name="blob" x="311" y="1248" width="64" height="64"/>
+  <object id="47" name="dialogue" x="958" y="368.5" width="42" height="43">
+   <properties>
+    <property name="id" value="DIALOGUE_SCATTERED"/>
+   </properties>
+  </object>
+  <object id="48" name="tank" x="1756" y="2568" width="64" height="64">
+   <properties>
+    <property name="necessary" value=""/>
+   </properties>
+  </object>
+  <object id="49" name="tank" x="1638" y="2689" width="64" height="64">
+   <properties>
+    <property name="necessary" value=""/>
+   </properties>
+  </object>
+  <object id="50" name="tank" x="1876" y="2688" width="64" height="64">
+   <properties>
+    <property name="necessary" value=""/>
+   </properties>
+  </object>
+  <object id="51" name="teleporter" x="1602" y="2560" width="64" height="64">
+   <properties>
+    <property name="level" value="FinalLevel3"/>
+    <property name="locked" value=""/>
+    <property name="spawn" value="start"/>
+   </properties>
+  </object>
+  <object id="52" name="dialogue" x="634" y="1189.5" width="42" height="43">
+   <properties>
+    <property name="id" value="DIALOGUE_COWARD"/>
+   </properties>
+  </object>
+  <object id="53" name="dialogue" x="615" y="1422.5" width="42" height="43">
+   <properties>
+    <property name="id" value="DIALOGUE_STEVE"/>
+   </properties>
+  </object>
+  <object id="54" name="dialogue" x="1590" y="2387.5" width="42" height="43">
+   <properties>
+    <property name="id" value="DIALOGUE_PROJECTS"/>
+   </properties>
+  </object>
+  <object id="55" name="dialogue" x="70" y="1003.5" width="42" height="43">
+   <properties>
+    <property name="id" value="DIALOGUE_GUYLAUNCHER"/>
+   </properties>
+  </object>
+  <object id="56" name="dialogue" x="1949" y="1827.5" width="42" height="43">
+   <properties>
+    <property name="id" value="DIALOGUE_JUMP"/>
+   </properties>
+  </object>
+  <object id="57" name="dialogue" x="1997" y="1827.5" width="42" height="43">
+   <properties>
+    <property name="id" value="DIALOGUE_JERK"/>
+   </properties>
+  </object>
+  <object id="58" name="spawn" x="1136" y="78" width="103" height="71">
+   <properties>
+    <property name="id" value="player_start"/>
+   </properties>
+  </object>
+  <object id="59" name="tank" x="1055" y="2164" width="64" height="64"/>
+ </objectgroup>
+</map>

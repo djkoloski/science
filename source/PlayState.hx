@@ -28,6 +28,9 @@ import collision.CollisionManager;
  */
 class PlayState extends FlxState
 {
+	public static var TILEMAP_PREFIX = "assets/tiled/";
+	public static var TILEMAP_SUFFIX = ".tmx";
+	
 	public var collision:CollisionManager;
 	public var group:FlxGroup;
 	
@@ -42,14 +45,18 @@ class PlayState extends FlxState
 	public var aStarStart:FlxPoint;
 	public var aStarEnd:FlxPoint;
 	public var aStarTest:AStarTest;
+	
+	public var necessaryMobs:Array<Mob>;
+	
+	public var persistent:PersistentData;
+	public var currentLevel:String;
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
 	override public function create():Void
 	{
 		super.create();
-		
-		enemies = new Array<IDamageable>();
 		
 		bgColor = 0xffaaaaaa;
 		
@@ -62,11 +69,20 @@ class PlayState extends FlxState
 		dialogueManager = null;
 		player = null;
 		
-		changeLevel("assets/tiled/Level1.tmx");
+		enemies = null;
+		
+		aStarStart = null;
+		aStarEnd = null;
+		aStarTest = null;
+		
+		necessaryMobs = null;
+		
+		persistent = null;
+		currentLevel = null;
+		
+		changeLevel("FinalLevel1");
 		
 		FlxG.sound.playMusic(AssetPaths.BackgroundMusic__wav, 1, true);
-		
-		aStarTest = null;
 	}
 	
 	/**
@@ -92,11 +108,6 @@ class PlayState extends FlxState
 			System.exit(0);
 		}
 		
-		if (FlxG.keys.justPressed.R)
-		{
-			dialogueManager.startDialogue("DIALOGUE_OTHER");
-		}
-		
 		if (FlxG.mouse.justPressed)
 		{
 			aStarStart = FlxG.mouse.getWorldPosition();
@@ -107,6 +118,12 @@ class PlayState extends FlxState
 			aStarEnd = FlxG.mouse.getWorldPosition();
 		}
 		
+		if (FlxG.keys.justPressed.M)
+		{
+			player.reset();
+			changeLevel(currentLevel);
+		}
+		
 		if (FlxG.keys.justPressed.P)
 		{
 			if (aStarTest != null)
@@ -115,8 +132,15 @@ class PlayState extends FlxState
 				aStarTest.destroy();
 			}
 			aStarTest = new AStarTest();
-			aStarTest.renderPath(aStarStart, aStarEnd, level.foreground.findPath(aStarStart, aStarEnd), Math.round(level.foreground.width), Math.round(level.foreground.height));
-			add(aStarTest);
+			if (aStarStart != null && aStarEnd != null)
+			{
+				var path = level.foreground.findPath(aStarStart, aStarEnd);
+				if (path != null)
+				{
+					aStarTest.renderPath(aStarStart, aStarEnd, path, Math.round(level.foreground.width), Math.round(level.foreground.height));
+				}
+				add(aStarTest);
+			}
 		}
 	}
 	
@@ -138,12 +162,23 @@ class PlayState extends FlxState
 			spawn = "player_start";
 		}
 		
-		if (level != null)
+		if (path != currentLevel || spawn == "player_start")
 		{
-			unloadLevel();
+			currentLevel = path;
+			
+			if (level != null)
+			{
+				unloadLevel();
+			}
+			
+			if (path == "Final")
+			{
+				FlxG.switchState(new CutsceneState(new MenuState(), AssetPaths.cutscene_outro__png, "DIALOGUE_OUTRO"));
+				return;
+			}
+			
+			loadLevel(TILEMAP_PREFIX + path + TILEMAP_SUFFIX);
 		}
-		
-		loadLevel(path);
 		
 		Assert.info(level.spawnPoints.exists(spawn), "Spawn point '" + spawn + "' not found in level '" + path + "'");
 		player.x = level.spawnPoints[spawn].x;
@@ -152,10 +187,11 @@ class PlayState extends FlxState
 	
 	public function unloadLevel():Void
 	{
-		player.onLevelUnload();
-		remove(player);
-		dialogueManager.onLevelUnload();
-		remove(dialogueManager);
+		if (persistent == null)
+		{
+			persistent = new PersistentData();
+		}
+		persistent.save(this);
 		
 		if (collision != null)
 		{
@@ -169,6 +205,8 @@ class PlayState extends FlxState
 			group = null;
 		}
 		
+		player = null;
+		dialogueManager = null;
 		level = null;
 	}
 	
@@ -178,34 +216,39 @@ class PlayState extends FlxState
 		group = new FlxGroup();
 		super.add(group);
 		
-		if (player == null)
-		{
-			player = new Player(this);
-		}
-		player.onLevelLoad();
+		enemies = new Array<IDamageable>();
+		necessaryMobs = new Array<Mob>();
 		
-		if (dialogueManager == null)
-		{
-			dialogueManager = new DialogueManager(this);
-		}
-		dialogueManager.onLevelLoad();
+		dialogueManager = new DialogueManager(dialogue);
+		player = new Player(this);
+		
+		// TODO: keep player progression
+		
+		aStarStart = null;
+		aStarEnd = null;
+		aStarTest = null;
 		
 		level = new LevelMap(this, path);
 		
 		FlxG.camera.follow(player.sprite, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
 		
-		//add(level.background);
+		add(level.background);
+		
+		add(level.foreground);
+		collision.add(level.foreground);
 		
 		level.loadObjects();
 		
 		add(player);
 		
-		add(level.foreground);
-		collision.add(level.foreground);
-		
 		add(dialogueManager);
 		
 		add(new PlayerHUD(player));
+		
+		if (persistent != null)
+		{
+			persistent.restore(this);
+		}
 	}
 }

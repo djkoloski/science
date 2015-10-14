@@ -27,7 +27,7 @@ import collision.ICollidable;
 import collision.Collision;
 import collision.CollisionFlags;
 
-class Player extends FlxGroup implements IHittable implements IPersistent
+class Player extends FlxGroup implements IHittable
 {
 	public var state:PlayState;
 	
@@ -43,7 +43,7 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 	public var y(get, set):Float;
 	public var velocity(get, null):FlxPoint;
 	
-	
+	public var invincible:Bool;
 	
 	public var stunned:Bool = false;
 	public var stunTimer:Float = 0;
@@ -55,7 +55,6 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		stunned = true; 
 		stunTimer = maxStun;
 	}
-	
 	
 	public var shotgun: Shotgun;
 	public var sniper: Sniper;
@@ -81,9 +80,13 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		laser = new Laser(this.state, DamageMask.PLAYER, 20.0, 1.0, 1.0, 3, FlxColor.RED);
 		preciseLaser = new PreciseLaser(this.state, DamageMask.PLAYER);
 		crowdLaser = new CrowdLaser(this.state, DamageMask.PLAYER);
+		laser = new Laser(this.state, DamageMask.PLAYER, 60.0, 1.0, 1.0, 3, FlxColor.RED);
 		startingGun = new StartingGun(this.state);
 		machineGun = new MachineGun(this.state);
-		this.weapon = laser;
+		
+		invincible = false;
+		
+		this.weapon = startingGun;
 		this.sprite = new DamageableSprite();
 		this.sprite.setProxy(this);
 		this.sprite.loadGraphic(AssetPaths.player_walk__png, true, 32, 32);
@@ -98,23 +101,21 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		state.enemies.push(this);
 		
 		//add(this.weapon);
-		add(this.preciseLaser);
+		add(this.shotgun);
+		add(this.sniper);
+		add(this.rocketLauncher);
 		add(this.laser);
+		add(this.preciseLaser);
 		add(this.crowdLaser);
+		add(this.startingGun);
+		add(this.machineGun);
 		add(this.sprite);
+		
+		this.state.collision.add(this.sprite);
 	}
-	
-	public function onLevelLoad():Void
-	{
-		state.collision.add(this.sprite);
-	}
-	
-	public function onLevelUnload():Void
-	{}
 	
 	private function getMovementInput(output:FlxPoint):Bool
 	{
-		
 		output.set(0, 0);
 		if (FlxG.keys.pressed.D)
 		{
@@ -177,38 +178,42 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 	
 	private function switchWeapons():Void 
 	{
-		if (FlxG.keys.pressed.ONE)
+		if (FlxG.keys.pressed.ONE && !rocketLauncher.locked)
 		{
 			weapon = rocketLauncher;
 		}
 		
-		if (FlxG.keys.pressed.TWO)
+		if (FlxG.keys.pressed.TWO && !sniper.locked)
 		{
 			weapon = sniper;
 		}
 		
-		if (FlxG.keys.pressed.THREE)
+		if (FlxG.keys.pressed.THREE && !shotgun.locked)
 		{
 			weapon = shotgun;
 		}
 		
-		if (FlxG.keys.pressed.FOUR)
+		if (FlxG.keys.pressed.FOUR && !laser.locked)
 		{
 			weapon = laser;
 		}
-		if (FlxG.keys.pressed.FIVE)
+		
+		if (FlxG.keys.pressed.FIVE && !machineGun.locked)
 		{
 			weapon = machineGun;
 		}
+		
 		if (FlxG.keys.pressed.SIX)
 		{
 			weapon = startingGun;
 		}
-		if (FlxG.keys.pressed.SEVEN)
+		
+		if (FlxG.keys.pressed.SEVEN && !crowdLaser.locked)
 		{
 			weapon = crowdLaser;
 		}
-		if (FlxG.keys.pressed.EIGHT)
+		
+		if (FlxG.keys.pressed.EIGHT && !preciseLaser.locked)
 		{
 			weapon = preciseLaser;
 		}
@@ -252,23 +257,11 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		
 		var moving = getMovementInput(moveVector);
 		var firing = getWeaponInput(weaponVector);
-		var weaponSwap: Bool = FlxG.keys.justPressed.Q;
-		var meleeSwap:Bool = FlxG.keys.justPressed.SHIFT;
 		
 		var weaponX:Float = x + sprite.width / 2.0;
 		var weaponY:Float = y + sprite.height / 2.0;
 		
-		if (weaponSwap)
-		{
-			// TODO: change weapons
-		}
-		
 		switchWeapons();
-		
-		if (meleeSwap)
-		{
-			// TODO: change to melee
-		}
 		
 		var weaponRadius:Float = Math.sqrt(Math.pow(sprite.width / 2, 2) + Math.pow(sprite.height / 2, 2));
 		weapon.setTransform(weaponX, weaponY, weaponVector.x, weaponVector.y, weaponRadius);
@@ -284,7 +277,7 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		}
 		
 		if (stunned) {
-			trace(stunVelocity);
+			//trace(stunVelocity);
 			velocity.x = stunVelocity.x;
 			velocity.y = stunVelocity.y;
 			stunTimer -= FlxG.elapsed;
@@ -297,6 +290,11 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 			velocity.y = moveVector.y * speed;
 		}
 		stats.update();
+		
+		if (FlxG.keys.justPressed.I)
+		{
+			invincible = true;
+		}
 	}
 	
 	public function getDamageableMask():Int
@@ -304,9 +302,27 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		return DamageMask.PLAYER;
 	}
 	
+	public function reset():Void
+	{
+		this.stats.hearts = 3;
+		this.stats.residualMax = 30;
+		this.stats.residualCurrent = 0;
+		this.stats.regen = 1;
+	}
+	
 	public function receiveDamage(amount:Int,source:Int):Void
 	{
+		if (invincible)
+		{
+			return;
+		}
+		
 		stats.damage(amount);
+		if (stats.isDead())
+		{
+			reset();
+			this.state.changeLevel(this.state.currentLevel);
+		}
 	}
 	
 	public function getCollisionFlags():Int

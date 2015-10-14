@@ -2,6 +2,7 @@ package;
 import collision.DamageMask;
 import flixel.util.FlxPoint;
 import flixel.util.FlxVector;
+import collision.CollisionFlags;
 /**
  * ...
  * @author ...
@@ -22,12 +23,19 @@ class BlobEnemy extends Testenemy
 	var jumpTime:Int = 10;
 	var sitTime:Int = 100;
 	
-	public function new(playstate:PlayState, startX:Float, startY:Float,maxHearts:Int = 3,scaleFactor:Float = 1)//, damageMask:Int = DamageMask.ENEMY, spritePath:String = null) 
+	public function new(playstate:PlayState, startX:Float, startY:Float,maxHearts:Int = 2,scaleFactor:Float = 1)//, damageMask:Int = DamageMask.ENEMY, spritePath:String = null) 
 	{
 		
 		this.maxHearts = maxHearts;
 		super(playstate, startX, startY,  DamageMask.ENEMY);
 		this.scaleFactor = scaleFactor;
+		heartChance = .1;
+		sightRadius = 250;
+		
+		stats.hearts = maxHearts;
+		stats.residualMax = 15;
+		stats.regen = 10;
+		
 		
 		this.sprite.loadGraphic(AssetPaths.blob_walk__png, true, 32, 32);
 		this.sprite.animation.add("right", [0, 1], 10, false);
@@ -35,10 +43,10 @@ class BlobEnemy extends Testenemy
 		this.sprite.animation.add("left", [4, 5], 10, false);
 		this.sprite.animation.add("down", [6, 7], 10, false);
 		this.sprite.scale.x = scaleFactor;
-		this.sprite.scale.y = scaleFactor;//(new FlxPoint(scaleFactor, scaleFactor));
+		this.sprite.scale.y = scaleFactor;
 		this.sprite.updateHitbox();
 		this.sprite.drag.x = 5000;
-		this.sprite.drag.y = 5000;//= new FlxPoint(0.5, 0.5);
+		this.sprite.drag.y = 5000;
 		
 		speed = 300;
 		weapon = new weapon.BlobGun(playstate);
@@ -94,7 +102,10 @@ class BlobEnemy extends Testenemy
 		}
 		action = sitAction;
 	}
-	
+	public override function getCollisionFlags():Int
+	{
+		return CollisionFlags.NONE;
+	}
 	public function sit() {
 		timer = Math.floor(Math.random() * 20) + sitTime;
 		action = sitAction;
@@ -105,7 +116,7 @@ class BlobEnemy extends Testenemy
 		timer =Math.floor(Math.random() * 20) + jumpTime;
 		action = jumpAction;
 	}
-
+	
 	public override function receiveDamage(amount:Int,source:Int):Void
 	{
 		getTarget(source);
@@ -121,62 +132,15 @@ class BlobEnemy extends Testenemy
 					blob.destination = new FlxVector(x + Math.random() * splitRadius * 2 - splitRadius, y + Math.random() * splitRadius * 2 - splitRadius);
 					//action = jump;
 					playstate.add(blob);
+					//playstate.necessaryMobs.push(blob);
 					blob.action = blob.splitAction;
 				}
 			}
+			playstate.necessaryMobs.remove(this);
 			destroy();
-			playstate.add(new HeartCollectible(playstate, x, y));
+			if (Math.random() < heartChance) {
+				playstate.add(new HeartCollectible(playstate, x, y));
+			}
 		}
 	}
-	/*
-	public override function destroy():Void {
-		
-		super.destroy();
-	}*/
-	
-	/*public override function receiveDamage(amount:Int,source:Int):Void
-	{
-		super.receiveDamage(amount,source);
-		
-		//action = attackAction;
-		//destination = null;
-	}*/
-	
-	/*public override function update():Void
-	{
-		super.update();
-		updateAnimation();
-<<<<<<< HEAD
-	}*/
-	/*
-	public function updateAnimation():Void
-=======
-	}
-	
-	public override function updateAnimation():Void
->>>>>>> 74e9a137488deaeeda48a70c5387e0226ca1cba3
-	{
-		if (Math.abs(velocity.x) >= Math.abs(velocity.y))
-		{
-			if (velocity.x > 0)
-			{
-				sprite.animation.play("right");
-			}
-			else
-			{
-				sprite.animation.play("left");
-			}
-		}
-		else
-		{
-			if (velocity.y > 0)
-			{
-				sprite.animation.play("down");
-			}
-			else
-			{
-				sprite.animation.play("up");
-			}
-		}
-	}*/
 }
