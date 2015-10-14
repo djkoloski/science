@@ -20,18 +20,45 @@ class TankEnemy extends Testenemy
 		meleeWeapon = new weapon.TankMelee(playstate);
 		rangedWeapon = weapon;
 		
+		stats.hearts = 10;
+		stats.residualMax = 45;
+		stats.regen = 10;
+		
+		
 		this.sprite.loadGraphic(AssetPaths.tank_walk__png, true, 64, 64);
 		this.sprite.animation.add("right", [0, 1,2,3], 10, false);
 		this.sprite.animation.add("up", [4,5,6,7], 10, false);
 		this.sprite.animation.add("left", [8,9,10,11], 10, false);
-		this.sprite.animation.add("down", [12,13,14,15], 10, false);
+		this.sprite.animation.add("down", [12, 13, 14, 15], 10, false);
+		this.sprite.animation.add("idle", [0, 2], 10, true);
+		
+		//sprite.scale.set(.5,.5);
+		//this.sprite.updateHitbox();
 		
 		fightAction = function() {
 			if (target == null || !target.exists) {
 				action = idleAction;
+				return;
 			}
-			//Trace.info("fightaction");
-			chaseAction();
+			velocity = new FlxPoint(0, 0);
+			
+			if (Math.random() > .95)  {
+				destination = stopShort(new FlxPoint(target.get_x(), target.get_y()));
+			}
+			if (destination == null) {
+			}else{
+				if (pathTo(destination)) {
+					destination = null;
+				};
+			}
+			/*
+			if (destination == null || Math.random() > .95)  {
+				destination = stopShort(new FlxPoint(target.get_x(), target.get_y()));
+			}
+			if (pathTo(destination)) {
+				destination = null;
+			};*/
+			fire();
 			if (Math.random() > .99) {
 				var temp = new FlxPoint();
 				if(lineOfSight(target,temp)){
@@ -47,19 +74,23 @@ class TankEnemy extends Testenemy
 			}
 			
 			speed *= 5;
+			if (distanceTo(destination) < sprite.width) {
+				speed /= 5;
+				attack();
+				return;
+			}
 			if (goTo(destination)) {
 				speed /= 5;
 				attack();
 				return;
 			}
 			speed /= 5;
-			meleeWeapon.setTransform(x + sprite.width / 2, y + sprite.width / 2, velocities.x, velocities.y, weaponRadius);
+			meleeWeapon.setTransform(x, y, velocities.x, velocities.y, weaponRadius);
 			if (distanceTo( new FlxPoint(target.get_x(), target.get_y())) < meleeRange){
 				meleeWeapon.fire();
 				
 				//fire();
 			}else {
-				Trace.info("too far. distance is " + distanceTo( new FlxPoint(target.get_x(), target.get_y())));
 			}
 		}
 		
@@ -68,18 +99,17 @@ class TankEnemy extends Testenemy
 				action = fightAction;
 			}
 		}
+		action = idleAction;
 	}
 	
 	public function charge(destination:FlxPoint) {
 		this.destination = destination;
 		action = chargeAction;
-		Trace.info("charging");
 	}
 	
 	public function attack() {
 		weapon = rangedWeapon;
 		action = fightAction;
-		Trace.info("attacking");
 	}
 	
 	public override function receiveDamage(amount:Int,source:Int):Void
@@ -91,5 +121,10 @@ class TankEnemy extends Testenemy
 		//action = attackAction;
 		//destination = null;
 	}
-	
+	public override function updateAnimation():Void {
+		super.updateAnimation();
+		if (this.velocity.distanceTo(new FlxPoint(0, 0)) == 0) {
+			sprite.animation.play("idle");
+		}
+	}
 }

@@ -288,7 +288,7 @@ class Player extends FlxGroup implements IHittable
 		}
 		
 		if (stunned) {
-			trace(stunVelocity);
+			//trace(stunVelocity);
 			velocity.x = stunVelocity.x;
 			velocity.y = stunVelocity.y;
 			stunTimer -= FlxG.elapsed;

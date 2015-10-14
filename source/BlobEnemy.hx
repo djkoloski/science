@@ -2,6 +2,7 @@ package;
 import collision.DamageMask;
 import flixel.util.FlxPoint;
 import flixel.util.FlxVector;
+import collision.CollisionFlags;
 /**
  * ...
  * @author ...
@@ -22,12 +23,19 @@ class BlobEnemy extends Testenemy
 	var jumpTime:Int = 10;
 	var sitTime:Int = 100;
 	
-	public function new(playstate:PlayState, startX:Float, startY:Float,maxHearts:Int = 3,scaleFactor:Float = 1)//, damageMask:Int = DamageMask.ENEMY, spritePath:String = null) 
+	public function new(playstate:PlayState, startX:Float, startY:Float,maxHearts:Int = 2,scaleFactor:Float = 1)//, damageMask:Int = DamageMask.ENEMY, spritePath:String = null) 
 	{
 		
 		this.maxHearts = maxHearts;
 		super(playstate, startX, startY,  DamageMask.ENEMY);
 		this.scaleFactor = scaleFactor;
+		heartChance = .1;
+		sightRadius = 250;
+		
+		stats.hearts = maxHearts;
+		stats.residualMax = 15;
+		stats.regen = 10;
+		
 		
 		this.sprite.loadGraphic(AssetPaths.blob_walk__png, true, 32, 32);
 		this.sprite.animation.add("right", [0, 1], 10, false);
@@ -94,7 +102,10 @@ class BlobEnemy extends Testenemy
 		}
 		action = sitAction;
 	}
-	
+	public override function getCollisionFlags():Int
+	{
+		return CollisionFlags.NONE;
+	}
 	public function sit() {
 		timer = Math.floor(Math.random() * 20) + sitTime;
 		action = sitAction;
@@ -127,7 +138,9 @@ class BlobEnemy extends Testenemy
 			}
 			playstate.necessaryMobs.remove(this);
 			destroy();
-			playstate.add(new HeartCollectible(playstate, x, y));
+			if (Math.random() < heartChance) {
+				playstate.add(new HeartCollectible(playstate, x, y));
+			}
 		}
 	}
 }
