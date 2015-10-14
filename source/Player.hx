@@ -75,10 +75,10 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		sniper = new Sniper(this.state);
 		rocketLauncher = new RocketLauncher(this.state);
 		laser = new Laser(this.state, DamageMask.PLAYER, 60.0, 1.0, 1.0, 3, FlxColor.RED);
-		//laser.locked = false;
 		startingGun = new StartingGun(this.state);
 		machineGun = new MachineGun(this.state);
-		this.weapon = laser;
+		
+		this.weapon = startingGun;
 		this.sprite = new DamageableSprite();
 		this.sprite.setProxy(this);
 		this.sprite.loadGraphic(AssetPaths.player_walk__png, true, 32, 32);
