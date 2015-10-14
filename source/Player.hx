@@ -75,6 +75,7 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		sniper = new Sniper(this.state);
 		rocketLauncher = new RocketLauncher(this.state);
 		laser = new Laser(this.state, DamageMask.PLAYER, 60.0, 1.0, 1.0, 3, FlxColor.RED);
+		//laser.locked = false;
 		startingGun = new StartingGun(this.state);
 		machineGun = new MachineGun(this.state);
 		this.weapon = laser;
@@ -168,29 +169,31 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 	
 	private function switchWeapons():Void 
 	{
-		if (FlxG.keys.pressed.ONE)
+		if (FlxG.keys.pressed.ONE && !rocketLauncher.locked)
 		{
 			weapon = rocketLauncher;
 		}
 		
-		if (FlxG.keys.pressed.TWO)
+		if (FlxG.keys.pressed.TWO && !sniper.locked)
 		{
 			weapon = sniper;
 		}
 		
-		if (FlxG.keys.pressed.THREE)
+		if (FlxG.keys.pressed.THREE && !shotgun.locked)
 		{
 			weapon = shotgun;
 		}
 		
-		if (FlxG.keys.pressed.FOUR)
+		if (FlxG.keys.pressed.FOUR && !laser.locked)
 		{
 			weapon = laser;
 		}
-		if (FlxG.keys.pressed.FIVE)
+		
+		if (FlxG.keys.pressed.FIVE && !machineGun.locked)
 		{
 			weapon = machineGun;
 		}
+		
 		if (FlxG.keys.pressed.SIX)
 		{
 			weapon = startingGun;

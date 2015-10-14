@@ -48,7 +48,7 @@ class Teleporter extends FlxGroup implements ICollidable
 	
 	public function onCollision(other:ICollidable):Void
 	{
-		if (Collision.resolve(other) == state.player)
+		if (Collision.resolve(other) == state.player && state.necessaryMobs.length == 0)
 		{
 			state.changeLevel(TARGET_PREFIX + level + TARGET_SUFFIX, spawn);
 		}
