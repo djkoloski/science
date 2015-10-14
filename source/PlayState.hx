@@ -173,7 +173,7 @@ class PlayState extends FlxState
 			
 			if (path == "Final")
 			{
-				FlxG.switchState(new CutsceneState(new MenuState(), AssetPaths.cutscene_outro__png));
+				FlxG.switchState(new CutsceneState(new MenuState(), AssetPaths.cutscene_outro__png, "DIALOGUE_OUTRO"));
 				return;
 			}
 			
@@ -219,7 +219,7 @@ class PlayState extends FlxState
 		enemies = new Array<IDamageable>();
 		necessaryMobs = new Array<Mob>();
 		
-		dialogueManager = new DialogueManager(this);
+		dialogueManager = new DialogueManager(dialogue);
 		player = new Player(this);
 		
 		// TODO: keep player progression

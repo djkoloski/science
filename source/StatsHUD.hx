@@ -23,6 +23,7 @@ class StatsHUD extends FlxGroup
 	var barBorder:Int;
 	var barSizeY:Int;
 	var barScaleX:Float;
+	var useHeartImage:Bool;
 	
 	public function new(targetStats:Stats) 
 	{
@@ -58,7 +59,14 @@ class StatsHUD extends FlxGroup
 			{
 				var heart = new FlxSprite();
 				add(heart);
-				heart.makeGraphic(heartSizeX, heartSizeY, 0xffff0000);
+				if (!useHeartImage)
+				{
+					heart.makeGraphic(heartSizeX, heartSizeY, 0xffff0000);
+				}
+				else
+				{
+					heart.loadGraphic(AssetPaths.heart_icon__png);
+				}
 				if (fixed)
 				{
 					heart.scrollFactor.x = heart.scrollFactor.y = 0;

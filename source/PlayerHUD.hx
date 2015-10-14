@@ -28,6 +28,7 @@ class PlayerHUD extends StatsHUD
 		barBorder = 2;
 		barSizeY = 10;
 		barScaleX = 4.0;
+		useHeartImage = true;
 		cooldownBarBorder = 2;
 		cooldownBarSizeY = 5;
 		cooldownBarScaleX = 100.0;

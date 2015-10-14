@@ -43,7 +43,7 @@ class Player extends FlxGroup implements IHittable
 	public var y(get, set):Float;
 	public var velocity(get, null):FlxPoint;
 	
-	
+	public var invincible:Bool;
 	
 	public var stunned:Bool = false;
 	public var stunTimer:Float = 0;
@@ -83,6 +83,8 @@ class Player extends FlxGroup implements IHittable
 		laser = new Laser(this.state, DamageMask.PLAYER, 60.0, 1.0, 1.0, 3, FlxColor.RED);
 		startingGun = new StartingGun(this.state);
 		machineGun = new MachineGun(this.state);
+		
+		invincible = false;
 		
 		this.weapon = startingGun;
 		this.sprite = new DamageableSprite();
@@ -288,6 +290,11 @@ class Player extends FlxGroup implements IHittable
 			velocity.y = moveVector.y * speed;
 		}
 		stats.update();
+		
+		if (FlxG.keys.justPressed.I)
+		{
+			invincible = true;
+		}
 	}
 	
 	public function getDamageableMask():Int
@@ -305,6 +312,11 @@ class Player extends FlxGroup implements IHittable
 	
 	public function receiveDamage(amount:Int,source:Int):Void
 	{
+		if (invincible)
+		{
+			return;
+		}
+		
 		stats.damage(amount);
 		if (stats.isDead())
 		{
