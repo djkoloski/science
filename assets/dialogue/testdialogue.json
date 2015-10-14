@@ -82,5 +82,18 @@
 	],
 	"DIALOGUE_PRECISL":[
 		"You got a PreciseLaser \n  Precision is key."
+	],
+	"DIALOGUE_INTRO":[
+		"Player: *Yawn* Wait, this isn't my\nbed. Why am I at school!?",
+		"Alien: It's awake!",
+		"Player: Get away from me! I'm outta\nthis crazy place.",
+		"Wait! Come back! Our club needs\nthis A!!"
+	],
+	"DIALOGUE_OUTRO":[
+		"Player: FREEDOM!",
+		"Alien: No! Don't go!",
+		"Player: *blasts off* I made it!",
+		"Alien: We're getting an F for sure...",
+		"THE END"
 	]
 }

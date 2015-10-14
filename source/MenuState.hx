@@ -34,7 +34,7 @@ class MenuState extends FlxState
 	//Change to the play state.
 	private function clickPlay():Void
 	{
-		FlxG.switchState(new CutsceneState(new PlayState(), AssetPaths.cutscene_intro__png));
+		FlxG.switchState(new CutsceneState(new PlayState(), AssetPaths.cutscene_intro__png, "DIALOGUE_INTRO"));
 	}
 	
 	/**
