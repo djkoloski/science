@@ -142,6 +142,7 @@ class Mob extends FlxGroup implements IHittable
 			//Trace.info("reaches here");
 			//path = playstate.level.foreground.findPath(new FlxPoint(128, 128), new FlxPoint(256, 128));
 			if (path == null) {
+				moveTowards(point);
 				//Trace.info("there is no path.");
 			}
 			if (path == null || path.length == 0) {
