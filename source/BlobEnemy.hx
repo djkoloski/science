@@ -37,6 +37,8 @@ class BlobEnemy extends Testenemy
 		this.sprite.scale.x = scaleFactor;
 		this.sprite.scale.y = scaleFactor;//(new FlxPoint(scaleFactor, scaleFactor));
 		this.sprite.updateHitbox();
+		this.sprite.drag.x = 5000;
+		this.sprite.drag.y = 5000;//= new FlxPoint(0.5, 0.5);
 		
 		speed = 300;
 		weapon = new weapon.BlobGun(playstate);
