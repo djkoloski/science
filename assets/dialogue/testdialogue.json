@@ -71,6 +71,13 @@
 		]
 	"DIALOGUE_FREELASERS":[
 		"Alien: We have Venus club \n are giving away two free\n lasers. Try them out in\n brawl going on!"
+=======
+	
+	"DIALOGUE_Laser":[
+		"PLACEHOLDER DIALOGUE"
+	],
+	"DIALOGUE_Sniper":[
+		"MORE PLACEHOLDER DIALOGUE"
 	]
 	"DIALOGUE_CROWDL":[
 		"You got a CrowdLaser \n No more waiting in lines!"

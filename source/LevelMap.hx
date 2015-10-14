@@ -127,18 +127,20 @@ class LevelMap extends TiledMap
 				}
 				else if (o.name == "weapon")
 				{
+					Assert.info(o.custom.contains("type"), "Weapon at (" + o.x + "," + o.y + ") missing type property");
+					Assert.info(o.custom.contains("dialogue"), "Weapon at (" + o.x + "," + o.y + ") missing dialogue property");
 					switch(o.custom.get("type"))
 					{
 						case "sniper":
-							state.add(new SniperCollectible(state, o.x, o.y));
+							state.add(new SniperCollectible(state, o.x, o.y, o.custom.get("dialogue")));
 						case "shotgun":
-							state.add(new ShotgunCollectible(state, o.x, o.y));
+							state.add(new ShotgunCollectible(state, o.x, o.y, o.custom.get("dialogue")));
 						case "rocket launcher":
-							state.add(new RocketLauncherCollectible(state, o.x, o.y));
+							state.add(new RocketLauncherCollectible(state, o.x, o.y, o.custom.get("dialogue")));
 						case "laser":
-							state.add(new LaserCollectible(state, o.x, o.y));
+							state.add(new LaserCollectible(state, o.x, o.y, o.custom.get("dialogue")));
 						case "machine gun":
-							state.add(new MachineGunCollectible(state, o.x, o.y));
+							state.add(new MachineGunCollectible(state, o.x, o.y, o.custom.get("dialogue")));
 					}
 				}
 			}

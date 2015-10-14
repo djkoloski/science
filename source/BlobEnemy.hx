@@ -121,7 +121,7 @@ class BlobEnemy extends Testenemy
 					blob.destination = new FlxVector(x + Math.random() * splitRadius * 2 - splitRadius, y + Math.random() * splitRadius * 2 - splitRadius);
 					//action = jump;
 					playstate.add(blob);
-					playstate.necessaryMobs.push(blob);
+					//playstate.necessaryMobs.push(blob);
 					blob.action = blob.splitAction;
 				}
 			}
