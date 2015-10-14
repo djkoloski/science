@@ -135,7 +135,7 @@ class Mob extends FlxGroup implements IHittable
 				//Trace.info("path outside of level");
 				return true;
 			}
-			path = playstate.level.foreground.findPath(new FlxPoint(x, y), point);
+			path = playstate.level.foreground.findPath(new FlxPoint(x, y), point,false,false);
 			
 			
 			
@@ -276,7 +276,9 @@ class Mob extends FlxGroup implements IHittable
 			this.velocity = new FlxPoint(0, 0);
 			return;
 		}
-		
+		if (Math.random() > .9) {
+			FlxG.collide(this, playstate.level.foreground);
+		}
 		
 		/*if (lastFramePos != null && lastFramePos.x - x < speed/10000 && lastFramePos.y - y < speed/10000) {
 			stuck();

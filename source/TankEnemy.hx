@@ -32,7 +32,8 @@ class TankEnemy extends Testenemy
 		this.sprite.animation.add("down", [12, 13, 14, 15], 10, false);
 		this.sprite.animation.add("idle", [0, 2], 10, true);
 		
-		sprite.setGraphicSize( -1, 32);
+		//sprite.scale.set(.5,.5);
+		//this.sprite.updateHitbox();
 		
 		fightAction = function() {
 			if (target == null || !target.exists) {
