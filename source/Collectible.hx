@@ -38,7 +38,8 @@ class Collectible extends FlxGroup implements ICollidable
 	{
 		if (Collision.resolve(other) == state.player)
 		{
-			state.player.stats.addHearts(1);
+			onCollect();
+			//state.player.stats.addHearts(1);
 			destroy();
 		}
 	}

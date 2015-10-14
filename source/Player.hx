@@ -10,8 +10,10 @@ import flixel.util.FlxColor;
 import flixel.util.FlxAngle;
 import flixel.group.FlxGroup;
 import flixel.util.FlxPoint;
+import weapon.CrowdLaser;
 import weapon.Laser;
 import weapon.MachineGun;
+import weapon.PreciseLaser;
 import weapon.RocketLauncher;
 import weapon.Shotgun;
 import weapon.Sniper;
@@ -61,6 +63,8 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 	public var laser: Laser;
 	public var startingGun: StartingGun;
 	public var machineGun: MachineGun;
+	public var crowdLaser: CrowdLaser;
+	public var preciseLaser: PreciseLaser;
 	
 	public function new(state:PlayState)
 	{
@@ -74,10 +78,14 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		shotgun = new Shotgun(this.state);
 		sniper = new Sniper(this.state);
 		rocketLauncher = new RocketLauncher(this.state);
-		laser = new Laser(this.state, DamageMask.PLAYER, 60.0, 1.0, 1.0);
+		laser = new Laser(this.state, DamageMask.PLAYER, 20.0, 1.0, 1.0, 3, FlxColor.RED);
+		preciseLaser = new PreciseLaser(this.state, DamageMask.PLAYER);
+		crowdLaser = new CrowdLaser(this.state, DamageMask.PLAYER);
+		laser = new Laser(this.state, DamageMask.PLAYER, 60.0, 1.0, 1.0, 3, FlxColor.RED);
 		startingGun = new StartingGun(this.state);
 		machineGun = new MachineGun(this.state);
-		this.weapon = laser;
+		
+		this.weapon = startingGun;
 		this.sprite = new DamageableSprite();
 		this.sprite.setProxy(this);
 		this.sprite.loadGraphic(AssetPaths.player_walk__png, true, 32, 32);
@@ -91,7 +99,10 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		
 		state.enemies.push(this);
 		
-		add(this.weapon);
+		//add(this.weapon);
+		add(this.preciseLaser);
+		add(this.laser);
+		add(this.crowdLaser);
 		add(this.sprite);
 	}
 	
@@ -168,32 +179,44 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 	
 	private function switchWeapons():Void 
 	{
-		if (FlxG.keys.pressed.ONE)
+		if (FlxG.keys.pressed.ONE && !rocketLauncher.locked)
 		{
 			weapon = rocketLauncher;
 		}
 		
-		if (FlxG.keys.pressed.TWO)
+		if (FlxG.keys.pressed.TWO && !sniper.locked)
 		{
 			weapon = sniper;
 		}
 		
-		if (FlxG.keys.pressed.THREE)
+		if (FlxG.keys.pressed.THREE && !shotgun.locked)
 		{
 			weapon = shotgun;
 		}
 		
-		if (FlxG.keys.pressed.FOUR)
+		if (FlxG.keys.pressed.FOUR && !laser.locked)
 		{
 			weapon = laser;
 		}
-		if (FlxG.keys.pressed.FIVE)
+		
+		if (FlxG.keys.pressed.FIVE && !machineGun.locked)
 		{
 			weapon = machineGun;
 		}
+		
 		if (FlxG.keys.pressed.SIX)
 		{
 			weapon = startingGun;
+		}
+		
+		if (FlxG.keys.pressed.SEVEN && !crowdLaser.locked)
+		{
+			weapon = crowdLaser;
+		}
+		
+		if (FlxG.keys.pressed.EIGHT && !preciseLaser.locked)
+		{
+			weapon = preciseLaser;
 		}
 	}
 	

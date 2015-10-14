@@ -49,7 +49,7 @@ class Stats
 	
 	public function addHearts(h:Int):Void 
 	{
-		hearts += h;
+		hearts = (hearts + h > 20 ? 20 : hearts + h);
 	}
 	
 	public function damage(damage:Float) {

@@ -69,6 +69,7 @@ class TankEnemy extends Testenemy
 		chargeAction = function() {
 			if (target == null || !target.exists) {
 				action = idleAction;
+				return;
 			}
 			
 			speed *= 5;
@@ -84,7 +85,6 @@ class TankEnemy extends Testenemy
 				
 				//fire();
 			}else {
-				//trace("too far. distance is " + distanceTo( new FlxPoint(target.get_x(), target.get_y())));
 			}
 		}
 		

@@ -12,12 +12,10 @@
 	"DIALOGUE_NotAttacking":[
 		"Alien:You!",
 		"Player: Ah",
-		"Alien: Woah, I'm not going to attack \n you. Earth club wants you, but I hate them. \n I don't want th help them."
+		"Alien: Woah, I'm not going to attack \n you. Earth club wants you, but I hate them. \n I don't want to help them."
 	],	
 	"DIALOGUE_Helping":[
 		"Alien: Earth Club is not popular. \n Don't be surprised if people offer\n you advice. We all want them to fail."
-	
-
 	],	
 	"DIALOGUE_DontTouch":[
 		"Alien: If you see a project, don't \n touch it! It is not yours, even if\n it is a laser!"
@@ -27,5 +25,64 @@
 	],
 	"DIALOGUE_Blob":[
 		"Alien: The Earth Club keeps a nasty \n blob as a pet. These are parts of it."
+	],
+	"DIALOGUE_SCATTERED":[
+		"Alien: Earth Club was demoing weapons \n around here. I saw a laser!"
+	],
+	"DIALOGUE_COWARD":[
+		"Alien: Our project, s s stop!! \n ...\n Never mind, don't hurt me!"
+		],
+	"DIALOGUE_STEVE":[
+		"Alien: That guy is Steve. He \n is really wimpy. The \n of the Earth Club"
+		],
+	"DIALOGUE_PROJECTS":[
+		"all the clubs have brought \n something from their club's planet.\n I heard Earth Club has a\n live specimen.",
+		"...\n wait a minute!!"
+		],
+	"DIALOGUE_GUYLAUNCHER":[
+		"I heard there is a Rocket \n Launcher on display. I can't wait \n to see space ships!"
+		],
+	"DIALOGUE_MACHINEGUN":[
+		"You found a Machine Gun. \n Shift into MAXIMUM OVERDRIVE"
+		]
+	"DIALOGUE_ROCKETLAUNCHER":[
+		"You found a Rocket Launcher.\n No, it does not fire Rocket ships"
+		]
+	"DIALOGUE_SHOTGUN":[
+		"You found a Shotgun. \n Pretty sure That guy didn't \n want you to take it."
+		]
+	"DIALOGUE_LASER":[
+		"HOLY CRAP!! You found a laser!! \n Earth has those?"
+		]
+	"DIALOGUE_SNIPER":[
+		"You found a Sniper! \n 360 no scope while jumping\n oh wait."
+		]
+	"DIALOGUE_JUMP":[
+		"Alien: Try pressing space to \n jump!"
 	]
+	"DIALOGUE_JERK":[
+		"ALien: That guy keeps yelling\n at people to pressing space.\n I don't think it does\n anything."
+		]
+	"DIALOGUE_THISFAILED":[
+		"Alien 1: I think the fair \n has failed.",
+		"Alien 2: Why do you say \n that?"
+		"Alien 1: The Mars club is \n is beating up Earth Club",
+		"ALien 2: true enough."
+		]
+	"DIALOGUE_FREELASERS":[
+		"Alien: We have Venus club \n are giving away two free\n lasers. Try them out in\n brawl going on!"
+=======
+	
+	"DIALOGUE_Laser":[
+		"PLACEHOLDER DIALOGUE"
+	],
+	"DIALOGUE_Sniper":[
+		"MORE PLACEHOLDER DIALOGUE"
+	]
+	"DIALOGUE_CROWDL":[
+		"You got a CrowdLaser \n No more waiting in lines!"
+		]
+	"DIALOGUE_PRECISL":[
+		"You got a PreciseLaser \n  Precision is key."
+		]
 }	

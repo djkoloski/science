@@ -22,12 +22,14 @@ class LaserBeam extends FlxGroup implements IHurtable
 	
 	public var damagerMask:Int;
 	public var dps:Float;
+	public var width:Int;
+	public var color:Int;
 	public var startPoint:FlxPoint;
 	public var endPoint:FlxPoint;
 	
 	public var sprite:DamagerSprite;
 	
-	public function new(state:PlayState, damagerMask:Int, dps:Float)
+	public function new(state:PlayState, damagerMask:Int, dps:Float, width:Int, color:Int)
 	{
 		super();
 		
@@ -38,6 +40,8 @@ class LaserBeam extends FlxGroup implements IHurtable
 		
 		this.damagerMask = damagerMask;
 		this.dps = dps;
+		this.width = width;
+		this.color = color;
 		this.startPoint = new FlxPoint();
 		this.endPoint = new FlxPoint();
 		
@@ -55,20 +59,20 @@ class LaserBeam extends FlxGroup implements IHurtable
 		var dp = new FlxPoint(endX - startX, endY - startY);
 		
 		sprite.makeGraphic(
-			5 + Math.round(Math.abs(dp.x)),
-			5 + Math.round(Math.abs(dp.y)),
+			2 * width + Math.round(Math.abs(dp.x)),
+			2 * width + Math.round(Math.abs(dp.y)),
 			FlxColor.TRANSPARENT,
 			true
 		);
 		
-		var offset = new FlxPoint(Math.min(dp.x, 0), Math.min(dp.y, 0));
+		var offset = new FlxPoint(Math.min(dp.x - width, width), Math.min(dp.y - width, width));
 		var position = new FlxPoint(startX + offset.x, startY + offset.y);
 		var drawStart = new FlxPoint(-offset.x, -offset.y);
-		var drawEnd = new FlxPoint(Math.abs(dp.x) - drawStart.x, Math.abs(dp.y) - drawStart.y);
+		var drawEnd = new FlxPoint(Math.abs(dp.x) + 2 * width - drawStart.x, Math.abs(dp.y) + 2 * width - drawStart.y);
 		
 		var lineStyle:LineStyle = {
-			thickness:5,
-			color: 0xFFFF0000
+			thickness: width,
+			color: color
 		};
 		
 		sprite.drawLine(drawStart.x, drawStart.y, drawEnd.x, drawEnd.y, lineStyle);
@@ -79,7 +83,7 @@ class LaserBeam extends FlxGroup implements IHurtable
 	
 	public function getCollisionFlags():Int
 	{
-		return CollisionFlags.NONE;
+		return CollisionFlags.NOCUSTOM;
 	}
 	
 	public function onCollision(other:ICollidable):Void
@@ -102,7 +106,7 @@ class LaserBeam extends FlxGroup implements IHurtable
 							object.x + object.width / 2,
 							object.y + object.height / 2
 						)
-					) < (object.width + object.height) / 2
+					) < (object.width + object.height) / 2 + width
 				)
 				{
 					Collision.performDamage(this, cast other);

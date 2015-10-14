@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="74" height="94" tilewidth="32" tileheight="32" nextobjectid="4">
  <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32" tilecount="240">
-  <image source="../science/assets/tiled/tileset.png" width="640" height="384"/>
+  <image source="tileset.png" width="640" height="384"/>
  </tileset>
  <layer name="background" width="74" height="94">
   <data encoding="base64" compression="zlib">
@@ -16,7 +16,7 @@
  <objectgroup name="objects">
   <object id="2" name="spawn" x="1153.33" y="49.6665" width="64" height="64">
    <properties>
-    <property name="id" value="start"/>
+    <property name="id" value="Start"/>
    </properties>
   </object>
  </objectgroup>

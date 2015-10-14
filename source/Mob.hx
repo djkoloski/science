@@ -57,6 +57,8 @@ class Mob extends FlxGroup implements IHittable
 	
 	private var lastFramePos:FlxPoint;
 	
+	public var necessary:Bool;
+	
 	//public var hud:MobHUD;
 	//public var stats:Stats;
 	
@@ -99,6 +101,8 @@ class Mob extends FlxGroup implements IHittable
 			this.velocity = new FlxPoint(0, 0);
 		};
 		//sprite.immovable = true;
+		
+		necessary = false;
 	}
 	
 	public function stun(velocity:FlxPoint):Void {
@@ -108,7 +112,7 @@ class Mob extends FlxGroup implements IHittable
 	public function goTo(point:FlxPoint): Bool {
 		//Moves towards target point, returning true if it has arrived. 
 		Assert.info(point.x > 0 && point.y > 0, "Something is moving to a point offscreen.");
-		//trace("going to");
+		//Trace.info("going to");
 		moveTowards(point);
 		if (distanceTo(point) < speed * FlxG.elapsed || distanceTo(point) < sprite.width * 2) {
 			return true;
@@ -123,43 +127,43 @@ class Mob extends FlxGroup implements IHittable
 		
 		if (path == null ||  path[path.length - 1].x != point.x || path[path.length - 1].y != point.y) {
 			//If we need to make a new path (no path or new destination is different from the old one)...
-			//trace("path is not valid");
+			//Trace.info("path is not valid");
 			//var other =  new FlxPoint(point.x, point.y);
-			//trace("going from: " + x + "," + y + " to: " + point.x + "," + point.y);
+			//Trace.info("going from: " + x + "," + y + " to: " + point.x + "," + point.y);
 			if (!playstate.level.foreground.getBounds().containsFlxPoint(point)) {
 				//If the path end is outside of the level this path is over. 
-				//trace("path outside of level");
+				//Trace.info("path outside of level");
 				return true;
 			}
 			path = playstate.level.foreground.findPath(new FlxPoint(x, y), point);
 			
 			
 			
-			//trace("reaches here");
+			//Trace.info("reaches here");
 			//path = playstate.level.foreground.findPath(new FlxPoint(128, 128), new FlxPoint(256, 128));
 			if (path == null) {
-				//trace("there is no path.");
+				//Trace.info("there is no path.");
 			}
 			if (path == null || path.length == 0) {
-				//trace("path length 0");
+				//Trace.info("path length 0");
 				path = null;
 				return true;
 			}
-			/*trace("From");
+			/*Trace.info("From");
 			for (point in path) {
-				trace(point.toString());
+				Trace.info(point.toString());
 			}
-			trace("to"); 
+			Trace.info("to"); 
 			for (i in 0...path.length) {
 				path[i] = new FlxPoint(path[i].x - sprite.width / 2, path[i].y - sprite.height / 2);
 			}
 			for (point in path) {
-				trace(point.toString());
+				Trace.info(point.toString());
 			}*/
 		}
-		//trace("reaches 2");
+		//Trace.info("reaches 2");
 		if (path.length == 0) {
-			trace("path length 0");
+			Trace.info("path length 0");
 			path = null;
 			return true;
 		}
@@ -178,31 +182,13 @@ class Mob extends FlxGroup implements IHittable
 	
 	public function fire() {
 		//fires at the target
-		//if (!target.exists) {
-		//	target = null;
-		//	return;
-		//}
 		Assert.info(target != null);
-/*<<<<<<< HEAD
-		Assert.info(target.exists);
-		//trace(target);
-		//trace("firing");
-		var velocities:FlxPoint = towardsSprite(target);
-		var angle:Float = Math.atan2(velocities.y, velocities.x);
-		//trace(angle);
-		weapon.fire(x, y, angle);
-=======*/
-		//trace(target);
-		//trace("firing");
-		//trace(angle);
 		if (pointLineOfSight(new FlxPoint(target.get_x(), target.get_y()))) {
 			weapon.fire();
-			//Trace.info("line of sight");
 		}else {
-			//Trace.info("no line of sight");
 		}
-//>>>>>>> 0654c8c8a86190f9268a22e89a638d6ae8be3bfd
 	}
+	
 	
 	
 	public function getTarget(source:Int=null) {
@@ -217,10 +203,8 @@ class Mob extends FlxGroup implements IHittable
 			if (lineOfSight(enemy, temp) ) {
 				if (getCenter().distanceTo(new FlxPoint((cast enemy).get_x(),(cast enemy).get_y())) < sightRadius) {
 					target = enemy;
-					//trace("detection");
 					return true;
 				}
-				//trace("line of sight");
 			}
 		}
 		if (source != null) {
@@ -280,7 +264,7 @@ class Mob extends FlxGroup implements IHittable
 		if (len == 0) {
 			return new FlxPoint(0, 0);
 		}
-		//trace("direction: " + (tempx / len) + "," + (tempy / len));
+		//Trace.info("direction: " + (tempx / len) + "," + (tempy / len));
 		return new FlxPoint(tempx / len, tempy / len);
 	}
 	
@@ -299,7 +283,7 @@ class Mob extends FlxGroup implements IHittable
 			return;
 		}*/
 		/*if ( new FlxPoint(x, y) == new FlxPoint(x, y)) {
-			trace("equals works as expected");
+			Trace.info("equals works as expected");
 		}*/
 		if(Math.random() > .95){
 			lastFramePos = new FlxPoint(x, y);
@@ -327,7 +311,7 @@ class Mob extends FlxGroup implements IHittable
 		//x += dir.x * speed * FlxG.elapsed;
 		//y += dir.y * speed * FlxG.elapsed;
 		Assert.info(!Math.isNaN(this.velocity.x) && !Math.isNaN(this.velocity.y));
-		//trace("moving towards " + point.x + "," + point.y);
+		//Trace.info("moving towards " + point.x + "," + point.y);
 	}
 	
 	public function getCenter():FlxPoint {
@@ -450,5 +434,11 @@ class Mob extends FlxGroup implements IHittable
 		sprite.velocity.x = value.x;
 		sprite.velocity.y = value.y;
 		return value;
+	}
+	
+	override public function destroy():Void 
+	{
+		playstate.necessaryMobs.remove(this);
+		super.destroy();
 	}
 }

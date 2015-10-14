@@ -42,6 +42,9 @@ class PlayState extends FlxState
 	public var aStarStart:FlxPoint;
 	public var aStarEnd:FlxPoint;
 	public var aStarTest:AStarTest;
+	
+	public var necessaryMobs:Array<Mob>;
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -62,7 +65,13 @@ class PlayState extends FlxState
 		dialogueManager = null;
 		player = null;
 		
+		necessaryMobs = new Array<Mob>();
+		
+		#if debug
 		changeLevel("assets/tiled/Level1.tmx");
+		#else
+		changeLevel("assets/tiled/FinalLevel1.tmx");
+		#end
 		
 		FlxG.sound.playMusic(AssetPaths.BackgroundMusic__wav, 1, true);
 		

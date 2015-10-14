@@ -11,6 +11,7 @@ import flixel.addons.editors.tiled.TiledMap;
 import flixel.addons.editors.tiled.TiledObject;
 import flixel.addons.editors.tiled.TiledObjectGroup;
 import flixel.addons.editors.tiled.TiledTileSet;
+import weapon.Laser;
 
 import collision.CollidableTilemap;
 
@@ -85,26 +86,62 @@ class LevelMap extends TiledMap
 				}
 				else if (o.name == "tank")
 				{
-					state.add(new TankEnemy(state, o.x, o.y));
+					var m:Mob = new TankEnemy(state, o.x, o.y);
+					state.add(m);
+					if (o.custom.contains("necessary"))
+					{
+						m.necessary = true;
+						state.necessaryMobs.push(m);
+					}
 				}
 				else if (o.name == "blob")
 				{
-					state.add(new BlobEnemy(state, o.x, o.y));
+					var m:Mob = new BlobEnemy(state, o.x, o.y);
+					state.add(m);
+					if (o.custom.contains("necessary"))
+					{
+						m.necessary = true;
+						state.necessaryMobs.push(m);
+					}
 				}
 				else if (o.name == "hive")
 				{
-					state.add(new HiveEnemy(state, o.x, o.y));
+					var m:Mob = new HiveEnemy(state, o.x, o.y);
+					state.add(m);
+					if (o.custom.contains("necessary"))
+					{
+						m.necessary = true;
+						state.necessaryMobs.push(m);
+					}
 				}
 				else if (o.name == "teleporter")
 				{
 					Assert.info(o.custom.contains("level"), "Teleporter at (" + o.x + "," + o.y + ") missing level property");
 					Assert.info(o.custom.contains("spawn"), "Teleporter at (" + o.x + "," + o.y + ") missing spawn property");
-					state.add(new Teleporter(state, o.x, o.y, o.width, o.height, o.custom.get("level"), o.custom.get("spawn")));
+					state.add(new Teleporter(state, o.x, o.y, o.width, o.height, o.custom.get("level"), o.custom.get("spawn"), o.custom.contains("locked")));
 				}
 				else if (o.name == "dialogue")
 				{
 					Assert.info(o.custom.contains("id"), "Dialog at (" + o.x + "," + o.y + ") missing id property");
 					state.add(new InteractiveDialogue(state, o.x, o.y, o.custom.get("id")));
+				}
+				else if (o.name == "weapon")
+				{
+					Assert.info(o.custom.contains("type"), "Weapon at (" + o.x + "," + o.y + ") missing type property");
+					Assert.info(o.custom.contains("dialogue"), "Weapon at (" + o.x + "," + o.y + ") missing dialogue property");
+					switch(o.custom.get("type"))
+					{
+						case "sniper":
+							state.add(new SniperCollectible(state, o.x, o.y, o.custom.get("dialogue")));
+						case "shotgun":
+							state.add(new ShotgunCollectible(state, o.x, o.y, o.custom.get("dialogue")));
+						case "rocket launcher":
+							state.add(new RocketLauncherCollectible(state, o.x, o.y, o.custom.get("dialogue")));
+						case "laser":
+							state.add(new LaserCollectible(state, o.x, o.y, o.custom.get("dialogue")));
+						case "machine gun":
+							state.add(new MachineGunCollectible(state, o.x, o.y, o.custom.get("dialogue")));
+					}
 				}
 			}
 		}
