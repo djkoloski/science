@@ -3,6 +3,8 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxPoint;
+import collision.DamageMask;
+import weapon.TankGun;
 
 /**
  * ...
@@ -10,41 +12,83 @@ import flixel.util.FlxPoint;
  */
 class Testenemy extends Mob
 {
-	var wanderAction:Dynamic; 
+	//var idleAction:Dynamic; 
 	var chaseAction:Dynamic;
-	
-	public function new(playstate:PlayState, X:Float=200, Y:Float=200,spritefilename:String=null) 
+	public function new(playstate:PlayState, startX:Float=200, startY:Float=200, damageMask:Int = DamageMask.ENEMY)
 	{
-		super(playstate, X, Y, spritefilename);
+		super(playstate, startX, startY,damageMask);
+		weapon = new TankGun(playstate);
+		//target = playstate.player;
 		
-		target = playstate.player;
-		
-		wanderAction = function() {
-			if (destination == null) {
-				destination = new FlxPoint(Math.random() * 70 - 35 + x, Math.random() * 70 - 35 + y);
-			}
-			if (goTo(destination)) {
-				destination = null;
+		idleAction = function() {
+			target = null;
+			if (getTarget()) {
+				action = chaseAction;
 			}
 		};
 		
+		
+		
 		chaseAction = function() {
-			if (target == null) {
-				trace("getting target");
-				getTarget();
+			if (target == null || !target.exists) {
+				action = idleAction;
 				return;
 			}
-			if (destination == null) {
-				destination = stopShort(new FlxPoint(target.x, target.y));
+			if (destination == null || Math.random() > .95)  {
+			//	Trace.info("dest is null");
+				//Trace.info(target);
+				//Trace.info(target.get_x() + ", " + target.get_y());
+				//Trace.info(target);
+				destination = stopShort(new FlxPoint(target.get_x(), target.get_y()));
 				//as is, the path is recalculated every frame the player moves.
 			}
-			if (pathTo(destination)) {
+			if (pathTo(destination)) { 
 				destination = null;
 			};
-			//fire();
+			fire();
 		};
 		
 		action = chaseAction;
 	}
+	public override function receiveDamage(amount:Int,source:Int):Void
+	{
+		super.receiveDamage(amount,source);
+		getTarget(source);
+		action = chaseAction;
+		
+		//action = attackAction;
+		//destination = null;
+	}
 	
+	public override function update():Void
+	{
+		super.update();
+		updateAnimation();
+	}
+	
+	public function updateAnimation():Void
+	{
+		if (Math.abs(velocity.x) >= Math.abs(velocity.y))
+		{
+			if (velocity.x > 0)
+			{
+				sprite.animation.play("right");
+			}
+			else
+			{
+				sprite.animation.play("left");
+			}
+		}
+		else
+		{
+			if (velocity.y > 0)
+			{
+				sprite.animation.play("down");
+			}
+			else
+			{
+				sprite.animation.play("up");
+			}
+		}
+	}
 }

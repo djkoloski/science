@@ -2,6 +2,7 @@ package;
 
 import flash.system.System;
 import flixel.FlxG;
+import flixel.FlxBasic;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.FlxObject;
@@ -17,26 +18,38 @@ import flixel.util.FlxColor;
 import flixel.util.FlxAngle;
 import sys.io.File;
 import openfl.Vector.VectorDataIterator;
+import flixel.system.FlxSound;
+import collision.IDamageable;
+
+import collision.CollisionManager;
 
 /**
  * A FlxState which can be used for the actual gameplay.
  */
 class PlayState extends FlxState
 {
+	public static var TILEMAP_PREFIX = "assets/tiled/";
+	public static var TILEMAP_SUFFIX = ".tmx";
+	
+	public var collision:CollisionManager;
+	public var group:FlxGroup;
+	
 	public var level:LevelMap;
 	public var dialogue:DialogueDictionary;
+	
 	public var dialogueManager:DialogueManager;
-	
 	public var player:Player;
-	public var interactanble: InteractableDialogueBox;
-	public var bullets:Array<Bullet>;
 	
-	public var teleporters:Array<Teleporter>;
-	public var hud:PlayerHUD;
+	public var enemies:Array<IDamageable>;
 	
-	public var damagers:FlxGroup;
-	public var damagables:FlxGroup;
-	public var collectibles:FlxGroup;
+	public var aStarStart:FlxPoint;
+	public var aStarEnd:FlxPoint;
+	public var aStarTest:AStarTest;
+	
+	public var necessaryMobs:Array<Mob>;
+	
+	public var persistent:PersistentData;
+	public var currentLevel:String;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -47,24 +60,29 @@ class PlayState extends FlxState
 		
 		bgColor = 0xffaaaaaa;
 		
-		damagers = new FlxGroup();
-		damagables = new FlxGroup();
-		collectibles = new FlxGroup();
+		collision = null;
+		group = null;
 		
 		level = null;
 		dialogue = new DialogueDictionary();
-		dialogueManager = new DialogueManager(this);
 		
-		player = new Player(this);
-		damagables.add(player);
+		dialogueManager = null;
+		player = null;
 		
-		bullets = new Array<Bullet>();
-		teleporters = new Array<Teleporter>();
-		hud = new PlayerHUD(player);
+		enemies = null;
 		
-		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
+		aStarStart = null;
+		aStarEnd = null;
+		aStarTest = null;
 		
-		changeLevel("assets/tiled/Level1.tmx");
+		necessaryMobs = null;
+		
+		persistent = null;
+		currentLevel = null;
+		
+		changeLevel("FinalLevel1");
+		
+		FlxG.sound.playMusic(AssetPaths.BackgroundMusic__wav, 1, true);
 	}
 	
 	/**
@@ -83,32 +101,58 @@ class PlayState extends FlxState
 	{
 		super.update();
 		
-		FlxG.overlap(damagers, damagables, function(damager:Damager, damagable:Damageable) {
-			damager.damage(damagable);
-		});
-		
-		FlxG.overlap(player, collectibles, function(player:Player, collectible:Collectible) {
-			if (collectible.getType() == "health") {
-				player.stats.addHearts(cast(collectible, HeartCollectible).getHeal());
-				collectible.destroy();
-			}
-		});
+		collision.update();
 		
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
 			System.exit(0);
 		}
 		
-		updateBullets();
-		
-		level.collideWith(player);
-		
-		if (FlxG.keys.justPressed.R)
+		if (FlxG.mouse.justPressed)
 		{
-			trace("opening");
-			dialogueManager.addDialogue("DIALOGUE_OTHER");
-			dialogueManager.openDialogue();
+			aStarStart = FlxG.mouse.getWorldPosition();
 		}
+		
+		if (FlxG.mouse.justPressedRight)
+		{
+			aStarEnd = FlxG.mouse.getWorldPosition();
+		}
+		
+		if (FlxG.keys.justPressed.M)
+		{
+			player.reset();
+			changeLevel(currentLevel);
+		}
+		
+		if (FlxG.keys.justPressed.P)
+		{
+			if (aStarTest != null)
+			{
+				remove(aStarTest);
+				aStarTest.destroy();
+			}
+			aStarTest = new AStarTest();
+			if (aStarStart != null && aStarEnd != null)
+			{
+				var path = level.foreground.findPath(aStarStart, aStarEnd);
+				if (path != null)
+				{
+					aStarTest.renderPath(aStarStart, aStarEnd, path, Math.round(level.foreground.width), Math.round(level.foreground.height));
+				}
+				add(aStarTest);
+			}
+		}
+	}
+	
+	public override function add(object:FlxBasic):FlxBasic
+	{
+		group.add(object);
+		return object;
+	}
+	
+	public override function remove(object:FlxBasic, splice:Bool = false):FlxBasic
+	{
+		return group.remove(object, splice);
 	}
 	
 	public function changeLevel(path:String, ?spawn:String):Void
@@ -118,12 +162,23 @@ class PlayState extends FlxState
 			spawn = "player_start";
 		}
 		
-		if (level != null)
+		if (path != currentLevel || spawn == "player_start")
 		{
-			unloadLevel();
+			currentLevel = path;
+			
+			if (level != null)
+			{
+				unloadLevel();
+			}
+			
+			if (path == "Final")
+			{
+				FlxG.switchState(new CutsceneState(new MenuState(), AssetPaths.cutscene_outro__png, "DIALOGUE_OUTRO"));
+				return;
+			}
+			
+			loadLevel(TILEMAP_PREFIX + path + TILEMAP_SUFFIX);
 		}
-		
-		loadLevel(path);
 		
 		Assert.info(level.spawnPoints.exists(spawn), "Spawn point '" + spawn + "' not found in level '" + path + "'");
 		player.x = level.spawnPoints[spawn].x;
@@ -132,58 +187,68 @@ class PlayState extends FlxState
 	
 	public function unloadLevel():Void
 	{
-		clear();
+		if (persistent == null)
+		{
+			persistent = new PersistentData();
+		}
+		persistent.save(this);
 		
+		if (collision != null)
+		{
+			collision.clear();
+			collision = null;
+		}
+		
+		if (group != null)
+		{
+			group.destroy();
+			group = null;
+		}
+		
+		player = null;
+		dialogueManager = null;
 		level = null;
-		bullets = new Array<Bullet>();
-		teleporters = new Array<Teleporter>();
 	}
 	
 	public function loadLevel(path:String):Void
 	{
+		collision = new CollisionManager();
+		group = new FlxGroup();
+		super.add(group);
+		
+		enemies = new Array<IDamageable>();
+		necessaryMobs = new Array<Mob>();
+		
+		dialogueManager = new DialogueManager(dialogue);
+		player = new Player(this);
+		
+		// TODO: keep player progression
+		
+		aStarStart = null;
+		aStarEnd = null;
+		aStarTest = null;
+		
 		level = new LevelMap(this, path);
 		
+		FlxG.camera.follow(player.sprite, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
 		
-		add(level.backgroundGroup);
+		add(level.background);
 		
-		for (teleporter in teleporters)
-		{
-			add(teleporter);
-		}
+		add(level.foreground);
+		collision.add(level.foreground);
+		
+		level.loadObjects();
 		
 		add(player);
-		add(level.foregroundGroup);
-		add(level.enemyGroup);
-		add(hud);
+		
 		add(dialogueManager);
-	}
-	
-	public function addBullet(bullet:Bullet):Void
-	{
-		bullets.push(bullet);
-		damagers.add(bullet);
-		add(bullet);
-	}
-	
-	public function removeBullet(bullet:Bullet):Void
-	{
-		remove(bullet);
-		bullets.splice(bullets.indexOf(bullet), 1);
-	}
-	
-	public function updateBullets():Void
-	{
-		var i:Int = 0;
-		while (i < bullets.length)
+		
+		add(new PlayerHUD(player));
+		
+		if (persistent != null)
 		{
-			if (bullets[i].expired() || level.collideWith(bullets[i]))
-			{
-				bullets[i].destroy();
-				removeBullet(bullets[i]);
-				--i;
-			}
-			++i;
+			persistent.restore(this);
 		}
 	}
 }

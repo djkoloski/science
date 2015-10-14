@@ -15,7 +15,7 @@ class InteractableDialogueBox extends FlxSprite
 	public var player:Player;
 	public var playerOverlap:Bool;
 	public var dialogueManager:DialogueManager;
-	public var id: String;
+	public var text: String;
 	public var dialogue: String;
 	
 	public function new(playState:PlayState, ID:String, X, Y)
@@ -27,7 +27,7 @@ class InteractableDialogueBox extends FlxSprite
 		state = playState;
 		interact = false;
 		playerOverlap = false;
-		id = ID;
+		text = ID;
 		
 		player = state.player;
 		dialogueManager = state.dialogueManager;
@@ -40,14 +40,14 @@ class InteractableDialogueBox extends FlxSprite
 	{
 			if (interact == true && FlxG.keys.justPressed.SPACE)
 			{
-				dialogueManager.transitionOffScreen();
+				dialogueManager.closeDialogue();
 				interact = false;
 				
 			}
 			else if (interact == false && FlxG.keys.justPressed.SPACE && playerOverlap)
 			{
-				dialogueManager.addDialogue(id);
-				dialogueManager.transitionOntoScreen();
+				dialogueManager.addDialogue(text);
+				dialogueManager.openDialogue();
 				interact = true;
 			}
 		

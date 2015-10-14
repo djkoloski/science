@@ -4,10 +4,10 @@ import flixel.FlxG;
 
 class Stats
 {
-	private var hearts:Int;
-	private var residualMax:Float;
-	private var residualCurrent:Float;
-	private var regen:Float;
+	public var hearts:Int;
+	public var residualMax:Float;
+	public var residualCurrent:Float;
+	public var regen:Float;
 
 	public function new(h:Int = 3, resMax:Float = 30.0, resCurr:Float = 0.0, reg:Float = 1) 
 	{
@@ -49,7 +49,7 @@ class Stats
 	
 	public function addHearts(h:Int):Void 
 	{
-		hearts += h;
+		hearts = (hearts + h > 20 ? 20 : hearts + h);
 	}
 	
 	public function damage(damage:Float) {
