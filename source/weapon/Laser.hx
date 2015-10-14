@@ -2,7 +2,7 @@ package weapon;
 
 import flixel.util.FlxPoint;
 import flixel.FlxG;
-
+import flixel.util.FlxColor;
 import flixel.FlxObject;
 
 enum LaserState
@@ -18,9 +18,11 @@ class Laser extends Weapon
 	public var laserBeam:LaserBeam;
 	public var timer:Float;
 	public var shotLength:Float;
+	public var width:Int;
+	public var color:Int;
 	public var cooldownPerShot:Float;
 	
-	public function new(state:PlayState, damageMask:Int, dps:Float, shotLength:Float, cooldownPerShot:Float)
+	public function new(state:PlayState, damageMask:Int, dps:Float, shotLength:Float, cooldownPerShot:Float, width:Int, color:Int)
 	{
 		super(state, damageMask);
 		
@@ -29,6 +31,8 @@ class Laser extends Weapon
 		this.timer = 0;
 		this.shotLength = shotLength;
 		this.cooldownPerShot = cooldownPerShot;
+		this.width = width;
+		this.color = color;
 		this.laserBeam = null;
 	}
 	
@@ -59,7 +63,7 @@ class Laser extends Weapon
 	
 	public function createLaserBeam()
 	{
-		laserBeam = new LaserBeam(state, damageMask, dps);
+		laserBeam = new LaserBeam(state, damageMask, dps, width, color);
 		add(laserBeam);
 	}
 	

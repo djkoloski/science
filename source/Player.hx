@@ -60,7 +60,7 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		shotgun = new Shotgun(this.state);
 		sniper = new Sniper(this.state);
 		rocketLauncher = new RocketLauncher(this.state);
-		laser = new Laser(this.state, DamageMask.PLAYER, 60.0, 1.0, 1.0);
+		laser = new Laser(this.state, DamageMask.PLAYER, 60.0, 1.0, 1.0, 3, FlxColor.RED);
 		startingGun = new StartingGun(this.state);
 		machineGun = new MachineGun(this.state);
 		this.weapon = laser;
