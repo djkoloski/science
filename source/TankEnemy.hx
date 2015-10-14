@@ -30,7 +30,7 @@ class TankEnemy extends Testenemy
 			if (target == null || !target.exists) {
 				action = idleAction;
 			}
-			//trace("fightaction");
+			//Trace.info("fightaction");
 			chaseAction();
 			if (Math.random() > .99) {
 				var temp = new FlxPoint();
@@ -58,7 +58,7 @@ class TankEnemy extends Testenemy
 				
 				//fire();
 			}else {
-				trace("too far. distance is " + distanceTo( new FlxPoint(target.get_x(), target.get_y())));
+				Trace.info("too far. distance is " + distanceTo( new FlxPoint(target.get_x(), target.get_y())));
 			}
 		}
 		
@@ -72,13 +72,13 @@ class TankEnemy extends Testenemy
 	public function charge(destination:FlxPoint) {
 		this.destination = destination;
 		action = chargeAction;
-		trace("charging");
+		Trace.info("charging");
 	}
 	
 	public function attack() {
 		weapon = rangedWeapon;
 		action = fightAction;
-		trace("attacking");
+		Trace.info("attacking");
 	}
 	
 	public override function receiveDamage(amount:Int,source:Int):Void

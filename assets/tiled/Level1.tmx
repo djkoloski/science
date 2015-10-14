@@ -134,6 +134,7 @@
   <object name="teleporter" x="799" y="2814" width="64" height="64">
    <properties>
     <property name="level" value="Level2"/>
+    <property name="locked" value=""/>
     <property name="spawn" value="Start"/>
    </properties>
   </object>

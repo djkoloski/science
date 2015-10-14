@@ -33,7 +33,7 @@ class HiveEnemy extends Mob
 	}
 	
 	public function deathNotice(pod:PodEnemy) {
-		trace(pod);
+		Trace.info(pod);
 		Assert.info(pods.remove(pod));
 		deployedPods--;
 		Assert.info(deployedPods == pods.length);

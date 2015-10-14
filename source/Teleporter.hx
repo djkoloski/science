@@ -18,16 +18,18 @@ class Teleporter extends FlxGroup implements ICollidable
 	public var state:PlayState;
 	public var level:String;
 	public var spawn:String;
+	public var locked:Bool;
 	
 	public var sprite:CollidableSprite;
 	
-	public function new(state:PlayState, x:Float, y:Float, width:Float, height:Float, level:String, spawn:String) 
+	public function new(state:PlayState, x:Float, y:Float, width:Float, height:Float, level:String, spawn:String, locked:Bool) 
 	{
 		super();
 		
 		this.state = state;
 		this.level = level;
 		this.spawn = spawn;
+		this.locked = locked;
 		
 		this.sprite = new CollidableSprite(x, y);
 		this.sprite.setProxy(this);
@@ -37,18 +39,20 @@ class Teleporter extends FlxGroup implements ICollidable
 #else
 		this.sprite.visible = false;
 #end
+		this.sprite.immovable = true;
+		
 		add(this.sprite);
 		this.state.collision.add(this.sprite);
 	}
 	
 	public function getCollisionFlags():Int
 	{
-		return CollisionFlags.NONE;
+		return (locked ? CollisionFlags.SOLID : CollisionFlags.NONE);
 	}
 	
 	public function onCollision(other:ICollidable):Void
 	{
-		if (Collision.resolve(other) == state.player && state.necessaryMobs.length == 0)
+		if (Collision.resolve(other) == state.player && (!locked || state.necessaryMobs.length == 0))
 		{
 			state.changeLevel(TARGET_PREFIX + level + TARGET_SUFFIX, spawn);
 		}
