@@ -10,7 +10,7 @@ class SniperCollectible extends Collectible
 	
 	public function new(state:PlayState, x:Float, y:Float, dialogue:String) 
 	{
-		super(state, x, y, AssetPaths.heartpickup__png);
+		super(state, x, y, AssetPaths.Sniper__png);
 		this.dialogue = dialogue;
 	}
 	
