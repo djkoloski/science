@@ -24,7 +24,7 @@ class Collision
 		//if ((damager.getDamagerMask() & damageable.getDamageableMask()) != 0)
 		if(damager.getDamagerMask() != damageable.getDamageableMask())
 		{
-			damageable.receiveDamage(damager.dealDamage());
+			damageable.receiveDamage(damager.dealDamage(damageable),damager.getDamagerMask());
 		}
 	}
 	

@@ -1,6 +1,7 @@
 package;
 import collision.DamageMask;
 import flixel.util.FlxPoint;
+import flixel.util.FlxVector;
 /**
  * ...
  * @author ...
@@ -10,11 +11,13 @@ class BlobEnemy extends Testenemy
 	
 	
 	//var chaseAction:Dynamic;
-	var splitRadius:Int = 50;
+	var splitRadius:Int = 1000;
 	var scaleFactor:Float;
 	
 	var jumpAction:Dynamic;
 	var sitAction:Dynamic;
+	
+	var splitAction:Dynamic;
 	var timer:Int;
 	var jumpTime:Int = 10;
 	var sitTime:Int = 100;
@@ -45,31 +48,11 @@ class BlobEnemy extends Testenemy
 			}
 		};
 		
-		/*
-		
-		chaseAction = function() {
-			if (target == null) {
-				action = idleAction;
-				return;
-			}
-			if (destination == null || Math.random() > .95)  {
-			//	trace("dest is null");
-				//trace(target);
-				//trace(target.get_x() + ", " + target.get_y());
-				trace(target);
-				destination = stopShort(new FlxPoint(target.get_x(), target.get_y()));
-			}
-			if (pathTo(destination)) {
-				destination = null;
-			};
-			fire();
-		};
-		*/
 		
 		
 		timer = Math.floor(Math.random() * 20);
 		jumpAction = function() {
-			if (target == null) {
+			if (target == null || !target.exists) {
 				action = idleAction;
 				return;
 			}
@@ -87,8 +70,16 @@ class BlobEnemy extends Testenemy
 			}
 		}
 		
+		splitAction = function() {
+			var temp = speed;
+			speed = splitRadius;
+			moveTowards(destination);
+			action = sitAction;
+			speed = temp;
+		};
+		
 		sitAction = function() {
-			if (target == null) {
+			if (target == null|| !target.exists) {
 				getTarget();
 				return;
 			}
@@ -113,31 +104,55 @@ class BlobEnemy extends Testenemy
 		action = jumpAction;
 	}
 
-	public override function destroy():Void {
-		if (maxHearts > 0) {
-			for ( i in 0...2) {
-				playstate.add(new BlobEnemy(playstate, x + Math.random() * splitRadius * 2 - splitRadius, y + Math.random() * splitRadius * 2 - splitRadius,maxHearts-1, scaleFactor * .6));
-			}
-		}
-		super.destroy();
-	}
-	
-	public override function receiveDamage(amount:Int):Void
+	public override function receiveDamage(amount:Int,source:Int):Void
 	{
-		super.receiveDamage(amount);
-		getTarget();
+		getTarget(source);
 		sit();		
+		stats.damage(amount);
+		if (stats.isDead())
+		{
+			if (maxHearts > 1) {
+				for ( i in 0...3) {
+					var blob = new BlobEnemy(playstate, x, y, maxHearts - 1, scaleFactor * .6);
+					//blob.velocity = new FlxVector(Math.random() * splitRadius * 2 - splitRadius, Math.random() * splitRadius * 2 - splitRadius);
+					//blob.action = idleAction;
+					blob.destination = new FlxVector(x + Math.random() * splitRadius * 2 - splitRadius, y + Math.random() * splitRadius * 2 - splitRadius);
+					//action = jump;
+					playstate.add(blob);
+					blob.action = blob.splitAction;
+				}
+			}
+			destroy();
+			playstate.add(new HeartCollectible(playstate, x, y));
+		}
+	}
+	/*
+	public override function destroy():Void {
+		
+		super.destroy();
+	}*/
+	
+	/*public override function receiveDamage(amount:Int,source:Int):Void
+	{
+		super.receiveDamage(amount,source);
+		
 		//action = attackAction;
 		//destination = null;
-	}
+	}*/
 	
-	public override function update():Void
+	/*public override function update():Void
 	{
 		super.update();
 		updateAnimation();
+<<<<<<< HEAD
+	}*/
+	/*
+	public function updateAnimation():Void
+=======
 	}
 	
 	public override function updateAnimation():Void
+>>>>>>> 74e9a137488deaeeda48a70c5387e0226ca1cba3
 	{
 		if (Math.abs(velocity.x) >= Math.abs(velocity.y))
 		{
@@ -161,5 +176,5 @@ class BlobEnemy extends Testenemy
 				sprite.animation.play("up");
 			}
 		}
-	}
+	}*/
 }

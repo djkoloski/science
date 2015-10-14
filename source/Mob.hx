@@ -20,6 +20,10 @@ class Mob extends FlxGroup implements IHittable
 {
 	public var playstate:PlayState;
 	
+	
+	public var velocities:FlxPoint;
+	public var weaponRadius:Float;
+	
 	public var stats:Stats;
 	public var speed:Float;
 	public var target:Dynamic;
@@ -32,7 +36,7 @@ class Mob extends FlxGroup implements IHittable
 	
 	
 	public var sightRadius:Int;
-	public var sightCollider:OverlapSquare;
+	//public var sightCollider:OverlapSquare;
 	
 	public var sprite:DamageableSprite;
 	public var hud:MobHUD;
@@ -79,14 +83,16 @@ class Mob extends FlxGroup implements IHittable
 		this.sprite.makeGraphic(32, 32, FlxColor.GREEN);
 		
 		this.hud = new MobHUD(this);
-		sightCollider = new OverlapSquare(x - (sightRadius / 2), y - (sightRadius / 2), sightRadius, sightRadius);
-		add(sightCollider);
-		this.playstate.collision.add(sightCollider);
+		//sightCollider = new OverlapSquare(x - (sightRadius / 2), y - (sightRadius / 2), sightRadius, sightRadius);
+		//add(sightCollider);
+		//this.playstate.collision.add(sightCollider);
 		
 		//add(this.weapon);
 		add(this.sprite);
 		this.playstate.collision.add(this.sprite);
 		add(this.hud);
+		
+		playstate.enemies.push(this);
 		
 		idleAction= function() {
 			this.velocity = new FlxPoint(0, 0);
@@ -94,13 +100,16 @@ class Mob extends FlxGroup implements IHittable
 		//sprite.immovable = true;
 	}
 	
+	public function stun(velocity:FlxPoint):Void {
+		return;	
+	}
 	
 	public function goTo(point:FlxPoint): Bool {
 		//Moves towards target point, returning true if it has arrived. 
 		Assert.info(point.x > 0 && point.y > 0, "Something is moving to a point offscreen.");
-		//Trace.info("going to");
+		//trace("going to");
 		moveTowards(point);
-		if (distanceTo(point) < speed * FlxG.elapsed || distanceTo(point) < sprite.width) {
+		if (distanceTo(point) < speed * FlxG.elapsed || getCenter().distanceTo(point) < sprite.width) {
 			return true;
 		}
 		return false;
@@ -113,43 +122,43 @@ class Mob extends FlxGroup implements IHittable
 		
 		if (path == null ||  path[path.length - 1].x != point.x || path[path.length - 1].y != point.y) {
 			//If we need to make a new path (no path or new destination is different from the old one)...
-			//Trace.info("path is not valid");
+			//trace("path is not valid");
 			//var other =  new FlxPoint(point.x, point.y);
-			//Trace.info("going from: " + x + "," + y + " to: " + point.x + "," + point.y);
+			//trace("going from: " + x + "," + y + " to: " + point.x + "," + point.y);
 			if (!playstate.level.foreground.getBounds().containsFlxPoint(point)) {
 				//If the path end is outside of the level this path is over. 
-				//Trace.info("path outside of level");
+				//trace("path outside of level");
 				return true;
 			}
 			path = playstate.level.foreground.findPath(new FlxPoint(x, y), point);
 			
 			
 			
-			//Trace.info("reaches here");
+			//trace("reaches here");
 			//path = playstate.level.foreground.findPath(new FlxPoint(128, 128), new FlxPoint(256, 128));
 			if (path == null) {
-				//Trace.info("there is no path.");
+				//trace("there is no path.");
 			}
 			if (path == null || path.length == 0) {
-				//Trace.info("path length 0");
+				//trace("path length 0");
 				path = null;
 				return true;
 			}
-			/*Trace.info("From");
+			/*trace("From");
 			for (point in path) {
-				Trace.info(point.toString());
+				trace(point.toString());
 			}
-			Trace.info("to"); 
+			trace("to"); 
 			for (i in 0...path.length) {
 				path[i] = new FlxPoint(path[i].x - sprite.width / 2, path[i].y - sprite.height / 2);
 			}
 			for (point in path) {
-				Trace.info(point.toString());
+				trace(point.toString());
 			}*/
 		}
-		//Trace.info("reaches 2");
+		//trace("reaches 2");
 		if (path.length == 0) {
-			Trace.info("path length 0");
+			trace("path length 0");
 			path = null;
 			return true;
 		}
@@ -168,35 +177,93 @@ class Mob extends FlxGroup implements IHittable
 	
 	public function fire() {
 		//fires at the target
-		if (!target.exists) {
-			target = null;
-			return;
-		}
+		//if (!target.exists) {
+		//	target = null;
+		//	return;
+		//}
 		Assert.info(target != null);
-		//Trace.info(target);
-		//Trace.info("firing");
-		//Trace.info(angle);
+/*<<<<<<< HEAD
+		Assert.info(target.exists);
+		//trace(target);
+		//trace("firing");
+		var velocities:FlxPoint = towardsSprite(target);
+		var angle:Float = Math.atan2(velocities.y, velocities.x);
+		//trace(angle);
+		weapon.fire(x, y, angle);
+=======*/
+		//trace(target);
+		//trace("firing");
+		//trace(angle);
 		weapon.fire();
+//>>>>>>> 0654c8c8a86190f9268a22e89a638d6ae8be3bfd
 	}
 	
-	public function getTarget() {
-		for (obj in sightCollider.getCollisionList()) {
+	
+	public function getTarget(source:Int=null) {
+		/*for (obj in sightCollider.getCollisionList()) {
 			if (obj.getDamageableMask() != this.getDamageableMask()) {
-				target = obj;
-				return true;
+				if (!(cast obj).exists) {
+					//Assert.info(false);
+					
+					continue;
+				}
+				if (source != null) {
+					if(obj.getDamageableMask() == source){
+						target = obj;
+						return true;
+					}
+				}else {
+					target = obj;
+					return true;
+				}
 			}
 		}
-		return false;	
+		if (source != null) {
+			return getTarget();
+		}
+		return false;*/
+		var temp = new FlxPoint();
+		for (enemy in playstate.enemies) {
+			if (source != null && enemy.getDamageableMask() != source) {
+				continue;
+			}
+			if (enemy.getDamageableMask() == getDamageableMask()) {
+				continue;
+			}
+			if (lineOfSight(enemy, temp) ) {
+				if (getCenter().distanceTo(new FlxPoint((cast enemy).get_x(),(cast enemy).get_y())) < sightRadius) {
+					target = enemy;
+					trace("detection");
+					return true;
+				}
+				trace("line of sight");
+			}
+		}
+		if (source != null) {
+			return getTarget(null);
+		}
+		return false;
 	}
 	
-
+	
 	public function stopShort(point:FlxPoint):FlxPoint {
 		//returns a point that is followdistance away from point. If closer than followdistance, it will return the current position.
 		var temp :FlxPoint = towards(point);
 		var dist :Float = distanceTo(point);
 		return new FlxPoint(x + temp.x * (dist - followDistance), y + temp.y * (dist - followDistance));
 	}
-
+	
+	public function lineOfSight(enemy:Dynamic,point:FlxPoint):Bool {
+		var temp = new FlxPoint();
+		playstate.level.foreground.ray(new FlxPoint(x, y), towards(new FlxPoint(enemy.get_x(), enemy.get_y())), temp);
+		if (distanceTo(temp) > distanceTo(new FlxPoint(enemy.get_x(), enemy.get_y()))) {
+			point.x = temp.x;
+			point.y = temp.y;
+			return true;
+		}	
+		return false;
+	}
+	
 	public function distanceTo(point:FlxPoint):Float {
 		return Math.max(Math.sqrt(  (x - point.x)  * (x - point.x)  + (y - point.y) * (y - point.y)),0);
 	}
@@ -216,7 +283,7 @@ class Mob extends FlxGroup implements IHittable
 		if (len == 0) {
 			return new FlxPoint(0, 0);
 		}
-		//Trace.info("direction: " + (tempx / len) + "," + (tempy / len));
+		//trace("direction: " + (tempx / len) + "," + (tempy / len));
 		return new FlxPoint(tempx / len, tempy / len);
 	}
 	
@@ -226,23 +293,47 @@ class Mob extends FlxGroup implements IHittable
 		Assert.info(!Math.isNaN(x) && !Math.isNaN(y));
 		if (point.x == x && point.y == y) {
 			this.velocity = new FlxPoint(0, 0);
+			return;
 		}
-		if (lastFramePos != null && lastFramePos.x - x < speed/10000 && lastFramePos.y - y < speed/10000) {
+		
+		
+		/*if (lastFramePos != null && lastFramePos.x - x < speed/10000 && lastFramePos.y - y < speed/10000) {
 			stuck();
-		}
-		/*if ( new FlxPoint(x, y) == new FlxPoint(x, y)) {
-			Trace.info("equals works as expected");
+			return;
 		}*/
-		lastFramePos = new FlxPoint(x, y);
-		Trace.info(lastFramePos.toString());
+		/*if ( new FlxPoint(x, y) == new FlxPoint(x, y)) {
+			trace("equals works as expected");
+		}*/
+		if(Math.random() > .95){
+			lastFramePos = new FlxPoint(x, y);
+		}
 		//var dir = towards(point);
 		var dir = towards(new FlxPoint(point.x - sprite.width / 2, point.y - sprite.height / 2));
+		if (Math.abs(dir.x) > Math.abs(dir.y)) {
+			//moving more in the leftright direction
+			if (dir.x > 0) {
+				sprite.animation.play("right");
+			}else {
+				sprite.animation.play("left");
+			}
+		}else {
+			//moving more in the updown direction
+			if (dir.y < 0) {
+				sprite.animation.play("up");
+			}else {
+				sprite.animation.play("down");
+			}
+		}
 		//dir = new FlxPoint(dir - sprite.width / 2, dir - sprite.height / 2);
 		this.velocity = new FlxPoint(dir.x * speed, dir.y * speed);
 		//x += dir.x * speed * FlxG.elapsed;
 		//y += dir.y * speed * FlxG.elapsed;
 		Assert.info(!Math.isNaN(this.velocity.x) && !Math.isNaN(this.velocity.y));
-		//Trace.info("moving towards " + point.x + "," + point.y);
+		//trace("moving towards " + point.x + "," + point.y);
+	}
+	
+	public function getCenter():FlxPoint {
+		return new FlxPoint(x + width / 2, y + width / 2);
 	}
 	
 	public override function draw():Void {
@@ -251,7 +342,6 @@ class Mob extends FlxGroup implements IHittable
 		hud.draw();
 	}
 	public function stuck() {
-		Trace.info("stuck.");
 		action = idleAction;
 	}
 	
@@ -261,17 +351,18 @@ class Mob extends FlxGroup implements IHittable
 		Assert.info(action != null);
 		super.update();
 		
-		if (target != null)
+		if (target != null && target.exists)
 		{
-			var velocities:FlxPoint = towardsSprite(target);
-			var weaponRadius:Float = Math.sqrt(Math.pow(sprite.width / 2, 2) + Math.pow(sprite.height / 2, 2));
+			//Assert.info(target.exists);
+			velocities = towardsSprite(target);
+			weaponRadius = Math.sqrt(Math.pow(sprite.width / 2, 2) + Math.pow(sprite.height / 2, 2));
 			weapon.setTransform(x + sprite.width / 2, y + sprite.width / 2, velocities.x, velocities.y, weaponRadius);
 		}
 		
 		//updatePathing();
 		action();
-		sightCollider.clear();
-		sightCollider.updateXY(x, y);
+		//sightCollider.clear();
+		//sightCollider.updateXY(x, y);
 		stats.update();
 	}
 	
@@ -297,11 +388,12 @@ class Mob extends FlxGroup implements IHittable
 		return damageMask;
 	}
 	
-	public function receiveDamage(amount:Int):Void
+	public function receiveDamage(amount:Int,source:Int):Void
 	{
 		stats.damage(amount);
 		if (stats.isDead())
 		{
+			playstate.enemies.remove(this);
 			destroy();
 			playstate.add(new HeartCollectible(playstate, x, y));
 		}
@@ -354,6 +446,7 @@ class Mob extends FlxGroup implements IHittable
 	
 	public function set_velocity(value:FlxPoint):FlxPoint
 	{
+		//sprite.velocity = value;
 		sprite.velocity.x = value.x;
 		sprite.velocity.y = value.y;
 		return value;

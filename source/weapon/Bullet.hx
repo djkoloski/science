@@ -23,10 +23,13 @@ class Bullet extends FlxGroup implements IHurtable
 	public var x(get, set):Float;
 	public var y(get, set):Float;
 	
-	public function new(state:PlayState, startX:Float, startY:Float, velocityX:Float, velocityY:Float, damageMask:Int, radius:Float, lifespan:Float, amount:Int, color:Int)
+	public var effect: String;
+	
+	public function new(state:PlayState, startX:Float, startY:Float, velocityX:Float, velocityY:Float, damageMask:Int, radius:Float, lifespan:Float, amount:Int, color:Int,effect:String ="")
 	{
 		super();
 		
+		this.effect = effect;
 		this.state = state;
 		
 		this.lifespan = lifespan;
@@ -85,8 +88,12 @@ class Bullet extends FlxGroup implements IHurtable
 		return damageMask;
 	}
 	
-	public function dealDamage():Int
+	public function dealDamage(target:IDamageable):Int
 	{
+		if (effect == "stun") {
+			//trace(sprite.velocity);
+			target.stun(sprite.velocity);
+		}
 		destroy();
 		return damageAmount;
 	}

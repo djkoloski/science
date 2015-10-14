@@ -21,19 +21,16 @@ class Testenemy extends Mob
 		//target = playstate.player;
 		
 		idleAction = function() {
+			target = null;
 			if (getTarget()) {
 				action = chaseAction;
 			}
 		};
 		
-		this.sprite.loadGraphic(AssetPaths.tank_walk__png, true, 64, 64);
-		this.sprite.animation.add("right", [0, 1], 10, false);
-		this.sprite.animation.add("up", [2, 3], 10, false);
-		this.sprite.animation.add("left", [4, 5], 10, false);
-		this.sprite.animation.add("down", [6, 7], 10, false);
+		
 		
 		chaseAction = function() {
-			if (target == null) {
+			if (target == null || !target.exists) {
 				action = idleAction;
 				return;
 			}
@@ -46,7 +43,7 @@ class Testenemy extends Mob
 				//as is, the path is recalculated every frame the player moves.
 			}
 			if (pathTo(destination)) {
-			//	trace("successful path");
+				trace("successful path");
 				destination = null;
 			};
 			fire();
@@ -54,10 +51,10 @@ class Testenemy extends Mob
 		
 		action = chaseAction;
 	}
-	public override function receiveDamage(amount:Int):Void
+	public override function receiveDamage(amount:Int,source:Int):Void
 	{
-		super.receiveDamage(amount);
-		getTarget();
+		super.receiveDamage(amount,source);
+		getTarget(source);
 		action = chaseAction;
 		
 		//action = attackAction;

@@ -41,7 +41,7 @@ class PodEnemy extends Testenemy
 				explore();
 				return;
 			}
-			if (target == null) {
+			if (target == null || !target.exists) {
 				if (!getTarget()) {
 					//keeps getting new targets until there are none around, then goes back to exploring.
 					//action = exploreAction;
@@ -77,7 +77,7 @@ class PodEnemy extends Testenemy
 		
 		assistAction = function() {
 			
-			if (target == null) {
+			if (target == null || !target.exists) {
 				//If the target is null that means the ally that it is assisting is dead. It will be hostile to anyone nearby.
 				if (destination == null) {
 					explore();
@@ -114,9 +114,10 @@ class PodEnemy extends Testenemy
 		}
 		
 		attackAction = function() {
-			if (target == null) {
+			if (target == null|| !target.exists) {
 				if (!getTarget()) {
 					explore();
+					return;
 //					action = exploreAction;
 				}
 			}
@@ -141,11 +142,15 @@ class PodEnemy extends Testenemy
 		destination = null;
 	}
 	
-	public function attack() {
+	public function attack(source:Int=null) {
 		
 		Trace.info("exploring");
+		if (source != null) {
+			getTarget(source);
+		}else {
+			target = null;
+		}
 		action = attackAction;
-		target = null;	
 	}
 	
 	public function explore() {
@@ -161,11 +166,11 @@ class PodEnemy extends Testenemy
 		super.destroy();
 	}
 	
-	public override function receiveDamage(amount:Int):Void
+	public override function receiveDamage(amount:Int,source:Int):Void
 	{
-		super.receiveDamage(amount);
+		super.receiveDamage(amount,source);
 		hive.alert(this);
-		attack();
+		attack(source);
 		//action = attackAction;
 		//destination = null;
 	}

@@ -39,7 +39,21 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 	
 	public var x(get, set):Float;
 	public var y(get, set):Float;
-	public var velocity(get, never):FlxPoint;
+	public var velocity(get, null):FlxPoint;
+	
+	
+	
+	public var stunned:Bool = false;
+	public var stunTimer:Float = 0;
+	public var maxStun:Float = 1;
+	public var stunVelocity:FlxPoint;
+	
+	public function stun(vel:FlxPoint):Void {
+		stunVelocity = vel;
+		stunned = true; 
+		stunTimer = maxStun;
+	}
+	
 	
 	public var shotgun: Shotgun;
 	public var sniper: Sniper;
@@ -75,6 +89,8 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		
 		soundEffect = FlxG.sound.load(AssetPaths.soundEffect__ogg);
 		
+		state.enemies.push(this);
+		
 		add(this.weapon);
 		add(this.sprite);
 	}
@@ -89,6 +105,7 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 	
 	private function getMovementInput(output:FlxPoint):Bool
 	{
+		
 		output.set(0, 0);
 		if (FlxG.keys.pressed.D)
 		{
@@ -249,9 +266,19 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 			animatePlayer(moveVector);
 		}
 		
-		velocity.x = moveVector.x * speed;
-		velocity.y = moveVector.y * speed;
+		if (stunned) {
+			trace(stunVelocity);
+			velocity.x = stunVelocity.x;
+			velocity.y = stunVelocity.y;
+			stunTimer -= FlxG.elapsed;
+			if (stunTimer <= 0) {
+				stunned = false;
+			}
+		}else{
 		
+			velocity.x = moveVector.x * speed;
+			velocity.y = moveVector.y * speed;
+		}
 		stats.update();
 	}
 	
@@ -260,14 +287,14 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		return DamageMask.PLAYER;
 	}
 	
-	public function receiveDamage(amount:Int):Void
+	public function receiveDamage(amount:Int,source:Int):Void
 	{
 		stats.damage(amount);
 	}
 	
 	public function getCollisionFlags():Int
 	{
-		return CollisionFlags.SOLID;
+		return CollisionFlags.NONE;
 	}
 	
 	public function onCollision(other:ICollidable):Void
@@ -306,4 +333,5 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 	{
 		return this.sprite.velocity;
 	}
+	
 }

@@ -1,4 +1,5 @@
 package collision;
+import flixel.util.FlxPoint;
 
 @:generic
 class DamageableProxy<T:IProxy> extends T implements IDamageable
@@ -7,9 +8,11 @@ class DamageableProxy<T:IProxy> extends T implements IDamageable
 	{
 		return getProxy().getDamageableMask();
 	}
-	
-	public function receiveDamage(damage:Int):Void
+	public function stun(velocity:FlxPoint): Void {
+		getProxy().stun(velocity);
+	}
+	public function receiveDamage(damage:Int,source:Int):Void
 	{
-		getProxy().receiveDamage(damage);
+		getProxy().receiveDamage(damage,source);
 	}
 }
