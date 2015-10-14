@@ -101,11 +101,6 @@ class PlayState extends FlxState
 			System.exit(0);
 		}
 		
-		if (FlxG.keys.justPressed.R)
-		{
-			dialogueManager.startDialogue("DIALOGUE_OTHER");
-		}
-		
 		if (FlxG.mouse.justPressed)
 		{
 			aStarStart = FlxG.mouse.getWorldPosition();
