@@ -12,7 +12,7 @@
 	"DIALOGUE_NotAttacking":[
 		"Alien:You!",
 		"Player: Ah",
-		"Alien: Woah, I'm not going to attack \n you. Earth club wants you, but I hate them. \n I don't want to help them."
+		"Alien: Woah, I'm not going to attack \n you. Earth club wants you, but\n I hate them. I don't want\n to help them."
 	],	
 	"DIALOGUE_Helping":[
 		"Alien: Earth Club is not popular. \n Don't be surprised if people offer\n you advice. We all want them to fail."
@@ -32,6 +32,7 @@
 	"DIALOGUE_COWARD":[
 		"Alien: Our project, s s stop!! \n ...\n Never mind, don't hurt me!"
 		],
+		
 	"DIALOGUE_STEVE":[
 		"Alien: That guy is Steve. He \n is really wimpy. The \n of the Earth Club"
 		],
@@ -45,7 +46,7 @@
 	"DIALOGUE_MACHINEGUN":[
 		"You found a Machine Gun. \n Shift into MAXIMUM OVERDRIVE"
 		],
-	"DIALOGUE_ROCKETLAUNCHER":[
+	"DIALOGUE_LAUNCHER":[
 		"You found a Rocket Launcher.\n No, it does not fire Rocket ships"
 		],
 	"DIALOGUE_SHOTGUN":[
@@ -59,13 +60,13 @@
 		],
 	"DIALOGUE_JUMP":[
 		"Alien: Try pressing space to \n jump!"
-	],
+		],
 	"DIALOGUE_JERK":[
 		"ALien: That guy keeps yelling\n at people to pressing space.\n I don't think it does\n anything."
 		],
 	"DIALOGUE_THISFAILED":[
 		"Alien 1: I think the fair \n has failed.",
-		"Alien 2: Why do you say \n that?"
+		"Alien 2: Why do you say \n that?",
 		"Alien 1: The Mars club is \n is beating up Earth Club",
 		"ALien 2: true enough."
 		],
@@ -74,10 +75,10 @@
 		],
 	"DIALOGUE_Laser":[
 		"PLACEHOLDER DIALOGUE"
-	],
+		],
 	"DIALOGUE_Sniper":[
 		"MORE PLACEHOLDER DIALOGUE"
-	],
+		],
 	"DIALOGUE_CROWDL":[
 		"You got a CrowdLaser \n No more waiting in lines!"
 		],
