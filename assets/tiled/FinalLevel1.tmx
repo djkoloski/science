@@ -106,11 +106,6 @@
     <property name="id" value="DIALOGUE_Distortion"/>
    </properties>
   </object>
-  <object id="18" name="dialogue" x="613" y="769.5" width="42" height="43">
-   <properties>
-    <property name="id" value="DIALOGUE_Teleporters"/>
-   </properties>
-  </object>
   <object id="19" name="dialogue" x="1531" y="644.5" width="42" height="43">
    <properties>
     <property name="id" value="DIALOGUE_Helping"/>
