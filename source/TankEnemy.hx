@@ -114,10 +114,11 @@ class TankEnemy extends Testenemy
 	
 	public override function receiveDamage(amount:Int,source:Int):Void
 	{
-		super.receiveDamage(amount,source);
-		getTarget(source);
-		action = fightAction;
-		
+		super.receiveDamage(amount, source);
+		if(action != chargeAction){
+			getTarget(source);
+			action = fightAction;
+		}
 		//action = attackAction;
 		//destination = null;
 	}
