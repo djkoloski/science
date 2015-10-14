@@ -101,11 +101,11 @@ class BlobEnemy extends Testenemy
 			}
 		}
 		action = sitAction;
-	}
+	}/*
 	public override function getCollisionFlags():Int
 	{
 		return CollisionFlags.NONE;
-	}
+	}*/
 	public function sit() {
 		timer = Math.floor(Math.random() * 20) + sitTime;
 		action = sitAction;
