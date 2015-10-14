@@ -49,6 +49,7 @@ class PlayState extends FlxState
 	public var necessaryMobs:Array<Mob>;
 	
 	public var persistent:PersistentData;
+	public var currentLevel:String;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -77,12 +78,9 @@ class PlayState extends FlxState
 		necessaryMobs = null;
 		
 		persistent = null;
+		currentLevel = null;
 		
-		#if debug
-		changeLevel("Level1");
-		#else
 		changeLevel("FinalLevel1");
-		#end
 		
 		FlxG.sound.playMusic(AssetPaths.BackgroundMusic__wav, 1, true);
 	}
@@ -120,6 +118,12 @@ class PlayState extends FlxState
 			aStarEnd = FlxG.mouse.getWorldPosition();
 		}
 		
+		if (FlxG.keys.justPressed.M)
+		{
+			player.reset();
+			changeLevel(currentLevel);
+		}
+		
 		if (FlxG.keys.justPressed.P)
 		{
 			if (aStarTest != null)
@@ -128,8 +132,15 @@ class PlayState extends FlxState
 				aStarTest.destroy();
 			}
 			aStarTest = new AStarTest();
-			aStarTest.renderPath(aStarStart, aStarEnd, level.foreground.findPath(aStarStart, aStarEnd), Math.round(level.foreground.width), Math.round(level.foreground.height));
-			add(aStarTest);
+			if (aStarStart != null && aStarEnd != null)
+			{
+				var path = level.foreground.findPath(aStarStart, aStarEnd);
+				if (path != null)
+				{
+					aStarTest.renderPath(aStarStart, aStarEnd, path, Math.round(level.foreground.width), Math.round(level.foreground.height));
+				}
+				add(aStarTest);
+			}
 		}
 	}
 	
@@ -151,26 +162,23 @@ class PlayState extends FlxState
 			spawn = "player_start";
 		}
 		
-		if (level != null)
+		if (path != currentLevel || spawn == "player_start")
 		{
-			unloadLevel();
+			currentLevel = path;
+			
+			if (level != null)
+			{
+				unloadLevel();
+			}
+			
+			if (path == "Final")
+			{
+				FlxG.switchState(new CutsceneState(new MenuState(), AssetPaths.cutscene_outro__png));
+				return;
+			}
+			
+			loadLevel(TILEMAP_PREFIX + path + TILEMAP_SUFFIX);
 		}
-		
-		if (path == "Death")
-		{
-			FlxG.switchState(new CutsceneState(new MenuState(), AssetPaths.cutscene_lose__png));
-			return;
-		}
-		
-		if (path == "Final")
-		{
-			FlxG.switchState(new CutsceneState(new MenuState(), AssetPaths.cutscene_outro__png));
-			return;
-		}
-		
-		path = TILEMAP_PREFIX + path + TILEMAP_SUFFIX;
-		
-		loadLevel(path);
 		
 		Assert.info(level.spawnPoints.exists(spawn), "Spawn point '" + spawn + "' not found in level '" + path + "'");
 		player.x = level.spawnPoints[spawn].x;

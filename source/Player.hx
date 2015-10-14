@@ -114,7 +114,6 @@ class Player extends FlxGroup implements IHittable
 	
 	private function getMovementInput(output:FlxPoint):Bool
 	{
-		
 		output.set(0, 0);
 		if (FlxG.keys.pressed.D)
 		{
@@ -256,23 +255,11 @@ class Player extends FlxGroup implements IHittable
 		
 		var moving = getMovementInput(moveVector);
 		var firing = getWeaponInput(weaponVector);
-		var weaponSwap: Bool = FlxG.keys.justPressed.Q;
-		var meleeSwap:Bool = FlxG.keys.justPressed.SHIFT;
 		
 		var weaponX:Float = x + sprite.width / 2.0;
 		var weaponY:Float = y + sprite.height / 2.0;
 		
-		if (weaponSwap)
-		{
-			// TODO: change weapons
-		}
-		
 		switchWeapons();
-		
-		if (meleeSwap)
-		{
-			// TODO: change to melee
-		}
 		
 		var weaponRadius:Float = Math.sqrt(Math.pow(sprite.width / 2, 2) + Math.pow(sprite.height / 2, 2));
 		weapon.setTransform(weaponX, weaponY, weaponVector.x, weaponVector.y, weaponRadius);
@@ -308,9 +295,22 @@ class Player extends FlxGroup implements IHittable
 		return DamageMask.PLAYER;
 	}
 	
+	public function reset():Void
+	{
+		this.stats.hearts = 3;
+		this.stats.residualMax = 30;
+		this.stats.residualCurrent = 0;
+		this.stats.regen = 1;
+	}
+	
 	public function receiveDamage(amount:Int,source:Int):Void
 	{
 		stats.damage(amount);
+		if (stats.isDead())
+		{
+			reset();
+			this.state.changeLevel(this.state.currentLevel);
+		}
 	}
 	
 	public function getCollisionFlags():Int
