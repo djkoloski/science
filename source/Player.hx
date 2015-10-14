@@ -27,7 +27,7 @@ import collision.ICollidable;
 import collision.Collision;
 import collision.CollisionFlags;
 
-class Player extends FlxGroup implements IHittable implements IPersistent
+class Player extends FlxGroup implements IHittable
 {
 	public var state:PlayState;
 	
@@ -55,7 +55,6 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		stunned = true; 
 		stunTimer = maxStun;
 	}
-	
 	
 	public var shotgun: Shotgun;
 	public var sniper: Sniper;
@@ -100,19 +99,18 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		state.enemies.push(this);
 		
 		//add(this.weapon);
-		add(this.preciseLaser);
+		add(this.shotgun);
+		add(this.sniper);
+		add(this.rocketLauncher);
 		add(this.laser);
+		add(this.preciseLaser);
 		add(this.crowdLaser);
+		add(this.startingGun);
+		add(this.machineGun);
 		add(this.sprite);
+		
+		this.state.collision.add(this.sprite);
 	}
-	
-	public function onLevelLoad():Void
-	{
-		state.collision.add(this.sprite);
-	}
-	
-	public function onLevelUnload():Void
-	{}
 	
 	private function getMovementInput(output:FlxPoint):Bool
 	{
