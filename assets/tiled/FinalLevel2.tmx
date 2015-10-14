@@ -16,7 +16,7 @@
  <objectgroup name="objects">
   <object id="2" name="spawn" x="1153.33" y="49.6665" width="64" height="64">
    <properties>
-    <property name="id" value="Start"/>
+    <property name="id" value="start"/>
    </properties>
   </object>
  </objectgroup>

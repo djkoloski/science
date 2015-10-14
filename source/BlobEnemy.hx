@@ -35,10 +35,10 @@ class BlobEnemy extends Testenemy
 		this.sprite.animation.add("left", [4, 5], 10, false);
 		this.sprite.animation.add("down", [6, 7], 10, false);
 		this.sprite.scale.x = scaleFactor;
-		this.sprite.scale.y = scaleFactor;//(new FlxPoint(scaleFactor, scaleFactor));
+		this.sprite.scale.y = scaleFactor;
 		this.sprite.updateHitbox();
 		this.sprite.drag.x = 5000;
-		this.sprite.drag.y = 5000;//= new FlxPoint(0.5, 0.5);
+		this.sprite.drag.y = 5000;
 		
 		speed = 300;
 		weapon = new weapon.BlobGun(playstate);
@@ -105,7 +105,7 @@ class BlobEnemy extends Testenemy
 		timer =Math.floor(Math.random() * 20) + jumpTime;
 		action = jumpAction;
 	}
-
+	
 	public override function receiveDamage(amount:Int,source:Int):Void
 	{
 		getTarget(source);
@@ -121,62 +121,13 @@ class BlobEnemy extends Testenemy
 					blob.destination = new FlxVector(x + Math.random() * splitRadius * 2 - splitRadius, y + Math.random() * splitRadius * 2 - splitRadius);
 					//action = jump;
 					playstate.add(blob);
+					playstate.necessaryMobs.push(blob);
 					blob.action = blob.splitAction;
 				}
 			}
+			playstate.necessaryMobs.remove(this);
 			destroy();
 			playstate.add(new HeartCollectible(playstate, x, y));
 		}
 	}
-	/*
-	public override function destroy():Void {
-		
-		super.destroy();
-	}*/
-	
-	/*public override function receiveDamage(amount:Int,source:Int):Void
-	{
-		super.receiveDamage(amount,source);
-		
-		//action = attackAction;
-		//destination = null;
-	}*/
-	
-	/*public override function update():Void
-	{
-		super.update();
-		updateAnimation();
-<<<<<<< HEAD
-	}*/
-	/*
-	public function updateAnimation():Void
-=======
-	}
-	
-	public override function updateAnimation():Void
->>>>>>> 74e9a137488deaeeda48a70c5387e0226ca1cba3
-	{
-		if (Math.abs(velocity.x) >= Math.abs(velocity.y))
-		{
-			if (velocity.x > 0)
-			{
-				sprite.animation.play("right");
-			}
-			else
-			{
-				sprite.animation.play("left");
-			}
-		}
-		else
-		{
-			if (velocity.y > 0)
-			{
-				sprite.animation.play("down");
-			}
-			else
-			{
-				sprite.animation.play("up");
-			}
-		}
-	}*/
 }

@@ -56,6 +56,8 @@ class Mob extends FlxGroup implements IHittable
 	
 	private var lastFramePos:FlxPoint;
 	
+	public var necessary:Bool;
+	
 	//public var hud:MobHUD;
 	//public var stats:Stats;
 	
@@ -98,6 +100,8 @@ class Mob extends FlxGroup implements IHittable
 			this.velocity = new FlxPoint(0, 0);
 		};
 		//sprite.immovable = true;
+		
+		necessary = false;
 	}
 	
 	public function stun(velocity:FlxPoint):Void {
@@ -182,20 +186,7 @@ class Mob extends FlxGroup implements IHittable
 		//	return;
 		//}
 		Assert.info(target != null);
-/*<<<<<<< HEAD
-		Assert.info(target.exists);
-		//trace(target);
-		//trace("firing");
-		var velocities:FlxPoint = towardsSprite(target);
-		var angle:Float = Math.atan2(velocities.y, velocities.x);
-		//trace(angle);
-		weapon.fire(x, y, angle);
-=======*/
-		//trace(target);
-		//trace("firing");
-		//trace(angle);
 		weapon.fire();
-//>>>>>>> 0654c8c8a86190f9268a22e89a638d6ae8be3bfd
 	}
 	
 	
@@ -450,5 +441,11 @@ class Mob extends FlxGroup implements IHittable
 		sprite.velocity.x = value.x;
 		sprite.velocity.y = value.y;
 		return value;
+	}
+	
+	override public function destroy():Void 
+	{
+		playstate.necessaryMobs.remove(this);
+		super.destroy();
 	}
 }

@@ -11,6 +11,7 @@ import flixel.addons.editors.tiled.TiledMap;
 import flixel.addons.editors.tiled.TiledObject;
 import flixel.addons.editors.tiled.TiledObjectGroup;
 import flixel.addons.editors.tiled.TiledTileSet;
+import weapon.Laser;
 
 import collision.CollidableTilemap;
 
@@ -85,15 +86,33 @@ class LevelMap extends TiledMap
 				}
 				else if (o.name == "tank")
 				{
-					state.add(new TankEnemy(state, o.x, o.y));
+					var m:Mob = new TankEnemy(state, o.x, o.y);
+					state.add(m);
+					if (o.custom.contains("necessary"))
+					{
+						m.necessary = true;
+						state.necessaryMobs.push(m);
+					}
 				}
 				else if (o.name == "blob")
 				{
-					state.add(new BlobEnemy(state, o.x, o.y));
+					var m:Mob = new BlobEnemy(state, o.x, o.y);
+					state.add(m);
+					if (o.custom.contains("necessary"))
+					{
+						m.necessary = true;
+						state.necessaryMobs.push(m);
+					}
 				}
 				else if (o.name == "hive")
 				{
-					state.add(new HiveEnemy(state, o.x, o.y));
+					var m:Mob = new HiveEnemy(state, o.x, o.y);
+					state.add(m);
+					if (o.custom.contains("necessary"))
+					{
+						m.necessary = true;
+						state.necessaryMobs.push(m);
+					}
 				}
 				else if (o.name == "teleporter")
 				{
@@ -105,6 +124,22 @@ class LevelMap extends TiledMap
 				{
 					Assert.info(o.custom.contains("id"), "Dialog at (" + o.x + "," + o.y + ") missing id property");
 					state.add(new InteractiveDialogue(state, o.x, o.y, o.custom.get("id")));
+				}
+				else if (o.name == "weapon")
+				{
+					switch(o.custom.get("type"))
+					{
+						case "sniper":
+							state.add(new SniperCollectible(state, o.x, o.y));
+						case "shotgun":
+							state.add(new ShotgunCollectible(state, o.x, o.y));
+						case "rocket launcher":
+							state.add(new RocketLauncherCollectible(state, o.x, o.y));
+						case "laser":
+							state.add(new LaserCollectible(state, o.x, o.y));
+						case "machine gun":
+							state.add(new MachineGunCollectible(state, o.x, o.y));
+					}
 				}
 			}
 		}
