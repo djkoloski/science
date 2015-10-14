@@ -67,8 +67,11 @@ class PlayState extends FlxState
 		
 		necessaryMobs = new Array<Mob>();
 		
+		#if debug
+		changeLevel("assets/tiled/Level1.tmx");
+		#else
 		changeLevel("assets/tiled/FinalLevel1.tmx");
-		
+		#end
 		
 		FlxG.sound.playMusic(AssetPaths.BackgroundMusic__wav, 1, true);
 		

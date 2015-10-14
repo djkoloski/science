@@ -27,5 +27,12 @@
 	],
 	"DIALOGUE_Blob":[
 		"Alien: The Earth Club keeps a nasty \n blob as a pet. These are parts of it."
+	],
+	
+	"DIALOGUE_Laser":[
+		"PLACEHOLDER DIALOGUE"
+	],
+	"DIALOGUE_Sniper":[
+		"MORE PLACEHOLDER DIALOGUE"
 	]
 }	
