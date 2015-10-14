@@ -11,9 +11,11 @@ import flixel.util.FlxAngle;
 import flixel.group.FlxGroup;
 import flixel.util.FlxPoint;
 import weapon.Laser;
+import weapon.MachineGun;
 import weapon.RocketLauncher;
 import weapon.Shotgun;
 import weapon.Sniper;
+import weapon.StartingGun;
 import weapon.Weapon;
 
 import collision.DamageableSprite;
@@ -57,6 +59,8 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 	public var sniper: Sniper;
 	public var rocketLauncher: RocketLauncher;
 	public var laser: Laser;
+	public var startingGun: StartingGun;
+	public var machineGun: MachineGun;
 	
 	public function new(state:PlayState)
 	{
@@ -71,6 +75,8 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		sniper = new Sniper(this.state);
 		rocketLauncher = new RocketLauncher(this.state);
 		laser = new Laser(this.state, DamageMask.PLAYER, 60.0, 1.0, 1.0);
+		startingGun = new StartingGun(this.state);
+		machineGun = new MachineGun(this.state);
 		this.weapon = laser;
 		this.sprite = new DamageableSprite();
 		this.sprite.setProxy(this);
@@ -180,6 +186,14 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		if (FlxG.keys.pressed.FOUR)
 		{
 			weapon = laser;
+		}
+		if (FlxG.keys.pressed.FIVE)
+		{
+			weapon = machineGun;
+		}
+		if (FlxG.keys.pressed.SIX)
+		{
+			weapon = startingGun;
 		}
 	}
 	

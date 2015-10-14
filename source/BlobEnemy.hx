@@ -144,9 +144,15 @@ class BlobEnemy extends Testenemy
 	{
 		super.update();
 		updateAnimation();
+<<<<<<< HEAD
 	}*/
 	/*
 	public function updateAnimation():Void
+=======
+	}
+	
+	public override function updateAnimation():Void
+>>>>>>> 74e9a137488deaeeda48a70c5387e0226ca1cba3
 	{
 		if (Math.abs(velocity.x) >= Math.abs(velocity.y))
 		{

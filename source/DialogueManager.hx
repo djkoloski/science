@@ -21,7 +21,7 @@ enum DialogueManagerState
 
 class DialogueManager extends FlxGroup
 {
-	public static var OPENING_TIME:Float = 0.5;
+	public static var OPENING_TIME:Float = 0.3;
 	public static var NEXT_CHAR_TIME:Float = 0.01;
 	public static var PAUSE_TIME:Float = 1.0;
 	public static var CLOSING_TIME:Float = 0.1;

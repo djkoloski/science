@@ -20,7 +20,7 @@ class PlayerHUD extends StatsHUD
 		barBorder = 2;
 		barSizeY = 10;
 		barScaleX = 4.0;
-		currentWeapon = new FlxSprite(130, 35);
+		currentWeapon = new FlxSprite(130, 15);
 		currentWeapon.scrollFactor.x = currentWeapon.scrollFactor.y = 0;
 		p = player;
 		
@@ -37,15 +37,23 @@ class PlayerHUD extends StatsHUD
 		} 
 		else if (p.weapon == p.rocketLauncher)
 		{
-			currentWeapon.makeGraphic(25, 25, FlxColor.GREEN);
+			currentWeapon.loadGraphic("assets/images/Rocket.png",false);
 		}
 		else if (p.weapon == p.sniper)
 		{
-			currentWeapon.makeGraphic(25, 25, FlxColor.GRAY);
+			currentWeapon.loadGraphic("assets/images/Sniper.png",false);
 		}
 		else if (p.weapon == p.shotgun)
 		{
-			currentWeapon.makeGraphic(25, 25, FlxColor.CORAL);
+			currentWeapon.loadGraphic("assets/images/Shotgun.png",false);
+		}
+		else if (p.weapon == p.startingGun)
+		{
+			currentWeapon.loadGraphic("assets/images/Pistol.png",false);
+		}
+		else if (p.weapon == p.machineGun)
+		{
+			currentWeapon.loadGraphic("assets/images/MachineGun.png",false);
 		}
 	}
 }
