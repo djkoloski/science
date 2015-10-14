@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="50" height="50" tilewidth="32" tileheight="32">
- <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" nextobjectid="31">
+ <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32" tilecount="240">
   <image source="tileset.png" width="640" height="384"/>
  </tileset>
  <layer name="background" width="50" height="50">
@@ -14,110 +14,110 @@
   </data>
  </layer>
  <objectgroup name="objects">
-  <object name="spawn" x="40" y="38" width="64" height="64">
+  <object id="1" name="spawn" x="40" y="38" width="64" height="64">
    <properties>
     <property name="id" value="start"/>
    </properties>
   </object>
-  <object name="dialogue" x="394" y="34.5" width="42" height="43">
+  <object id="2" name="dialogue" x="394" y="34.5" width="42" height="43">
    <properties>
     <property name="id" value="DIALOGUE_THISFAILED"/>
    </properties>
   </object>
-  <object name="dialogue" x="465" y="34.5" width="42" height="43">
+  <object id="3" name="dialogue" x="465" y="34.5" width="42" height="43">
    <properties>
     <property name="id" value="DIALOGUE_THISFAILED"/>
    </properties>
   </object>
-  <object name="weapon" x="38.3334" y="370" width="61.3333" height="62">
+  <object id="4" name="weapon" x="38.3334" y="370" width="61.3333" height="62">
    <properties>
     <property name="dialogue" value="DIALOGUE_CROWDL"/>
-    <property name="type" value="crowdLaser"/>
+    <property name="type" value="crowd laser"/>
    </properties>
   </object>
-  <object name="weapon" x="38.3333" y="433" width="61.3333" height="62">
+  <object id="5" name="weapon" x="38.3333" y="433" width="61.3333" height="62">
    <properties>
     <property name="dialogue" value="DIALOGUE_PRECISL"/>
-    <property name="type" value="preciseLaser"/>
+    <property name="type" value="precise laser"/>
    </properties>
   </object>
-  <object name="dialogue" x="43" y="317.5" width="42" height="43">
+  <object id="6" name="dialogue" x="43" y="317.5" width="42" height="43">
    <properties>
     <property name="id" value="DIALOGUE_FREELASERS"/>
    </properties>
   </object>
-  <object name="teleporter" x="1493" y="1495" width="64" height="64">
+  <object id="7" name="teleporter" x="1493" y="1495" width="64" height="64">
    <properties>
     <property name="level" value="Final"/>
    </properties>
   </object>
-  <object name="tank" x="685" y="465" width="64" height="64">
+  <object id="8" name="tank" x="685" y="465" width="64" height="64">
    <properties>
     <property name="necessary" value=""/>
    </properties>
   </object>
-  <object name="tank" x="687" y="620" width="64" height="64">
+  <object id="9" name="tank" x="687" y="620" width="64" height="64">
    <properties>
     <property name="necessary" value=""/>
    </properties>
   </object>
-  <object name="tank" x="679" y="784" width="64" height="64">
+  <object id="10" name="tank" x="679" y="784" width="64" height="64">
    <properties>
     <property name="necessary" value=""/>
    </properties>
   </object>
-  <object name="tank" x="550" y="527" width="64" height="64">
+  <object id="11" name="tank" x="550" y="527" width="64" height="64">
    <properties>
     <property name="necessary" value=""/>
    </properties>
   </object>
-  <object name="tank" x="547" y="722" width="64" height="64">
+  <object id="12" name="tank" x="547" y="722" width="64" height="64">
    <properties>
     <property name="necessary" value=""/>
    </properties>
   </object>
-  <object name="tank" x="417" y="435" width="64" height="64">
+  <object id="13" name="tank" x="417" y="435" width="64" height="64">
    <properties>
     <property name="necessary" value=""/>
    </properties>
   </object>
-  <object name="tank" x="426" y="613" width="64" height="64">
+  <object id="14" name="tank" x="426" y="613" width="64" height="64">
    <properties>
     <property name="necessary" value=""/>
    </properties>
   </object>
-  <object name="tank" x="409" y="792" width="64" height="64">
+  <object id="15" name="tank" x="409" y="792" width="64" height="64">
    <properties>
     <property name="necessary" value=""/>
    </properties>
   </object>
-  <object name="pod" x="1022" y="566" width="64" height="64">
+  <object id="16" name="hive" x="1022" y="566" width="64" height="64">
    <properties>
     <property name="necessary" value=""/>
    </properties>
   </object>
-  <object name="pod" x="1024" y="698" width="64" height="64">
+  <object id="17" name="hive" x="1024" y="698" width="64" height="64">
    <properties>
     <property name="necessary" value=""/>
    </properties>
   </object>
-  <object name="pod" x="1128" y="644" width="64" height="64">
+  <object id="18" name="hive" x="1128" y="644" width="64" height="64">
    <properties>
     <property name="necessary" value=""/>
    </properties>
   </object>
-  <object name="blob" x="863" y="603" width="64" height="64"/>
-  <object name="blob" x="871" y="1307" width="64" height="64"/>
-  <object name="blob" x="454" y="1269" width="64" height="64"/>
-  <object name="blob" x="303" y="1006" width="64" height="64"/>
-  <object name="blob" x="165" y="1408" width="64" height="64"/>
-  <object name="blob" x="1375" y="1126" width="64" height="64"/>
-  <object name="blob" x="955" y="1006" width="64" height="64"/>
-  <object name="blob" x="1107" y="1423" width="64" height="64"/>
-  <object name="blob" x="1435" y="100" width="64" height="64"/>
-  <object name="blob" x="1307" y="312" width="64" height="64"/>
-  <object name="blob" x="1114" y="63" width="64" height="64"/>
-  <object name="spawn" x="49" y="47" width="85" height="81">
+  <object id="19" name="blob" x="863" y="603" width="64" height="64"/>
+  <object id="20" name="blob" x="871" y="1307" width="64" height="64"/>
+  <object id="21" name="blob" x="454" y="1269" width="64" height="64"/>
+  <object id="22" name="blob" x="303" y="1006" width="64" height="64"/>
+  <object id="23" name="blob" x="165" y="1408" width="64" height="64"/>
+  <object id="24" name="blob" x="1375" y="1126" width="64" height="64"/>
+  <object id="25" name="blob" x="955" y="1006" width="64" height="64"/>
+  <object id="26" name="blob" x="1107" y="1423" width="64" height="64"/>
+  <object id="27" name="blob" x="1435" y="100" width="64" height="64"/>
+  <object id="28" name="blob" x="1307" y="312" width="64" height="64"/>
+  <object id="29" name="blob" x="1114" y="63" width="64" height="64"/>
+  <object id="30" name="spawn" x="49" y="47" width="85" height="81">
    <properties>
     <property name="id" value="player_start"/>
    </properties>

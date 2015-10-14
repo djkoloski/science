@@ -9,7 +9,7 @@ class PreciseLaser extends Laser
 {
 	public function new(state:PlayState, damagemask:Int)
 	{
-		var dps: Float = 20;
+		var dps: Float = 30;
 		var shotLength: Float = 5;
 		var cooldownPerShot : Float = 2;
 		var width: Int = 4;
