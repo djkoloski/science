@@ -14,7 +14,7 @@ class MachineGun extends Gun
 	public var lifespan:Float = .1;
 	public var speed:Float = 2000;
 	public var color:Int = FlxColor.BLUE;
-	public var amount:Int = 2;
+	public var amount:Int = 5;
 	public function new(state:PlayState)//, damageMask:Int, cooldownPerShot:Float, bulletRadius:Float, bulletLifespan:Float, bulletSpeed:Float, bulletColor:Int) 
 	{
 		state.add(this);
