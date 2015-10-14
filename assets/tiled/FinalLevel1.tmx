@@ -133,7 +133,7 @@
   </object>
   <object id="23" name="teleporter" x="801" y="2780" width="64" height="64">
    <properties>
-    <property name="level" value="Level2"/>
+    <property name="level" value="FinalLevel2"/>
     <property name="locked" value=""/>
     <property name="spawn" value="start"/>
    </properties>
@@ -157,8 +157,8 @@
   <object id="41" name="blob" x="301" y="1134" width="64" height="64"/>
   <object id="42" name="blob" x="165" y="1622" width="64" height="64"/>
   <object id="43" name="blob" x="86" y="1772" width="64" height="64"/>
-  <object id="44" name="blob" x="1687" y="1156" width="64" height="64"/>
-  <object id="45" name="blob" x="1687" y="1087" width="64" height="64"/>
+  <object id="44" name="blob" x="1608" y="1136" width="64" height="64"/>
+  <object id="45" name="blob" x="1688" y="1096" width="64" height="64"/>
   <object id="46" name="tank" x="1375" y="1474" width="64" height="64"/>
   <object id="47" name="blob" x="1999" y="1114" width="64" height="64"/>
   <object id="48" name="blob" x="1874" y="1443" width="64" height="64"/>
@@ -194,16 +194,19 @@
   </object>
   <object id="70" name="weapon" x="354.333" y="1776" width="61.3333" height="62">
    <properties>
+    <property name="dialogue" value="DIALOGUE_SHOTGUN"/>
     <property name="type" value="shotgun"/>
    </properties>
   </object>
   <object id="71" name="weapon" x="367.333" y="2734" width="61.3333" height="62">
    <properties>
+    <property name="dialogue" value="DIALOGUE_SNIPER"/>
     <property name="type" value="sniper"/>
    </properties>
   </object>
   <object id="72" name="weapon" x="1747.33" y="2486" width="61.3333" height="62">
    <properties>
+    <property name="dialogue" value="DIALOGUE_MACHINEGUN"/>
     <property name="type" value="machine gun"/>
    </properties>
   </object>
