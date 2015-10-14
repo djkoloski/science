@@ -103,8 +103,13 @@ class Gun extends Weapon
 		}
 	}
 	
+	public override function getMaxCooldown():Float
+	{
+		return cooldownPerShot;
+	}
+	
 	public override function getCooldown():Float
 	{
-		return cooldownTimer / cooldownPerShot;
+		return cooldownTimer;
 	}
 }

@@ -124,11 +124,16 @@ class Laser extends Weapon
 		}
 	}
 	
+	public override function getMaxCooldown():Float
+	{
+		return cooldownPerShot;
+	}
+	
 	public override function getCooldown():Float
 	{
 		if (currentState == LaserState_Cooldown)
 		{
-			return timer / cooldownPerShot;
+			return timer;
 		}
 		else
 		{

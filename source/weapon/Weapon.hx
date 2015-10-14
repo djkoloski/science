@@ -49,6 +49,11 @@ class Weapon extends FlxGroup
 	{
 	}
 	
+	public function getMaxCooldown():Float
+	{
+		return 0;
+	}
+	
 	public function getCooldown():Float
 	{
 		return 0;
