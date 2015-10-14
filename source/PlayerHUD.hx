@@ -47,5 +47,13 @@ class PlayerHUD extends StatsHUD
 		{
 			currentWeapon.loadGraphic("assets/images/Shotgun.png",false);
 		}
+		else if (p.weapon == p.startingGun)
+		{
+			currentWeapon.loadGraphic("assets/images/Pistol.png",false);
+		}
+		else if (p.weapon == p.machineGun)
+		{
+			currentWeapon.loadGraphic("assets/images/MachineGun.png",false);
+		}
 	}
 }
