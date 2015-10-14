@@ -28,6 +28,9 @@ import collision.CollisionManager;
  */
 class PlayState extends FlxState
 {
+	public static var TILEMAP_PREFIX = "assets/tiled/";
+	public static var TILEMAP_SUFFIX = ".tmx";
+	
 	public var collision:CollisionManager;
 	public var group:FlxGroup;
 	
@@ -76,9 +79,9 @@ class PlayState extends FlxState
 		persistent = null;
 		
 		#if debug
-		changeLevel("assets/tiled/Level1.tmx");
+		changeLevel("Level1");
 		#else
-		changeLevel("assets/tiled/FinalLevel1.tmx");
+		changeLevel("FinalLevel1");
 		#end
 		
 		FlxG.sound.playMusic(AssetPaths.BackgroundMusic__wav, 1, true);
@@ -153,6 +156,20 @@ class PlayState extends FlxState
 			unloadLevel();
 		}
 		
+		if (path == "Death")
+		{
+			FlxG.switchState(new CutsceneState(new MenuState(), AssetPaths.cutscene_lose__png));
+			return;
+		}
+		
+		if (path == "Final")
+		{
+			FlxG.switchState(new CutsceneState(new MenuState(), AssetPaths.cutscene_outro__png));
+			return;
+		}
+		
+		path = TILEMAP_PREFIX + path + TILEMAP_SUFFIX;
+		
 		loadLevel(path);
 		
 		Assert.info(level.spawnPoints.exists(spawn), "Spawn point '" + spawn + "' not found in level '" + path + "'");
@@ -210,12 +227,12 @@ class PlayState extends FlxState
 		
 		add(level.background);
 		
+		add(level.foreground);
+		collision.add(level.foreground);
+		
 		level.loadObjects();
 		
 		add(player);
-		
-		add(level.foreground);
-		collision.add(level.foreground);
 		
 		add(dialogueManager);
 		
