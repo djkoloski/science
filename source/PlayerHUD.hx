@@ -55,5 +55,13 @@ class PlayerHUD extends StatsHUD
 		{
 			currentWeapon.loadGraphic("assets/images/MachineGun.png",false);
 		}
+		else if (p.weapon == p.crowdLaser)
+		{
+			currentWeapon.makeGraphic(25, 25, FlxColor.BLUE);
+		}
+		else if (p.weapon == p.preciseLaser)
+		{
+			currentWeapon.makeGraphic(25, 25, FlxColor.GREEN);
+		}
 	}
 }
