@@ -19,7 +19,7 @@ class HiveEnemy extends Mob
 	{
 		super(playstate, startX, startY, damageMask);
 		pods = new Array<PodEnemy>();
-		
+		this.sprite.loadGraphic(AssetPaths.hive__png);
 		stats.hearts = 15;
 		stats.residualMax = 45;
 		stats.regen = 10;
