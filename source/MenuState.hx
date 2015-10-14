@@ -29,6 +29,8 @@ class MenuState extends FlxState
 
 		_btnPlay = new FlxButton(FlxG.width / 2, FlxG.height / 2, "Play", clickPlay);
 		add(_btnPlay);
+		
+		clickPlay();
 	}
 	 
 	//Change to the play state.
