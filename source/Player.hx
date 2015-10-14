@@ -10,8 +10,10 @@ import flixel.util.FlxColor;
 import flixel.util.FlxAngle;
 import flixel.group.FlxGroup;
 import flixel.util.FlxPoint;
+import weapon.CrowdLaser;
 import weapon.Laser;
 import weapon.MachineGun;
+import weapon.PreciseLaser;
 import weapon.RocketLauncher;
 import weapon.Shotgun;
 import weapon.Sniper;
@@ -61,6 +63,8 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 	public var laser: Laser;
 	public var startingGun: StartingGun;
 	public var machineGun: MachineGun;
+	public var crowdLaser: CrowdLaser;
+	public var preciseLaser: PreciseLaser;
 	
 	public function new(state:PlayState)
 	{
@@ -74,6 +78,9 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		shotgun = new Shotgun(this.state);
 		sniper = new Sniper(this.state);
 		rocketLauncher = new RocketLauncher(this.state);
+		laser = new Laser(this.state, DamageMask.PLAYER, 20.0, 1.0, 1.0, 3, FlxColor.RED);
+		preciseLaser = new PreciseLaser(this.state, DamageMask.PLAYER);
+		crowdLaser = new CrowdLaser(this.state, DamageMask.PLAYER);
 		laser = new Laser(this.state, DamageMask.PLAYER, 60.0, 1.0, 1.0, 3, FlxColor.RED);
 		startingGun = new StartingGun(this.state);
 		machineGun = new MachineGun(this.state);
@@ -92,7 +99,10 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		
 		state.enemies.push(this);
 		
-		add(this.weapon);
+		//add(this.weapon);
+		add(this.preciseLaser);
+		add(this.laser);
+		add(this.crowdLaser);
 		add(this.sprite);
 	}
 	
@@ -197,6 +207,14 @@ class Player extends FlxGroup implements IHittable implements IPersistent
 		if (FlxG.keys.pressed.SIX)
 		{
 			weapon = startingGun;
+		}
+		if (FlxG.keys.pressed.SEVEN)
+		{
+			weapon = crowdLaser;
+		}
+		if (FlxG.keys.pressed.EIGHT)
+		{
+			weapon = preciseLaser;
 		}
 	}
 	
