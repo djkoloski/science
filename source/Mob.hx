@@ -110,7 +110,7 @@ class Mob extends FlxGroup implements IHittable
 		Assert.info(point.x > 0 && point.y > 0, "Something is moving to a point offscreen.");
 		//trace("going to");
 		moveTowards(point);
-		if (distanceTo(point) < speed * FlxG.elapsed || getCenter().distanceTo(point) < sprite.width) {
+		if (distanceTo(point) < speed * FlxG.elapsed || distanceTo(point) < sprite.width * 2) {
 			return true;
 		}
 		return false;

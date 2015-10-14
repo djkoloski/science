@@ -23,7 +23,7 @@ class BlobEnemy extends Testenemy
 	var jumpTime:Int = 10;
 	var sitTime:Int = 100;
 	
-	public function new(playstate:PlayState, startX:Float, startY:Float,maxHearts:Int = 3,scaleFactor:Float = 1)//, damageMask:Int = DamageMask.ENEMY, spritePath:String = null) 
+	public function new(playstate:PlayState, startX:Float, startY:Float,maxHearts:Int = 2,scaleFactor:Float = 1)//, damageMask:Int = DamageMask.ENEMY, spritePath:String = null) 
 	{
 		
 		this.maxHearts = maxHearts;
@@ -134,7 +134,9 @@ class BlobEnemy extends Testenemy
 				}
 			}
 			destroy();
-			playstate.add(new HeartCollectible(playstate, x, y));
+			if (Math.random() < heartChance) {
+				playstate.add(new HeartCollectible(playstate, x, y));
+			}
 		}
 	}
 	/*

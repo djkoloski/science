@@ -27,13 +27,15 @@ class PodEnemy extends Testenemy
 		hive.addPod(this);
 		heartChance = .5;
 		
-		
-		
 		this.sprite.loadGraphic(AssetPaths.squid_walk__png, true, 32, 64);
 		this.sprite.animation.add("right", [4, 5], 10, false);
 		this.sprite.animation.add("up", [2, 3], 10, false);
 		this.sprite.animation.add("left", [6, 7], 10, false);
 		this.sprite.animation.add("down", [0, 1], 10, false);
+		
+		
+		
+		sprite.setGraphicSize( -1, 32);
 		
 		protectAction = function() {
 			//The pod will go to the hive and defend it.

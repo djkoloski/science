@@ -24,6 +24,7 @@ class TankEnemy extends Testenemy
 		stats.residualMax = 45;
 		stats.regen = 10;
 		
+		
 		this.sprite.loadGraphic(AssetPaths.tank_walk__png, true, 64, 64);
 		this.sprite.animation.add("right", [0, 1,2,3], 10, false);
 		this.sprite.animation.add("up", [4,5,6,7], 10, false);
@@ -31,9 +32,12 @@ class TankEnemy extends Testenemy
 		this.sprite.animation.add("down", [12, 13, 14, 15], 10, false);
 		this.sprite.animation.add("idle", [0, 2], 10, true);
 		
+		sprite.setGraphicSize( -1, 32);
+		
 		fightAction = function() {
 			if (target == null || !target.exists) {
 				action = idleAction;
+				return;
 			}
 			velocity = new FlxPoint(0, 0);
 			
@@ -74,7 +78,7 @@ class TankEnemy extends Testenemy
 				return;
 			}
 			speed /= 5;
-			meleeWeapon.setTransform(x + sprite.width / 2, y + sprite.width / 2, velocities.x, velocities.y, weaponRadius);
+			meleeWeapon.setTransform(x, y, velocities.x, velocities.y, weaponRadius);
 			if (distanceTo( new FlxPoint(target.get_x(), target.get_y())) < meleeRange){
 				meleeWeapon.fire();
 				
@@ -95,13 +99,11 @@ class TankEnemy extends Testenemy
 	public function charge(destination:FlxPoint) {
 		this.destination = destination;
 		action = chargeAction;
-		Trace.info("charging");
 	}
 	
 	public function attack() {
 		weapon = rangedWeapon;
 		action = fightAction;
-		Trace.info("attacking");
 	}
 	
 	public override function receiveDamage(amount:Int,source:Int):Void

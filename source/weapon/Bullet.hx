@@ -93,6 +93,7 @@ class Bullet extends FlxGroup implements IHurtable
 		if (effect == "stun") {
 			//trace(sprite.velocity);
 			target.stun(sprite.velocity);
+			state.add(new Shockwave(x,y));
 		}
 		destroy();
 		return damageAmount;
