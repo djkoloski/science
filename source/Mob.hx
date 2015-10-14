@@ -50,6 +50,7 @@ class Mob extends FlxGroup implements IHittable
 	public var maxHearts:Int;
 	public var followDistance:Int;
 	
+	public var heartChance:Float = 1; 
 	
 	public var damageMask:Int;
 	public var idleAction:Dynamic;
@@ -194,34 +195,17 @@ class Mob extends FlxGroup implements IHittable
 		//trace(target);
 		//trace("firing");
 		//trace(angle);
-		weapon.fire();
+		if (pointLineOfSight(new FlxPoint(target.get_x(), target.get_y()))) {
+			weapon.fire();
+			//Trace.info("line of sight");
+		}else {
+			//Trace.info("no line of sight");
+		}
 //>>>>>>> 0654c8c8a86190f9268a22e89a638d6ae8be3bfd
 	}
 	
 	
 	public function getTarget(source:Int=null) {
-		/*for (obj in sightCollider.getCollisionList()) {
-			if (obj.getDamageableMask() != this.getDamageableMask()) {
-				if (!(cast obj).exists) {
-					//Assert.info(false);
-					
-					continue;
-				}
-				if (source != null) {
-					if(obj.getDamageableMask() == source){
-						target = obj;
-						return true;
-					}
-				}else {
-					target = obj;
-					return true;
-				}
-			}
-		}
-		if (source != null) {
-			return getTarget();
-		}
-		return false;*/
 		var temp = new FlxPoint();
 		for (enemy in playstate.enemies) {
 			if (source != null && enemy.getDamageableMask() != source) {
@@ -233,10 +217,10 @@ class Mob extends FlxGroup implements IHittable
 			if (lineOfSight(enemy, temp) ) {
 				if (getCenter().distanceTo(new FlxPoint((cast enemy).get_x(),(cast enemy).get_y())) < sightRadius) {
 					target = enemy;
-					trace("detection");
+					//trace("detection");
 					return true;
 				}
-				trace("line of sight");
+				//trace("line of sight");
 			}
 		}
 		if (source != null) {
@@ -248,15 +232,28 @@ class Mob extends FlxGroup implements IHittable
 	
 	public function stopShort(point:FlxPoint):FlxPoint {
 		//returns a point that is followdistance away from point. If closer than followdistance, it will return the current position.
-		var temp :FlxPoint = towards(point);
-		var dist :Float = distanceTo(point);
-		return new FlxPoint(x + temp.x * (dist - followDistance), y + temp.y * (dist - followDistance));
+		if (pointLineOfSight(point)) {
+			var temp :FlxPoint = towards(point);
+			var dist :Float = distanceTo(point);
+			return new FlxPoint(x + temp.x * (dist - followDistance), y + temp.y * (dist - followDistance));
+		}
+		return point;
+	}
+	
+	public function pointLineOfSight(point:FlxPoint): Bool {
+		var temp = new FlxPoint();
+		playstate.level.foreground._raycast(new FlxPoint(x, y), towards(point), temp);
+		if (distanceTo(temp) > distanceTo(point)) {
+			return true;
+		}
+		return false;
 	}
 	
 	public function lineOfSight(enemy:Dynamic,point:FlxPoint):Bool {
 		var temp = new FlxPoint();
-		playstate.level.foreground.ray(new FlxPoint(x, y), towards(new FlxPoint(enemy.get_x(), enemy.get_y())), temp);
+		playstate.level.foreground._raycast(new FlxPoint(x, y), towards(new FlxPoint(enemy.get_x(), enemy.get_y())), temp);
 		if (distanceTo(temp) > distanceTo(new FlxPoint(enemy.get_x(), enemy.get_y()))) {
+			//Trace.info("distance to temp: " + distanceTo(temp) + " distance to enemy xy "  + distanceTo(new FlxPoint(enemy.get_x(), enemy.get_y())));
 			point.x = temp.x;
 			point.y = temp.y;
 			return true;
@@ -308,8 +305,9 @@ class Mob extends FlxGroup implements IHittable
 			lastFramePos = new FlxPoint(x, y);
 		}
 		//var dir = towards(point);
-		var dir = towards(new FlxPoint(point.x - sprite.width / 2, point.y - sprite.height / 2));
-		if (Math.abs(dir.x) > Math.abs(dir.y)) {
+		//var dir = towards(new FlxPoint(point.x - sprite.width / 2, point.y - sprite.height / 2));
+		var dir = towards(point);
+		/*if (Math.abs(dir.x) > Math.abs(dir.y)) {
 			//moving more in the leftright direction
 			if (dir.x > 0) {
 				sprite.animation.play("right");
@@ -323,7 +321,7 @@ class Mob extends FlxGroup implements IHittable
 			}else {
 				sprite.animation.play("down");
 			}
-		}
+		}*/
 		//dir = new FlxPoint(dir - sprite.width / 2, dir - sprite.height / 2);
 		this.velocity = new FlxPoint(dir.x * speed, dir.y * speed);
 		//x += dir.x * speed * FlxG.elapsed;
@@ -368,7 +366,7 @@ class Mob extends FlxGroup implements IHittable
 	
 	public function getCollisionFlags():Int
 	{
-		return CollisionFlags.NONE;
+		return CollisionFlags.NOCUSTOM;
 	}
 	
 	public function onCollision(other:ICollidable):Void
@@ -395,7 +393,9 @@ class Mob extends FlxGroup implements IHittable
 		{
 			playstate.enemies.remove(this);
 			destroy();
-			playstate.add(new HeartCollectible(playstate, x, y));
+			if (Math.random() < heartChance) {
+				playstate.add(new HeartCollectible(playstate, x, y));
+			}
 		}
 	}
 	

@@ -43,7 +43,7 @@ class Testenemy extends Mob
 				//as is, the path is recalculated every frame the player moves.
 			}
 			if (pathTo(destination)) {
-				trace("successful path");
+				//trace("successful path");
 				destination = null;
 			};
 			fire();

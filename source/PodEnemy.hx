@@ -18,13 +18,16 @@ class PodEnemy extends Testenemy
 	
 	var hive:HiveEnemy;
 	
-	public function new(playstate:PlayState, startX:Float=200, startY:Float=200, hive, damageMask:Int=DamageMask.ENEMY) 
+	public function new(playstate:PlayState, startX:Float=200, startY:Float=200, hive, damageMask:Int=DamageMask.POD) 
 	{
 		super(playstate, startX, startY, damageMask);
 		weapon = new PodGun(playstate);
 		speed = 150;
 		this.hive = hive;
 		hive.addPod(this);
+		heartChance = .5;
+		
+		
 		
 		this.sprite.loadGraphic(AssetPaths.squid_walk__png, true, 32, 64);
 		this.sprite.animation.add("right", [4, 5], 10, false);
@@ -108,12 +111,13 @@ class PodEnemy extends Testenemy
 		
 		idleAction = function() {
 			
-			Trace.info("idle");
+			//Trace.info("idle");
 			lastFramePos = null;
 			explore();
 		}
 		
 		attackAction = function() {
+			velocity = new FlxPoint(0, 0);
 			if (target == null|| !target.exists) {
 				if (!getTarget()) {
 					explore();
@@ -121,7 +125,25 @@ class PodEnemy extends Testenemy
 //					action = exploreAction;
 				}
 			}
-			chaseAction();
+			if (Math.random() > .95)  {
+				destination = stopShort(new FlxPoint(target.get_x(), target.get_y()));
+			}
+			if (destination == null) {
+				
+			}else{
+				if (pathTo(destination)) {
+					destination = null;
+				};
+			}
+			/*
+			if (destination == null || Math.random() > .95)  {
+				destination = stopShort(new FlxPoint(target.get_x(), target.get_y()));
+			}
+			if (pathTo(destination)) {
+				destination = null;
+			};
+			*/
+			fire();
 		};
 		explore();
 		//action = exploreAction;
@@ -129,7 +151,7 @@ class PodEnemy extends Testenemy
 	
 	public function assist(target:PodEnemy) {
 		
-			Trace.info("assisting");
+		//Trace.info("assisting");
 		this.target = target;
 		destination = null;
 		action = assistAction;
@@ -137,14 +159,14 @@ class PodEnemy extends Testenemy
 	
 	public function defend() {
 		
-			Trace.info("defending");
+		//Trace.info("defending");
 		action = protectAction;
 		destination = null;
 	}
 	
 	public function attack(source:Int=null) {
 		
-		Trace.info("exploring");
+		//Trace.info("attacking");
 		if (source != null) {
 			getTarget(source);
 		}else {
@@ -155,7 +177,7 @@ class PodEnemy extends Testenemy
 	
 	public function explore() {
 		
-		Trace.info("exploring");
+		//Trace.info("exploring");
 		action = exploreAction;
 		target = null;
 		destination = null;

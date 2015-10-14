@@ -432,7 +432,7 @@ class CollidableTilemap extends FlxTilemap implements ICustomCollidable
 		return points;
 	}
 	
-	public override function findPath(start:FlxPoint, end:FlxPoint, simplify:Bool = true, raySimplify:Bool = true, wideDiagonal:Bool = true):Array<FlxPoint>
+	public override function findPath(start:FlxPoint, end:FlxPoint, simplify:Bool = true, raySimplify:Bool = false, wideDiagonal:Bool = true):Array<FlxPoint>
 	{
 		// Ignores wide diagonal
 		var startIndex:Int = Std.int((start.y - y) / _scaledTileHeight) * widthInTiles + Std.int((start.x - x) / _scaledTileWidth);

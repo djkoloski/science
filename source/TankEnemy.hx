@@ -20,18 +20,40 @@ class TankEnemy extends Testenemy
 		meleeWeapon = new weapon.TankMelee(playstate);
 		rangedWeapon = weapon;
 		
+		stats.hearts = 10;
+		stats.residualMax = 45;
+		stats.regen = 10;
+		
 		this.sprite.loadGraphic(AssetPaths.tank_walk__png, true, 64, 64);
 		this.sprite.animation.add("right", [0, 1,2,3], 10, false);
 		this.sprite.animation.add("up", [4,5,6,7], 10, false);
 		this.sprite.animation.add("left", [8,9,10,11], 10, false);
-		this.sprite.animation.add("down", [12,13,14,15], 10, false);
+		this.sprite.animation.add("down", [12, 13, 14, 15], 10, false);
+		this.sprite.animation.add("idle", [0, 2], 10, true);
 		
 		fightAction = function() {
 			if (target == null || !target.exists) {
 				action = idleAction;
 			}
-			//trace("fightaction");
-			chaseAction();
+			velocity = new FlxPoint(0, 0);
+			
+			if (Math.random() > .95)  {
+				destination = stopShort(new FlxPoint(target.get_x(), target.get_y()));
+			}
+			if (destination == null) {
+			}else{
+				if (pathTo(destination)) {
+					destination = null;
+				};
+			}
+			/*
+			if (destination == null || Math.random() > .95)  {
+				destination = stopShort(new FlxPoint(target.get_x(), target.get_y()));
+			}
+			if (pathTo(destination)) {
+				destination = null;
+			};*/
+			fire();
 			if (Math.random() > .99) {
 				var temp = new FlxPoint();
 				if(lineOfSight(target,temp)){
@@ -58,7 +80,7 @@ class TankEnemy extends Testenemy
 				
 				//fire();
 			}else {
-				trace("too far. distance is " + distanceTo( new FlxPoint(target.get_x(), target.get_y())));
+				//trace("too far. distance is " + distanceTo( new FlxPoint(target.get_x(), target.get_y())));
 			}
 		}
 		
@@ -67,18 +89,19 @@ class TankEnemy extends Testenemy
 				action = fightAction;
 			}
 		}
+		action = idleAction;
 	}
 	
 	public function charge(destination:FlxPoint) {
 		this.destination = destination;
 		action = chargeAction;
-		trace("charging");
+		Trace.info("charging");
 	}
 	
 	public function attack() {
 		weapon = rangedWeapon;
 		action = fightAction;
-		trace("attacking");
+		Trace.info("attacking");
 	}
 	
 	public override function receiveDamage(amount:Int,source:Int):Void
@@ -90,5 +113,10 @@ class TankEnemy extends Testenemy
 		//action = attackAction;
 		//destination = null;
 	}
-	
+	public override function updateAnimation():Void {
+		super.updateAnimation();
+		if (this.velocity.distanceTo(new FlxPoint(0, 0)) == 0) {
+			sprite.animation.play("idle");
+		}
+	}
 }
