@@ -4,6 +4,7 @@ import flixel.util.FlxPoint;
 import flixel.FlxG;
 import flixel.util.FlxColor;
 import flixel.FlxObject;
+import flixel.system.FlxSound;
 
 enum LaserState
 {
@@ -21,6 +22,7 @@ class Laser extends Weapon
 	public var width:Int;
 	public var color:Int;
 	public var cooldownPerShot:Float;
+	public var soundEffect:FlxSound;
 	
 	public function new(state:PlayState, damageMask:Int, dps:Float, shotLength:Float, cooldownPerShot:Float, width:Int, color:Int)
 	{
@@ -33,6 +35,7 @@ class Laser extends Weapon
 		this.cooldownPerShot = cooldownPerShot;
 		this.width = width;
 		this.color = color;
+		this.soundEffect = FlxG.sound.load(AssetPaths.laser__wav);
 		this.laserBeam = null;
 	}
 	
@@ -43,6 +46,7 @@ class Laser extends Weapon
 		{
 			case LaserState_Firing:
 				timer = shotLength;
+				soundEffect.play();
 			case LaserState_Cooldown:
 				destroyLaserBeam();
 				timer = cooldownPerShot;
