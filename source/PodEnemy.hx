@@ -25,6 +25,13 @@ class PodEnemy extends Testenemy
 		speed = 150;
 		this.hive = hive;
 		hive.addPod(this);
+		
+		this.sprite.loadGraphic(AssetPaths.squid_walk__png, true, 32, 64);
+		this.sprite.animation.add("right", [4, 5], 10, false);
+		this.sprite.animation.add("up", [2, 3], 10, false);
+		this.sprite.animation.add("left", [6, 7], 10, false);
+		this.sprite.animation.add("down", [0, 1], 10, false);
+		
 		protectAction = function() {
 			//The pod will go to the hive and defend it.
 			if (hive == null) {
@@ -57,7 +64,7 @@ class PodEnemy extends Testenemy
 			//The pod will wander randomly. It might attack someone nearby but it has a very low chance of doing so. 
 			if (Math.random() > .9999) {
 				if (getTarget()) {
-					trace("attacking from explore");
+					Trace.info("attacking from explore");
 					attack();
 					//action = attackAction;
 					return;
@@ -101,7 +108,7 @@ class PodEnemy extends Testenemy
 		
 		idleAction = function() {
 			
-			trace("idle");
+			Trace.info("idle");
 			lastFramePos = null;
 			explore();
 		}
@@ -121,7 +128,7 @@ class PodEnemy extends Testenemy
 	
 	public function assist(target:PodEnemy) {
 		
-			trace("assisting");
+			Trace.info("assisting");
 		this.target = target;
 		destination = null;
 		action = assistAction;
@@ -129,21 +136,21 @@ class PodEnemy extends Testenemy
 	
 	public function defend() {
 		
-			trace("defending");
+			Trace.info("defending");
 		action = protectAction;
 		destination = null;
 	}
 	
 	public function attack() {
 		
-		trace("exploring");
+		Trace.info("exploring");
 		action = attackAction;
 		target = null;	
 	}
 	
 	public function explore() {
 		
-		trace("exploring");
+		Trace.info("exploring");
 		action = exploreAction;
 		target = null;
 		destination = null;
@@ -161,5 +168,37 @@ class PodEnemy extends Testenemy
 		attack();
 		//action = attackAction;
 		//destination = null;
+	}
+	
+	public override function update():Void
+	{
+		super.update();
+		updateAnimation();
+	}
+	
+	public override function updateAnimation():Void
+	{
+		if (Math.abs(velocity.x) >= Math.abs(velocity.y))
+		{
+			if (velocity.x > 0)
+			{
+				sprite.animation.play("right");
+			}
+			else
+			{
+				sprite.animation.play("left");
+			}
+		}
+		else
+		{
+			if (velocity.y > 0)
+			{
+				sprite.animation.play("down");
+			}
+			else
+			{
+				sprite.animation.play("up");
+			}
+		}
 	}
 }

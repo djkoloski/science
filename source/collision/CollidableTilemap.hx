@@ -411,10 +411,20 @@ class CollidableTilemap extends FlxTilemap implements ICustomCollidable
 			var down = (ty + 1) * widthInTiles + tx;
 			var up = (ty - 1) * widthInTiles + tx;
 			
+			var bottomleft = (ty + 1) * widthInTiles + (tx - 1);
+			var bottomright = (ty + 1) * widthInTiles + (tx + 1);
+			var topleft = (ty - 1) * widthInTiles + (tx - 1);
+			var topright = (ty - 1) * widthInTiles + (tx + 1);
+			
+			var bumpLeft:Bool = (_distance[topleft] < 0) || (_distance[left] < 0) || (_distance[bottomleft] < 0);
+			var bumpRight:Bool = (_distance[topright] < 0) || (_distance[right] < 0) || (_distance[bottomright] < 0);
+			var bumpTop:Bool = (_distance[topleft] < 0) || (_distance[up] < 0) || (_distance[topright] < 0);
+			var bumpBottom:Bool = (_distance[bottomleft] < 0) || (_distance[down] < 0) || (_distance[bottomright] < 0);
+			
 			points.unshift(
 				new FlxPoint(
-					x + (tx + 0.5 + (_distance[left] < 0 ? 0.5 : 0) - (_distance[right] < 0 ? 0.5 : 0)) * _scaledTileWidth,
-					y + (ty + 0.5 + (_distance[up] < 0 ? 0.5 : 0) - (_distance[down] < 0 ? 0.5 : 0)) * _scaledTileHeight
+					x + (tx + 0.5 + (bumpLeft ? 0.5 : 0) - (bumpRight ? 0.5 : 0)) * _scaledTileWidth,
+					y + (ty + 0.5 + (bumpTop ? 0.5 : 0) - (bumpBottom ? 0.5 : 0)) * _scaledTileHeight
 				)
 			);
 		}
@@ -422,7 +432,7 @@ class CollidableTilemap extends FlxTilemap implements ICustomCollidable
 		return points;
 	}
 	
-	public override function findPath(start:FlxPoint, end:FlxPoint, simplify:Bool = true, raySimplify:Bool = false, wideDiagonal:Bool = true):Array<FlxPoint>
+	public override function findPath(start:FlxPoint, end:FlxPoint, simplify:Bool = true, raySimplify:Bool = true, wideDiagonal:Bool = true):Array<FlxPoint>
 	{
 		// Ignores wide diagonal
 		var startIndex:Int = Std.int((start.y - y) / _scaledTileHeight) * widthInTiles + Std.int((start.x - x) / _scaledTileWidth);

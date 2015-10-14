@@ -64,7 +64,6 @@ class Testenemy extends Mob
 		//destination = null;
 	}
 	
-	/*
 	public override function update():Void
 	{
 		super.update();
@@ -96,5 +95,4 @@ class Testenemy extends Mob
 			}
 		}
 	}
-	*/
 }
