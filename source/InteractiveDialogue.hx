@@ -6,7 +6,17 @@ class InteractiveDialogue extends Interactive
 	
 	public function new(state:PlayState, startX:Float, startY:Float, dialogueId:String)
 	{
-		super(state, startX, startY, "assets/images/heartpickup.png");
+		var npcImage:String = null;
+		if (Math.round(startX + startY) % 2 == 0)
+		{
+			npcImage = AssetPaths.male_npc__png;
+		}
+		else
+		{
+			npcImage = AssetPaths.female_npc__png;
+		}
+		
+		super(state, startX, startY, npcImagew);
 		
 		this.dialogueId = dialogueId;
 	}
