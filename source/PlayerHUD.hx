@@ -88,7 +88,7 @@ class PlayerHUD extends StatsHUD
 		add(currentWeapon);
 		if (p.weapon == p.laser)
 		{
-			currentWeapon.makeGraphic(25, 25, FlxColor.RED);
+			currentWeapon.loadGraphic("assets/images/Laser.png",false);
 		} 
 		else if (p.weapon == p.rocketLauncher)
 		{
@@ -112,11 +112,11 @@ class PlayerHUD extends StatsHUD
 		}
 		else if (p.weapon == p.crowdLaser)
 		{
-			currentWeapon.makeGraphic(25, 25, FlxColor.BLUE);
+			currentWeapon.loadGraphic("assets/images/PreciseLaser.png",false);
 		}
 		else if (p.weapon == p.preciseLaser)
 		{
-			currentWeapon.makeGraphic(25, 25, FlxColor.GREEN);
+			currentWeapon.loadGraphic("assets/images/CrowdLaser.png",false);
 		}
 	}
 }
