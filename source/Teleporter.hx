@@ -33,7 +33,9 @@ class Teleporter extends FlxGroup implements ICollidable
 		
 		this.sprite = new CollidableSprite(x, y);
 		this.sprite.setProxy(this);
-		this.sprite.makeGraphic(Math.round(width), Math.round(height), 0x7fff00ff);
+		this.sprite.loadGraphic(AssetPaths.teleporter__png, true, 64, 64);
+		this.sprite.animation.add("active", [0], 1, false);
+		this.sprite.animation.add("inactive", [1], 1, false);
 #if debug
 		this.sprite.visible = true;
 #else
@@ -52,9 +54,24 @@ class Teleporter extends FlxGroup implements ICollidable
 	
 	public function onCollision(other:ICollidable):Void
 	{
-		if (Collision.resolve(other) == state.player && (!locked || state.necessaryMobs.length == 0))
+		if (Collision.resolve(other) == state.player && !locked)
 		{
 			state.changeLevel(TARGET_PREFIX + level + TARGET_SUFFIX, spawn);
+		}
+	}
+	
+	public override function update()
+	{
+		super.update();
+		
+		if (locked)
+		{
+			locked = (state.necessaryMobs.length != 0);
+			this.sprite.animation.play("inactive");
+		}
+		else
+		{
+			this.sprite.animation.play("active");
 		}
 	}
 }
