@@ -16,7 +16,7 @@ class InteractiveDialogue extends Interactive
 			npcImage = AssetPaths.female_npc__png;
 		}
 		
-		super(state, startX, startY, npcImagew);
+		super(state, startX, startY, npcImage);
 		
 		this.dialogueId = dialogueId;
 	}

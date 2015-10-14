@@ -43,6 +43,7 @@ class TankEnemy extends Testenemy
 		chargeAction = function() {
 			if (target == null || !target.exists) {
 				action = idleAction;
+				return;
 			}
 			
 			speed *= 5;
