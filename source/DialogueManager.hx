@@ -69,14 +69,6 @@ class DialogueManager extends FlxGroup
 		setYOffset(0);
 	}
 	
-	public function onLevelLoad():Void
-	{}
-	
-	public function onLevelUnload():Void
-	{
-		transitionState(DialogueManagerState_Closed);
-	}
-	
 	public function transitionState(newState:DialogueManagerState)
 	{
 		currentState = newState;

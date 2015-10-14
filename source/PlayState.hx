@@ -45,14 +45,14 @@ class PlayState extends FlxState
 	
 	public var necessaryMobs:Array<Mob>;
 	
+	public var persistent:PersistentData;
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
 	override public function create():Void
 	{
 		super.create();
-		
-		enemies = new Array<IDamageable>();
 		
 		bgColor = 0xffaaaaaa;
 		
@@ -65,7 +65,15 @@ class PlayState extends FlxState
 		dialogueManager = null;
 		player = null;
 		
-		necessaryMobs = new Array<Mob>();
+		enemies = null;
+		
+		aStarStart = null;
+		aStarEnd = null;
+		aStarTest = null;
+		
+		necessaryMobs = null;
+		
+		persistent = null;
 		
 		#if debug
 		changeLevel("assets/tiled/Level1.tmx");
@@ -74,8 +82,6 @@ class PlayState extends FlxState
 		#end
 		
 		FlxG.sound.playMusic(AssetPaths.BackgroundMusic__wav, 1, true);
-		
-		aStarTest = null;
 	}
 	
 	/**
@@ -156,10 +162,11 @@ class PlayState extends FlxState
 	
 	public function unloadLevel():Void
 	{
-		player.onLevelUnload();
-		remove(player);
-		dialogueManager.onLevelUnload();
-		remove(dialogueManager);
+		if (persistent == null)
+		{
+			persistent = new PersistentData();
+		}
+		persistent.save(this);
 		
 		if (collision != null)
 		{
@@ -173,6 +180,8 @@ class PlayState extends FlxState
 			group = null;
 		}
 		
+		player = null;
+		dialogueManager = null;
 		level = null;
 	}
 	
@@ -182,24 +191,24 @@ class PlayState extends FlxState
 		group = new FlxGroup();
 		super.add(group);
 		
-		if (player == null)
-		{
-			player = new Player(this);
-		}
-		player.onLevelLoad();
+		enemies = new Array<IDamageable>();
+		necessaryMobs = new Array<Mob>();
 		
-		if (dialogueManager == null)
-		{
-			dialogueManager = new DialogueManager(this);
-		}
-		dialogueManager.onLevelLoad();
+		dialogueManager = new DialogueManager(this);
+		player = new Player(this);
+		
+		// TODO: keep player progression
+		
+		aStarStart = null;
+		aStarEnd = null;
+		aStarTest = null;
 		
 		level = new LevelMap(this, path);
 		
 		FlxG.camera.follow(player.sprite, FlxCamera.STYLE_TOPDOWN, new FlxPoint(0, 0), 1.0);
 		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight, true);
 		
-		//add(level.background);
+		add(level.background);
 		
 		level.loadObjects();
 		
@@ -211,5 +220,10 @@ class PlayState extends FlxState
 		add(dialogueManager);
 		
 		add(new PlayerHUD(player));
+		
+		if (persistent != null)
+		{
+			persistent.restore(this);
+		}
 	}
 }
