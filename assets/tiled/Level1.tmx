@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="72" height="90" tilewidth="32" tileheight="32">
- <tileset firstgid="1" name="SchoolTileSet" tilewidth="32" tileheight="32">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="72" height="90" tilewidth="32" tileheight="32" nextobjectid="74">
+ <tileset firstgid="1" name="SchoolTileSet" tilewidth="32" tileheight="32" tilecount="240">
   <image source="tileset.png" width="640" height="384"/>
  </tileset>
  <layer name="background" width="72" height="90">
@@ -106,9 +106,9 @@
     <property name="id" value="DIALOGUE_Distortion"/>
    </properties>
   </object>
-  <object name="dialogue" x="613" y="769.5" width="42" height="43">
+  <object id="21" name="weapon" x="356" y="1777.5" width="64" height="64">
    <properties>
-    <property name="id" value="DIALOGUE_Teleporters"/>
+    <property name="type" value="shotgun"/>
    </properties>
   </object>
   <object name="dialogue" x="1531" y="644.5" width="42" height="43">
@@ -137,53 +137,65 @@
     <property name="spawn" value="Start"/>
    </properties>
   </object>
-  <object name="blob" x="1470" y="233" width="64" height="64"/>
-  <object name="blob" x="1633" y="902" width="64" height="64"/>
-  <object name="blob" x="1301" y="655" width="64" height="64"/>
-  <object name="blob" x="1267" y="930" width="64" height="64"/>
-  <object name="blob" x="1102" y="683" width="64" height="64"/>
-  <object name="blob" x="1103" y="885" width="64" height="64"/>
-  <object name="blob" x="872" y="656" width="64" height="64"/>
-  <object name="blob" x="878" y="916" width="64" height="64"/>
-  <object name="blob" x="975" y="794" width="64" height="64"/>
-  <object name="blob" x="301" y="786" width="64" height="64"/>
-  <object name="tank" x="298" y="420" width="64" height="64"/>
-  <object name="blob" x="812" y="128" width="64" height="64"/>
-  <object name="blob" x="812" y="63" width="64" height="64"/>
-  <object name="blob" x="303" y="1299" width="64" height="64"/>
-  <object name="blob" x="413" y="1295" width="64" height="64"/>
-  <object name="blob" x="94" y="1145" width="64" height="64"/>
-  <object name="blob" x="128" y="1377" width="64" height="64"/>
-  <object name="blob" x="301" y="1134" width="64" height="64"/>
-  <object name="blob" x="165" y="1622" width="64" height="64"/>
-  <object name="blob" x="86" y="1772" width="64" height="64"/>
-  <object name="blob" x="1687" y="1156" width="64" height="64"/>
-  <object name="blob" x="1687" y="1087" width="64" height="64"/>
-  <object name="tank" x="1375" y="1474" width="64" height="64"/>
-  <object name="blob" x="1999" y="1114" width="64" height="64"/>
-  <object name="blob" x="1874" y="1443" width="64" height="64"/>
-  <object name="blob" x="1279" y="1553" width="64" height="64"/>
-  <object name="blob" x="1448" y="1392" width="64" height="64"/>
-  <object name="tank" x="813" y="1543" width="64" height="64"/>
-  <object name="blob" x="957" y="2000" width="64" height="64"/>
-  <object name="blob" x="1182" y="2035" width="64" height="64"/>
-  <object name="blob" x="1065" y="1900" width="64" height="64"/>
-  <object name="blob" x="700" y="2100" width="64" height="64"/>
-  <object name="blob" x="732" y="1900" width="64" height="64"/>
-  <object name="blob" x="1490" y="2088" width="64" height="64"/>
-  <object name="blob" x="1730" y="2280" width="64" height="64"/>
-  <object name="blob" x="1582" y="2475" width="64" height="64"/>
-  <object name="blob" x="667" y="2670" width="64" height="64"/>
-  <object name="blob" x="905" y="2664" width="64" height="64"/>
-  <object name="blob" x="612" y="2413" width="64" height="64"/>
-  <object name="tank" x="716" y="2510" width="64" height="64"/>
-  <object name="tank" x="903" y="2510" width="64" height="64"/>
-  <object name="blob" x="957" y="2395" width="64" height="64"/>
-  <object name="dialogue" x="773" y="719.5" width="42" height="43">
+  <object id="27" name="blob" x="1470" y="233" width="64" height="64"/>
+  <object id="28" name="blob" x="1633" y="902" width="64" height="64"/>
+  <object id="29" name="blob" x="1301" y="655" width="64" height="64"/>
+  <object id="30" name="blob" x="1267" y="930" width="64" height="64"/>
+  <object id="31" name="blob" x="1102" y="683" width="64" height="64"/>
+  <object id="32" name="blob" x="1103" y="885" width="64" height="64"/>
+  <object id="33" name="blob" x="872" y="656" width="64" height="64"/>
+  <object id="34" name="blob" x="878" y="916" width="64" height="64"/>
+  <object id="35" name="blob" x="975" y="794" width="64" height="64"/>
+  <object id="36" name="blob" x="301" y="786" width="64" height="64"/>
+  <object id="37" name="tank" x="298" y="420" width="64" height="64"/>
+  <object id="38" name="blob" x="812" y="128" width="64" height="64"/>
+  <object id="39" name="blob" x="812" y="63" width="64" height="64"/>
+  <object id="40" name="blob" x="303" y="1299" width="64" height="64"/>
+  <object id="41" name="blob" x="413" y="1295" width="64" height="64"/>
+  <object id="42" name="blob" x="94" y="1145" width="64" height="64"/>
+  <object id="43" name="blob" x="128" y="1377" width="64" height="64"/>
+  <object id="44" name="blob" x="301" y="1134" width="64" height="64"/>
+  <object id="45" name="blob" x="165" y="1622" width="64" height="64"/>
+  <object id="46" name="blob" x="86" y="1772" width="64" height="64"/>
+  <object id="47" name="blob" x="1687" y="1156" width="64" height="64"/>
+  <object id="48" name="blob" x="1687" y="1087" width="64" height="64"/>
+  <object id="50" name="blob" x="1999" y="1114" width="64" height="64"/>
+  <object id="51" name="blob" x="1874" y="1443" width="64" height="64"/>
+  <object id="52" name="blob" x="1279" y="1553" width="64" height="64"/>
+  <object id="53" name="blob" x="1448" y="1392" width="64" height="64"/>
+  <object id="55" name="blob" x="957" y="2000" width="64" height="64"/>
+  <object id="56" name="blob" x="1182" y="2035" width="64" height="64"/>
+  <object id="57" name="blob" x="1065" y="1900" width="64" height="64"/>
+  <object id="58" name="blob" x="700" y="2100" width="64" height="64"/>
+  <object id="59" name="blob" x="732" y="1900" width="64" height="64"/>
+  <object id="60" name="blob" x="1490" y="2088" width="64" height="64"/>
+  <object id="61" name="blob" x="1730" y="2280" width="64" height="64"/>
+  <object id="62" name="blob" x="1582" y="2475" width="64" height="64"/>
+  <object id="63" name="blob" x="667" y="2670" width="64" height="64"/>
+  <object id="64" name="blob" x="905" y="2664" width="64" height="64"/>
+  <object id="65" name="blob" x="612" y="2413" width="64" height="64"/>
+  <object id="67" name="tank" x="716" y="2510" width="64" height="64">
+   <properties>
+    <property name="necessary" value=""/>
+   </properties>
+  </object>
+  <object id="68" name="tank" x="903" y="2510" width="64" height="64">
+   <properties>
+    <property name="necessary" value=""/>
+   </properties>
+  </object>
+  <object id="69" name="blob" x="957" y="2395" width="64" height="64"/>
+  <object id="70" name="dialogue" x="773" y="719.5" width="42" height="43">
    <properties>
     <property name="id" value="DIALOGUE_Blob"/>
    </properties>
   </object>
-  <object name="hive" x="1182.67" y="248" width="110" height="104.667"/>
+  <object id="71" name="dialogue" x="783" y="650.5" width="42" height="43">
+   <properties>
+    <property name="id" value="DIALOGUE_NotAttacking"/>
+   </properties>
+  </object>
+  <object id="72" name="blob" x="787" y="1617" width="64" height="64"/>
+  <object id="73" name="blob" x="838" y="1486" width="64" height="64"/>
  </objectgroup>
 </map>
