@@ -30,12 +30,7 @@
 	],
 	"DIALOGUE_COWARD":[
 		"Alien: Our project, s s stop!! \n ...\n Never mind, don't hurt me!"
-<<<<<<< HEAD
-		],
-		
-=======
 	],
->>>>>>> 1639c9f8ec8c91ec8ace64f6ed069c757770989a
 	"DIALOGUE_STEVE":[
 		"Alien: That guy is Steve. He \n is really wimpy. The \n of the Earth Club"
 	],
@@ -48,13 +43,8 @@
 	],
 	"DIALOGUE_MACHINEGUN":[
 		"You found a Machine Gun. \n Shift into MAXIMUM OVERDRIVE"
-<<<<<<< HEAD
-		],
-	"DIALOGUE_LAUNCHER":[
-=======
 	],
 	"DIALOGUE_ROCKETLAUNCHER":[
->>>>>>> 1639c9f8ec8c91ec8ace64f6ed069c757770989a
 		"You found a Rocket Launcher.\n No, it does not fire Rocket ships"
 	],
 	"DIALOGUE_SHOTGUN":[

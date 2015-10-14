@@ -6,7 +6,7 @@ class CrowdLaserCollectible extends Collectible
 	
 	public function new(state:PlayState, x:Float, y:Float, dialogue:String)
 	{
-		super(state, x, y, AssetPaths.heartpickup__png);
+		super(state, x, y, AssetPaths.CrowdLaser__png);
 		this.dialogue = dialogue;
 	}
 	

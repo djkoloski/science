@@ -141,6 +141,10 @@ class LevelMap extends TiledMap
 							state.add(new LaserCollectible(state, o.x, o.y, o.custom.get("dialogue")));
 						case "machine gun":
 							state.add(new MachineGunCollectible(state, o.x, o.y, o.custom.get("dialogue")));
+						case "precise laser":
+							state.add(new PreciseLaserCollectible(state, o.x, o.y, o.custom.get("dialogue")));
+						case "crowd laser":
+							state.add(new CrowdLaserCollectible(state, o.x, o.y, o.custom.get("dialogue")));
 					}
 				}
 			}
